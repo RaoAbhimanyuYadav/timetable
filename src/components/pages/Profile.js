@@ -9,6 +9,9 @@ import {
   WORKING_DAY_FORM_FIELDS,
   TIMING_FORM_FIELDS,
 } from "../constants/profileConstants";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { setProfile } from "../redux/reducers/profileReducer";
 
 const Profile = () => {
   const formSubmitHandler = (data, id = null) => {
@@ -16,6 +19,16 @@ const Profile = () => {
     console.log(data);
   };
   const deleteHandler = () => {};
+
+  const profileData = useSelector((state) => state);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setProfile(1));
+  }, []);
+  useEffect(() => {
+    console.log(profileData);
+  }, [profileData]);
+
   return (
     <>
       <PageWrapper
