@@ -5,29 +5,41 @@ import {
   TIMING_TABLE_HEADING,
   WORKING_DAY_TABLE_BODY_KEY,
   WORKING_DAY_TABLE_HEADING,
-  DUMMY_DATA,
   WORKING_DAY_FORM_FIELDS,
   TIMING_FORM_FIELDS,
 } from "../constants/profileConstants";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { setProfile } from "../redux/reducers/profileReducer";
+import {
+  addOneTiming,
+  getAllTiming,
+  updateOneTiming,
+} from "../redux/actionThunk/profileThunk";
 
 const Profile = () => {
-  const formSubmitHandler = (data, id = null) => {
+  const formSubmitHandler = (e, id = null) => {
     // Data checking
-    console.log(data);
+
+    const filteredData = {
+      name: e.target.name.value,
+      start_time: e.target.start_time.value,
+      end_time: e.target.end_time.value,
+    };
+    if (id === null) {
+      dispatch(addOneTiming(filteredData));
+    } else {
+      dispatch(updateOneTiming(filteredData, id));
+    }
   };
   const deleteHandler = () => {};
 
-  const profileData = useSelector((state) => state);
+  const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(setProfile(1));
-  }, []);
-  useEffect(() => {
-    console.log(profileData);
-  }, [profileData]);
+    dispatch(getAllTiming());
+    console.log("useEffect disptach");
+  }, [dispatch]);
 
   return (
     <>
@@ -36,7 +48,7 @@ const Profile = () => {
         formFields={TIMING_FORM_FIELDS}
         tableHeadings={TIMING_TABLE_HEADING}
         tableBodykey={TIMING_TABLE_BODY_KEY}
-        tableBodyData={DUMMY_DATA.bellTimings}
+        tableBodyData={profileData ? profileData.bellTimings : []}
         formSubmitHandler={formSubmitHandler}
         deleteHandler={deleteHandler}
       />
@@ -45,7 +57,7 @@ const Profile = () => {
         formFields={WORKING_DAY_FORM_FIELDS}
         tableHeadings={WORKING_DAY_TABLE_HEADING}
         tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
-        tableBodyData={DUMMY_DATA.workingDays}
+        tableBodyData={profileData ? profileData.workingDays : []}
         formSubmitHandler={formSubmitHandler}
         deleteHandler={deleteHandler}
       />

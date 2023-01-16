@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import { getFirestore } from "firebase/firestore/lite";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDz4IZKkIZCQ7os0SXR8w_Ge_GS74SdqEQ",
@@ -14,10 +14,3 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
-
-export async function getProfiles(db) {
-  const profileCol = collection(db, "profile");
-  const profileSnapshot = await getDocs(profileCol);
-  const profileList = profileSnapshot.docs.map((doc) => doc.data());
-  console.log(profileList);
-}

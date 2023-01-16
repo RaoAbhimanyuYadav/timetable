@@ -17,13 +17,7 @@ export default function AddEditDialog({
   formData,
   formSubmitHandler,
 }) {
-  const body = {};
-  formFields.forEach((obj) => {
-    body[obj.key] = formData ? formData[obj.key] : obj.default;
-  });
-
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = React.useState(body);
 
   const handleClickOpen = () => () => {
     setOpen(true);
@@ -33,17 +27,9 @@ export default function AddEditDialog({
     setOpen(false);
   };
 
-  const handleOnChange = (e, key, obj) => {
-    setData((pre) => {
-      let newData = { ...pre };
-      newData[key] = e.target.value;
-      return newData;
-    });
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    formData ? formSubmitHandler(data, formData.id) : formSubmitHandler(data);
+    formData ? formSubmitHandler(event, formData.id) : formSubmitHandler(event);
   };
 
   return (
@@ -80,10 +66,7 @@ export default function AddEditDialog({
                       autoFocus={index === 0}
                       id={obj.key}
                       name={obj.key}
-                      onChange={(e) => {
-                        handleOnChange(e, obj.key, obj);
-                      }}
-                      value={data[obj.key]}
+                      defaultValue={formData ? formData[obj.key] : obj.default}
                     >
                       {obj.options.map((option) => (
                         <CustomMenuItem key={option.value} value={option.value}>
@@ -100,10 +83,7 @@ export default function AddEditDialog({
                       id={obj.key}
                       name={obj.key}
                       autoFocus={index === 0}
-                      onChange={(e) => {
-                        handleOnChange(e, obj.key, obj);
-                      }}
-                      value={data[obj.key]}
+                      defaultValue={formData ? formData[obj.key] : obj.default}
                     />
                   )}
                 </Box>
