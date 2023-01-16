@@ -19,16 +19,25 @@ export const profileSlice = createSlice({
       state.workingDays = workingDays;
     },
     setTimingReducer: (state, action) => {
-      state.bellTimings = action.payload;
+      const orderedTiming = action.payload.sort((a, b) => +a.name > +b.name);
+      state.bellTimings = orderedTiming;
     },
     addTimingReducer: (state, action) => {
       state.bellTimings.push(action.payload);
+      state.bellTimings.sort((a, b) => +a.name > +b.name);
     },
     updateTimingReducer: (state, action) => {
       const index = state.bellTimings.findIndex((obj) => {
         return obj.id === action.payload.id;
       });
       state.bellTimings.splice(index, 1, action.payload);
+      state.bellTimings.sort((a, b) => +a.name > +b.name);
+    },
+    deleteTimingReducer: (state, action) => {
+      const index = state.bellTimings.findIndex((obj) => {
+        return obj.id === action.payload.id;
+      });
+      state.bellTimings.splice(index, 1);
     },
   },
 });
@@ -38,6 +47,7 @@ export const {
   setTimingReducer,
   addTimingReducer,
   updateTimingReducer,
+  deleteTimingReducer,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

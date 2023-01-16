@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {
   addOneTiming,
+  deleteOneTiming,
   getAllTiming,
   updateOneTiming,
 } from "../redux/actionThunk/profileThunk";
@@ -31,7 +32,9 @@ const Profile = () => {
       dispatch(updateOneTiming(filteredData, id));
     }
   };
-  const deleteHandler = () => {};
+  const deleteHandler = (id) => {
+    dispatch(deleteOneTiming(id));
+  };
 
   const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch();
