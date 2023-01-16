@@ -10,13 +10,16 @@ import {
 import { db } from "../../api/firebase";
 import {
   addTimingReducer,
+  addWorkingDayReducer,
   deleteTimingReducer,
   setProfileReducer,
   setTimingReducer,
+  setWorkingDaysReducer,
   updateTimingReducer,
 } from "../reducers/profileReducer";
 
 const timingColName = "timings";
+const workingDayColName = "working_days";
 
 export function fetchProfile() {
   return async function fetchProfileThunk(dispatch) {
@@ -54,4 +57,21 @@ export const updateOneTiming = (timingDataObj, id) => async (dispatch) => {
 export const deleteOneTiming = (id) => async (dispatch) => {
   await deleteDoc(doc(db, timingColName, id));
   dispatch(deleteTimingReducer({ id: id }));
+};
+
+export const addOneWorkingDay = (workingDataObj) => async (dispatch) => {
+  const newDocRef = await addDoc(
+    collection(db, workingDayColName),
+    workingDataObj
+  );
+  dispatch(addWorkingDayReducer({ ...workingDataObj, id: newDocRef.id }));
+};
+
+export const getAllWorkingDays = () => async (dispatch) => {
+  const snapshot = await getDocs(collection(db, workingDayColName));
+  const list = snapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  }));
+  dispatch(setWorkingDaysReducer(list));
 };

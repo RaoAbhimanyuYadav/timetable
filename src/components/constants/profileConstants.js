@@ -34,31 +34,31 @@ export const WORKING_DAY_FORM_FIELDS = [
     label: "Name",
     type: "select",
     key: "name",
-    default: "monday",
+    default: "Monday",
     options: [
       {
         label: "Monday",
-        value: "monday",
+        value: "Monday",
       },
       {
         label: "Tuesday",
-        value: "tuesday",
+        value: "Tuesday",
       },
       {
         label: "Wednesday",
-        value: "wednesday",
+        value: "Wednesday",
       },
       {
         label: "Thrusday",
-        value: "thrusday",
+        value: "Thrusday",
       },
       {
         label: "Friday",
-        value: "friday",
+        value: "Friday",
       },
       {
         label: "Saturday",
-        value: "saturday",
+        value: "Saturday",
       },
     ],
   },

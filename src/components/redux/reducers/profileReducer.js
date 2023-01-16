@@ -7,6 +7,16 @@ const initialState = {
   workingDays: [],
 };
 
+const days = {
+  Monday: 0,
+  Tuesday: 1,
+  Wednesday: 2,
+  Thrusday: 3,
+  Friday: 4,
+  Saturday: 5,
+  Sunday: 6,
+};
+
 export const profileSlice = createSlice({
   name: "profile",
   initialState: initialState,
@@ -39,6 +49,29 @@ export const profileSlice = createSlice({
       });
       state.bellTimings.splice(index, 1);
     },
+    addWorkingDayReducer: (state, action) => {
+      state.workingDays.push(action.payload);
+      state.workingDays.sort((a, b) => days[a.name] > days[b.name]);
+    },
+    setWorkingDaysReducer: (state, action) => {
+      const orderedWorkingDays = action.payload.sort(
+        (a, b) => days[a.name] > days[b.name]
+      );
+      state.workingDays = orderedWorkingDays;
+    },
+    // updateWorkingDayReducer: (state, action) => {
+    //   const index = state.bellTimings.findIndex((obj) => {
+    //     return obj.id === action.payload.id;
+    //   });
+    //   state.bellTimings.splice(index, 1, action.payload);
+    //   state.bellTimings.sort((a, b) => +a.name > +b.name);
+    // },
+    // deleteWorkingDayReducer: (state, action) => {
+    //   const index = state.bellTimings.findIndex((obj) => {
+    //     return obj.id === action.payload.id;
+    //   });
+    //   state.bellTimings.splice(index, 1);
+    // },
   },
 });
 
@@ -48,6 +81,8 @@ export const {
   addTimingReducer,
   updateTimingReducer,
   deleteTimingReducer,
+  addWorkingDayReducer,
+  setWorkingDaysReducer,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;
