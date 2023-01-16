@@ -22,11 +22,9 @@ export const profileSlice = createSlice({
   initialState: initialState,
   reducers: {
     setProfileReducer: (state, action) => {
-      const { nameOfOrganisation, academicYear, workingDays } =
-        action.payload[0];
+      const { nameOfOrganisation, academicYear } = action.payload[0];
       state.nameOfOrganisation = nameOfOrganisation;
       state.academicYear = academicYear;
-      state.workingDays = workingDays;
     },
     setTimingReducer: (state, action) => {
       const orderedTiming = action.payload.sort((a, b) => +a.name > +b.name);
@@ -59,19 +57,19 @@ export const profileSlice = createSlice({
       );
       state.workingDays = orderedWorkingDays;
     },
-    // updateWorkingDayReducer: (state, action) => {
-    //   const index = state.bellTimings.findIndex((obj) => {
-    //     return obj.id === action.payload.id;
-    //   });
-    //   state.bellTimings.splice(index, 1, action.payload);
-    //   state.bellTimings.sort((a, b) => +a.name > +b.name);
-    // },
-    // deleteWorkingDayReducer: (state, action) => {
-    //   const index = state.bellTimings.findIndex((obj) => {
-    //     return obj.id === action.payload.id;
-    //   });
-    //   state.bellTimings.splice(index, 1);
-    // },
+    updateWorkingDayReducer: (state, action) => {
+      const index = state.workingDays.findIndex((obj) => {
+        return obj.id === action.payload.id;
+      });
+      state.workingDays.splice(index, 1, action.payload);
+      state.workingDays.sort((a, b) => days[a.name] > days[b.name]);
+    },
+    deleteWorkingDayReducer: (state, action) => {
+      const index = state.workingDays.findIndex((obj) => {
+        return obj.id === action.payload.id;
+      });
+      state.workingDays.splice(index, 1);
+    },
   },
 });
 
@@ -83,6 +81,8 @@ export const {
   deleteTimingReducer,
   addWorkingDayReducer,
   setWorkingDaysReducer,
+  updateWorkingDayReducer,
+  deleteWorkingDayReducer,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -83,3 +83,7 @@ export const TIMING_FORM_FIELDS = [
     default: "11:00",
   },
 ];
+
+export const timingCollectionName = "timings";
+
+export const workingDayCollectionName = "working_days";

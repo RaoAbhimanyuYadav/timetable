@@ -1,3 +1,6 @@
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
 import PageWrapper from "../HOC/PageWrapper";
 
 import {
@@ -7,25 +10,33 @@ import {
   WORKING_DAY_TABLE_HEADING,
   WORKING_DAY_FORM_FIELDS,
   TIMING_FORM_FIELDS,
+  timingCollectionName,
+  workingDayCollectionName,
 } from "../constants/profileConstants";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import {
-  addOneTiming,
-  addOneWorkingDay,
-  deleteOneTiming,
-  getAllTiming,
-  getAllWorkingDays,
-  updateOneTiming,
+  addOneDoc,
+  deleteOneDoc,
+  getAllDocs,
+  updateOneDoc,
 } from "../redux/actionThunk/profileThunk";
+import {
+  addTimingReducer,
+  addWorkingDayReducer,
+  deleteTimingReducer,
+  deleteWorkingDayReducer,
+  setTimingReducer,
+  setWorkingDaysReducer,
+  updateTimingReducer,
+  updateWorkingDayReducer,
+} from "../redux/reducers/profileReducer";
 
 const Profile = () => {
   const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllTiming());
-    dispatch(getAllWorkingDays());
+    dispatch(getAllDocs(timingCollectionName, setTimingReducer));
+    dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
     console.log("useEffect disptach");
   }, [dispatch]);
 
@@ -36,23 +47,46 @@ const Profile = () => {
       start_time: e.target.start_time.value,
       end_time: e.target.end_time.value,
     };
-    if (id === null) dispatch(addOneTiming(filteredData));
-    else dispatch(updateOneTiming(filteredData, id));
+    if (id === null)
+      dispatch(addOneDoc(timingCollectionName, addTimingReducer, filteredData));
+    else
+      dispatch(
+        updateOneDoc(
+          timingCollectionName,
+          updateTimingReducer,
+          filteredData,
+          id
+        )
+      );
   };
 
   const bellTimingDeleteHandler = (id) => {
-    dispatch(deleteOneTiming(id));
+    dispatch(deleteOneDoc(timingCollectionName, deleteTimingReducer, id));
   };
 
   const workingDaysFormSubmitHandler = (e, id = null) => {
     const filteredData = {
       name: e.target.name.value,
     };
-    if (id === null) dispatch(addOneWorkingDay(filteredData));
+    if (id === null)
+      dispatch(
+        addOneDoc(workingDayCollectionName, addWorkingDayReducer, filteredData)
+      );
+    else
+      dispatch(
+        updateOneDoc(
+          workingDayCollectionName,
+          updateWorkingDayReducer,
+          filteredData,
+          id
+        )
+      );
   };
 
   const workingDaysDeleteHandler = (id) => {
-    console.log(id);
+    dispatch(
+      deleteOneDoc(workingDayCollectionName, deleteWorkingDayReducer, id)
+    );
   };
 
   return (
