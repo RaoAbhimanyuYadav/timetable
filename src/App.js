@@ -1,4 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
 import store from "./components/redux/store";
@@ -17,9 +16,7 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
-        <BrowserRouter>
-          <Routes />
-        </BrowserRouter>
+        <Routes />
       </ThemeProvider>
     </Provider>
   );
