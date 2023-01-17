@@ -5,9 +5,11 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import profileReducer from "./reducers/profileReducer";
+import subjectReducer from "./reducers/subjectReducer";
 
 export default configureStore({
   reducer: {
     profile: profileReducer,
+    subject: subjectReducer,
   },
 });

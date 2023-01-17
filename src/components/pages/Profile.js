@@ -35,10 +35,16 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllDocs(timingCollectionName, setTimingReducer));
-    dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
-    console.log("useEffect disptach");
-  }, [dispatch]);
+    if (profileData.isBellTimingsFetched === false) {
+      console.log("Bell Timing fetched");
+      dispatch(getAllDocs(timingCollectionName, setTimingReducer));
+    }
+
+    if (profileData.isWorkingDaysFetched === false) {
+      console.log("Working Days fetched");
+      dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
+    }
+  }, [dispatch, profileData]);
 
   const bellTimingFormSubmitHandler = (e, id = null) => {
     // Data checking

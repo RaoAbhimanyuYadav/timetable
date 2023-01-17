@@ -11,6 +11,42 @@ import {
   CustomMenuItem,
   CustomTextField,
 } from "../utils/customComponents";
+import MultipleSelectorField from "./MultipleSelectorField";
+
+const inputFieldSelector = (obj, index, formData) => {
+  if (obj.type === "select") {
+    return (
+      <CustomTextField
+        select
+        autoFocus={index === 0}
+        id={obj.key}
+        name={obj.key}
+        defaultValue={formData ? formData[obj.key] : obj.default}
+      >
+        {obj.options.map((option) => (
+          <CustomMenuItem key={option.value} value={option.value}>
+            {option.label}
+          </CustomMenuItem>
+        ))}
+      </CustomTextField>
+    );
+  } else if (obj.type === "checkboxes") {
+    return <MultipleSelectorField formData={formData} obj={obj} />;
+  } else {
+    return (
+      <CustomTextField
+        margin="normal"
+        required
+        fullWidth
+        type={obj.type}
+        id={obj.key}
+        name={obj.key}
+        autoFocus={index === 0}
+        defaultValue={formData ? formData[obj.key] : obj.default}
+      />
+    );
+  }
+};
 
 export default function AddEditDialog({
   formFields,
@@ -60,32 +96,7 @@ export default function AddEditDialog({
               return (
                 <Box key={index}>
                   <CustomInputLabel>{obj.label}</CustomInputLabel>
-                  {obj.type === "select" ? (
-                    <CustomTextField
-                      select
-                      autoFocus={index === 0}
-                      id={obj.key}
-                      name={obj.key}
-                      defaultValue={formData ? formData[obj.key] : obj.default}
-                    >
-                      {obj.options.map((option) => (
-                        <CustomMenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </CustomMenuItem>
-                      ))}
-                    </CustomTextField>
-                  ) : (
-                    <CustomTextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      type={obj.type}
-                      id={obj.key}
-                      name={obj.key}
-                      autoFocus={index === 0}
-                      defaultValue={formData ? formData[obj.key] : obj.default}
-                    />
-                  )}
+                  {inputFieldSelector(obj, index, formData)}
                 </Box>
               );
             })}

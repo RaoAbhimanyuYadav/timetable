@@ -14,10 +14,28 @@ const TableLayout = ({
 }) => {
   const objNameExtractor = (obj) => {
     let name = "";
-    tableBodykey.forEach((instance) => {
-      name += obj[instance] + " ";
+    tableBodykey.forEach((key) => {
+      if (typeof obj[key] === "string" || typeof obj[key] === "number")
+        name += obj[key] + " ";
     });
     return name;
+  };
+
+  const nameExtractor = (key, obj) => {
+    if (typeof obj[key] === "string" || typeof obj[key] === "number")
+      return obj[key];
+    if (typeof obj[key] === "object") {
+      if (Array.isArray(obj[key])) {
+        if (key === "subject_time_off") {
+          return obj[key].map((ele, i) => (
+            <span id={i} key={i}>
+              {`${ele.day} : ${ele.time_start}-${ele.time_end}`}
+              <br />
+            </span>
+          ));
+        }
+      }
+    }
   };
 
   return (
@@ -41,23 +59,14 @@ const TableLayout = ({
         <></>
       ) : (
         <TableBody>
-          {tableBodyData.map((obj) => {
+          {tableBodyData.map((obj, i) => {
             return (
-              <TableRow key={obj.id}>
+              <TableRow key={i}>
                 {tableBodykey.map((instance, index) => {
                   return (
                     <CustomCell key={index}>
                       <CellInsideWrapper>
-                        {typeof obj[instance] !== "object" ? (
-                          obj[instance]
-                        ) : instance === "teacher" ? (
-                          <>
-                            {obj[instance].name}
-                            <br />({obj[instance].nick_name})
-                          </>
-                        ) : (
-                          `${obj[instance].semester}`
-                        )}
+                        {nameExtractor(instance, obj)}
                       </CellInsideWrapper>
                     </CustomCell>
                   );
