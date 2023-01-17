@@ -1,11 +1,12 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomDialog from "../HOC/CustomDialog";
 import {
   addTimeOffReducer,
   clearTimeOffReducer,
   removeFromTimeOffReducer,
+  setTimeOffReducer,
 } from "../redux/reducers/subjectReducer";
 import {
   CustomButton,
@@ -31,6 +32,10 @@ const MultipleSelectorField = ({ formData, obj }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (formData) dispatch(setTimeOffReducer(formData[obj.key]));
+  }, [formData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,6 +75,9 @@ const MultipleSelectorField = ({ formData, obj }) => {
         id={"timeId"}
         name={"timeId"}
         onChange={(e) => setTimeId(e.target.value)}
+        defaultValue={
+          profileData.bellTimings.length ? profileData.bellTimings[0].id : ""
+        }
       >
         {profileData.bellTimings.map((option) => (
           <CustomMenuItem key={option.id} value={option.id}>
@@ -82,6 +90,9 @@ const MultipleSelectorField = ({ formData, obj }) => {
         id={"dayId"}
         name={"dayId"}
         onChange={(e) => setDayId(e.target.value)}
+        defaultValue={
+          profileData.workingDays.length ? profileData.workingDays[0].id : ""
+        }
       >
         {profileData.workingDays.map((option) => (
           <CustomMenuItem key={option.id} value={option.id}>

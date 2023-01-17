@@ -18,7 +18,7 @@ import {
   deleteOneDoc,
   getAllDocs,
   updateOneDoc,
-} from "../redux/actionThunk/profileThunk";
+} from "../redux/actionThunk/firebaseThunk";
 import {
   addTimingReducer,
   addWorkingDayReducer,

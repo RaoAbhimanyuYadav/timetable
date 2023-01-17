@@ -29,6 +29,7 @@ export const SUBJECT_FORM_FIELDS = [
 
 export const SUBJECT_DUMMY_DATA = [
   {
+    id: "1",
     subject_name: "A",
     subject_code: "EC-101",
     subject_time_off: [
@@ -51,3 +52,5 @@ export const SUBJECT_DUMMY_DATA = [
     ],
   },
 ];
+
+export const SUBJECT_COLLECTION_NAME = "subjects";
