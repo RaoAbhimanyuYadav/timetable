@@ -7,13 +7,9 @@ import {
   clearTimeOffReducer,
   removeFromTimeOffReducer,
   setTimeOffReducer,
-} from "../redux/reducers/subjectReducer";
-import {
-  CustomButton,
-  CustomMenuItem,
-  CustomTextField,
-  CustomTypography,
-} from "../utils/customComponents";
+} from "../redux/reducers/commonReducers";
+import { CustomButton, CustomTypography } from "../utils/customComponents";
+import TimeOff from "./TimeOff";
 
 const MultipleSelectorField = ({ formData, obj }) => {
   const [open, setOpen] = useState(false);
@@ -21,7 +17,7 @@ const MultipleSelectorField = ({ formData, obj }) => {
   const [dayId, setDayId] = useState(null);
 
   const profileData = useSelector((state) => state.profile);
-  const subjectData = useSelector((state) => state.subject);
+  const timeOffList = useSelector((state) => state.common.timeOffList) || [];
 
   const dispatch = useDispatch();
 
@@ -69,40 +65,11 @@ const MultipleSelectorField = ({ formData, obj }) => {
   };
 
   const content = (
-    <>
-      <CustomTextField
-        select
-        id={"timeId"}
-        name={"timeId"}
-        onChange={(e) => setTimeId(e.target.value)}
-        defaultValue={
-          profileData.bellTimings.length ? profileData.bellTimings[0].id : ""
-        }
-      >
-        {profileData.bellTimings.map((option) => (
-          <CustomMenuItem key={option.id} value={option.id}>
-            {`${option.start_time}-${option.end_time}`}
-          </CustomMenuItem>
-        ))}
-      </CustomTextField>
-      <CustomTextField
-        select
-        id={"dayId"}
-        name={"dayId"}
-        onChange={(e) => setDayId(e.target.value)}
-        defaultValue={
-          profileData.workingDays.length ? profileData.workingDays[0].id : ""
-        }
-      >
-        {profileData.workingDays.map((option) => (
-          <CustomMenuItem key={option.id} value={option.id}>
-            {option.name}
-          </CustomMenuItem>
-        ))}
-      </CustomTextField>
-      <br />
-      <CustomButton onClick={handleSubmit}>Add</CustomButton>
-    </>
+    <TimeOff
+      setDayId={setDayId}
+      setTimeId={setTimeId}
+      handleSubmit={handleSubmit}
+    />
   );
 
   return (
@@ -124,7 +91,7 @@ const MultipleSelectorField = ({ formData, obj }) => {
         content={content}
       />
 
-      {subjectData.timeOffList.map((ele, i) => (
+      {timeOffList.map((ele, i) => (
         <Box
           id={i}
           key={i}

@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  timeOffList: [],
   subjectList: [],
   isSubjectsFetched: false,
 };
@@ -10,18 +9,6 @@ const subjectSlice = createSlice({
   name: "subject",
   initialState,
   reducers: {
-    addTimeOffReducer: (state, action) => {
-      state.timeOffList.push(action.payload);
-    },
-    clearTimeOffReducer: (state) => {
-      state.timeOffList = [];
-    },
-    removeFromTimeOffReducer: (state, action) => {
-      state.timeOffList.splice(action.payload, 1);
-    },
-    setTimeOffReducer: (state, action) => {
-      state.timeOffList = action.payload;
-    },
     addSubjectReducer: (state, action) => {
       state.subjectList.push(action.payload);
     },
@@ -45,10 +32,6 @@ const subjectSlice = createSlice({
 });
 
 export const {
-  addTimeOffReducer,
-  clearTimeOffReducer,
-  removeFromTimeOffReducer,
-  setTimeOffReducer,
   addSubjectReducer,
   setSubjectReducer,
   updateSubjectReducer,

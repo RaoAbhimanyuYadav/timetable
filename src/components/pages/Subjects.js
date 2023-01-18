@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   SUBJECT_COLLECTION_NAME,
-  SUBJECT_DUMMY_DATA,
   SUBJECT_FORM_FIELDS,
   SUBJECT_TABLE_BODY_KEY,
   SUBJECT_TABLE_HEADING,
@@ -14,8 +13,8 @@ import {
   getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
+import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 import {
-  clearTimeOffReducer,
   updateSubjectReducer,
   addSubjectReducer,
   deleteSubjectReducer,
@@ -23,8 +22,10 @@ import {
 } from "../redux/reducers/subjectReducer";
 
 const Subjects = () => {
-  const subjectData = useSelector((state) => state.subject);
   const dispatch = useDispatch();
+
+  const subjectData = useSelector((state) => state.subject);
+  const timeOffList = useSelector((state) => state.common.timeOffList) || [];
 
   useEffect(() => {
     if (subjectData.isSubjectsFetched === false)
@@ -35,7 +36,7 @@ const Subjects = () => {
     const filteredData = {
       subject_name: e.target.subject_name.value,
       subject_code: e.target.subject_code.value,
-      subject_time_off: subjectData.timeOffList,
+      subject_time_off: timeOffList,
     };
     if (id) {
       dispatch(
