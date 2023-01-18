@@ -5,12 +5,14 @@ import {
   timingCollectionName,
   workingDayCollectionName,
 } from "../constants/profileConstants";
+import { SEMESTER_COLLECTION_NAME } from "../constants/semesterConstant";
 import { SUBJECT_COLLECTION_NAME } from "../constants/subjectCostant";
 import { getAllDocs } from "../redux/actionThunk/firebaseThunk";
 import {
   setTimingReducer,
   setWorkingDaysReducer,
 } from "../redux/reducers/profileReducer";
+import { setSemesterReducer } from "../redux/reducers/semesterReducer";
 import { setSubjectReducer } from "../redux/reducers/subjectReducer";
 
 const HomePage = () => {
@@ -18,6 +20,7 @@ const HomePage = () => {
 
   const profileData = useSelector((state) => state.profile);
   const subjectData = useSelector((state) => state.subject);
+  const semesterData = useSelector((state) => state.semester);
 
   useEffect(() => {
     if (profileData.isBellTimingsFetched === false)
@@ -28,7 +31,10 @@ const HomePage = () => {
 
     if (subjectData.isSubjectsFetched === false)
       dispatch(getAllDocs(SUBJECT_COLLECTION_NAME, setSubjectReducer));
-  }, [dispatch, subjectData, profileData]);
+
+    if (semesterData.isSemestersFetched === false)
+      dispatch(getAllDocs(SEMESTER_COLLECTION_NAME, setSemesterReducer));
+  }, [dispatch, subjectData, profileData, semesterData]);
 
   return (
     <Box>

@@ -32,7 +32,16 @@ const MultipleSelectorField = ({ formData, obj }) => {
   useEffect(() => {
     if (formData) dispatch(setTimeOffReducer(formData[obj.key]));
     else dispatch(setTimeOffReducer([]));
-  }, [formData]);
+  }, [formData, dispatch, obj]);
+
+  useEffect(() => {
+    if (profileData.workingDays.length) {
+      setDayId(profileData.workingDays[0].id);
+    }
+    if (profileData.bellTimings.length) {
+      setTimeId(profileData.bellTimings[0].id);
+    }
+  }, [profileData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,6 +68,8 @@ const MultipleSelectorField = ({ formData, obj }) => {
       })
     );
     handleClose();
+    setDayId(profileData.workingDays[0].id);
+    setTimeId(profileData.bellTimings[0].id);
   };
 
   const handleDelete = (i) => {
