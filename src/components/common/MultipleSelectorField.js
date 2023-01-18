@@ -31,6 +31,7 @@ const MultipleSelectorField = ({ formData, obj }) => {
 
   useEffect(() => {
     if (formData) dispatch(setTimeOffReducer(formData[obj.key]));
+    else dispatch(setTimeOffReducer([]));
   }, [formData]);
 
   const handleSubmit = (e) => {

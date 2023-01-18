@@ -26,7 +26,7 @@ const TableLayout = ({
       return obj[key];
     if (typeof obj[key] === "object") {
       if (Array.isArray(obj[key])) {
-        if (key === "subject_time_off") {
+        if (key.includes("_time_off")) {
           return obj[key].map((ele, i) => (
             <span id={i} key={i}>
               {`${ele.day} : ${ele.time_start}-${ele.time_end}`}
