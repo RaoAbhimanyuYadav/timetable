@@ -1,7 +1,35 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  timingCollectionName,
+  workingDayCollectionName,
+} from "../constants/profileConstants";
+import { SUBJECT_COLLECTION_NAME } from "../constants/subjectCostant";
+import { getAllDocs } from "../redux/actionThunk/firebaseThunk";
+import {
+  setTimingReducer,
+  setWorkingDaysReducer,
+} from "../redux/reducers/profileReducer";
+import { setSubjectReducer } from "../redux/reducers/subjectReducer";
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+
+  const profileData = useSelector((state) => state.profile);
+  const subjectData = useSelector((state) => state.subject);
+
+  useEffect(() => {
+    if (profileData.isBellTimingsFetched === false)
+      dispatch(getAllDocs(timingCollectionName, setTimingReducer));
+
+    if (profileData.isWorkingDaysFetched === false)
+      dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
+
+    if (subjectData.isSubjectsFetched === false)
+      dispatch(getAllDocs(SUBJECT_COLLECTION_NAME, setSubjectReducer));
+  }, [dispatch, subjectData, profileData]);
+
   return (
     <Box>
       <header>
