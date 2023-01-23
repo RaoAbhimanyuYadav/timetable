@@ -16,6 +16,10 @@ export const verifiedPages = [
     href: "teachers",
   },
   {
+    name: "Lesson Assignment",
+    href: "lessons",
+  },
+  {
     name: "View",
     href: "generate",
   },
