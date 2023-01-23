@@ -12,9 +12,12 @@ import {
   CustomTextField,
 } from "../utils/customComponents";
 import MultipleSelectorField from "./MultipleSelectorField";
+import ColorSelector from "./ColorSelector";
 
 const inputFieldSelector = (obj, index, formData) => {
-  if (obj.type === "select") {
+  if (obj.type === "color") {
+    return <ColorSelector formData={formData} obj={obj} />;
+  } else if (obj.type === "select") {
     return (
       <CustomTextField
         select

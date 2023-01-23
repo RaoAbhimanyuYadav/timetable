@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   timeOffList: [],
+  selectedColor: "#000000",
 };
 
 const subjectSlice = createSlice({
@@ -20,6 +21,9 @@ const subjectSlice = createSlice({
     setTimeOffReducer: (state, action) => {
       state.timeOffList = action.payload;
     },
+    setSelectedColor: (state, action) => {
+      state.selectedColor = action.payload;
+    },
   },
 });
 
@@ -28,6 +32,7 @@ export const {
   clearTimeOffReducer,
   removeFromTimeOffReducer,
   setTimeOffReducer,
+  setSelectedColor,
 } = subjectSlice.actions;
 
 export default subjectSlice.reducer;

@@ -1,4 +1,4 @@
-import { Table, TableBody, TableHead, TableRow } from "@mui/material";
+import { Box, Table, TableBody, TableHead, TableRow } from "@mui/material";
 
 import AddEditDialog from "./AddEditDialog";
 import ConfirmDelete from "./ConfirmDelete";
@@ -22,6 +22,17 @@ const TableLayout = ({
   };
 
   const nameExtractor = (key, obj) => {
+    if (key.includes("_color")) {
+      return (
+        <Box
+          sx={{
+            backgroundColor: `${obj[key]}`,
+            width: "40px",
+            aspectRatio: "2/1",
+          }}
+        ></Box>
+      );
+    }
     if (typeof obj[key] === "string" || typeof obj[key] === "number")
       return obj[key];
     if (typeof obj[key] === "object") {

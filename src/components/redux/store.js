@@ -9,6 +9,7 @@ import commonReducers from "./reducers/commonReducers";
 import profileReducer from "./reducers/profileReducer";
 import semesterReducer from "./reducers/semesterReducer";
 import subjectReducer from "./reducers/subjectReducer";
+import teacherReducers from "./reducers/teacherReducers";
 
 export default configureStore({
   reducer: {
@@ -17,5 +18,6 @@ export default configureStore({
     common: commonReducers,
     semester: semesterReducer,
     classroom: classroomReducers,
+    teacher: teacherReducers,
   },
 });
