@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CLASSROOM_COLLECTION_NAME,
@@ -7,16 +6,15 @@ import {
   CLASSROOM_TABLE_HEADING,
 } from "../constants/classroomConstants";
 import PageWrapper from "../HOC/PageWrapper";
+import useFetchAll from "../hooks/useFetchAll";
 import {
   addOneDoc,
   deleteOneDoc,
-  getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
 import {
   addClassroomReducer,
   deleteClassroomReducer,
-  setClassroomReducer,
   updateClassroomReducer,
 } from "../redux/reducers/classroomReducers";
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
@@ -27,10 +25,7 @@ const Classrooms = () => {
   const classroomData = useSelector((state) => state.classroom);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
 
-  useEffect(() => {
-    if (classroomData.isClassroomsFetched === false)
-      dispatch(getAllDocs(CLASSROOM_COLLECTION_NAME, setClassroomReducer));
-  }, [dispatch, classroomData]);
+  const { isLoadingClassroom } = useFetchAll();
 
   const formSubmitHandler = (e, id = null) => {
     const filteredData = {
@@ -60,7 +55,7 @@ const Classrooms = () => {
       deleteOneDoc(CLASSROOM_COLLECTION_NAME, deleteClassroomReducer, id)
     );
   };
-
+  if (isLoadingClassroom) return <>Loading</>;
   return (
     <PageWrapper
       title={"Classrooms"}

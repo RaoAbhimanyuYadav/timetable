@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   SEMESTER_COLLECTION_NAME,
@@ -17,27 +15,22 @@ import {
 import {
   addOneDoc,
   deleteOneDoc,
-  getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
 import {
   addSemesterReducer,
   deleteSemesterReducer,
-  setSemesterReducer,
   updateSemesterReducer,
 } from "../redux/reducers/semesterReducer";
+import useFetchAll from "../hooks/useFetchAll";
 
 const Semesters = () => {
   const dispatch = useDispatch();
+  const { isLoadingSemester } = useFetchAll();
 
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const groupList = useSelector((state) => state.common.groupList) || [];
   const semesterData = useSelector((state) => state.semester);
-
-  useEffect(() => {
-    if (semesterData.isSemestersFetched === false)
-      dispatch(getAllDocs(SEMESTER_COLLECTION_NAME, setSemesterReducer));
-  }, [dispatch, semesterData]);
 
   const formSubmitHandler = (e, id = null) => {
     const filteredData = {
@@ -67,6 +60,8 @@ const Semesters = () => {
   const deleteHandler = (id) => {
     dispatch(deleteOneDoc(SEMESTER_COLLECTION_NAME, deleteSemesterReducer, id));
   };
+
+  if (isLoadingSemester) return <>Loading</>;
   return (
     <PageWrapper
       title={"Semesters"}

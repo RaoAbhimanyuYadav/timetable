@@ -15,11 +15,13 @@ export const addOneDoc =
     dispatch(reducer({ ...docData, id: newDocRef.id }));
   };
 
-export const getAllDocs = (collectionName, reducer) => async (dispatch) => {
-  const snapshot = await getDocs(collection(db, collectionName));
-  const list = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  dispatch(reducer(list));
-};
+export const getAllDocs =
+  (collectionName, reducer, setIsLoading) => async (dispatch) => {
+    const snapshot = await getDocs(collection(db, collectionName));
+    const list = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    dispatch(reducer(list));
+    setIsLoading(false);
+  };
 
 export const updateOneDoc =
   (collectionName, reducer, docData, id) => async (dispatch) => {

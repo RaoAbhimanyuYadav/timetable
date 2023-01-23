@@ -5,34 +5,29 @@ import {
   TEACHER_TABLE_BODY_KEY,
   TEACHER_TABLE_HEADING,
 } from "../constants/teacherConstant";
-import { useEffect } from "react";
 import PageWrapper from "../HOC/PageWrapper";
+import useFetchAll from "../hooks/useFetchAll";
 import {
   addOneDoc,
   deleteOneDoc,
-  getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 import {
   addTeacherReducer,
   deleteTeacherReducer,
-  setTeacherReducer,
   updateTeacherReducer,
 } from "../redux/reducers/teacherReducers";
 
 const Teachers = () => {
   const dispatch = useDispatch();
 
+  const { isLoadingTeacher } = useFetchAll();
+
   const teacherData = useSelector((state) => state.teacher);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const selectedColor =
     useSelector((state) => state.common.selectedColor) || [];
-
-  useEffect(() => {
-    if (teacherData.isTeachersFetched === false)
-      dispatch(getAllDocs(TEACHER_COLLECTION_NAME, setTeacherReducer));
-  }, [dispatch, teacherData]);
 
   const formSubmitHandler = (e, id = null) => {
     const filteredData = {
@@ -61,6 +56,8 @@ const Teachers = () => {
   const deleteHandler = (id) => {
     dispatch(deleteOneDoc(TEACHER_COLLECTION_NAME, deleteTeacherReducer, id));
   };
+
+  if (isLoadingTeacher) return <>Loading</>;
 
   return (
     <PageWrapper

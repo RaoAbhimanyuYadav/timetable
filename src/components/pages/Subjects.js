@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   SUBJECT_COLLECTION_NAME,
@@ -7,10 +6,10 @@ import {
   SUBJECT_TABLE_HEADING,
 } from "../constants/subjectCostant";
 import PageWrapper from "../HOC/PageWrapper";
+import useFetchAll from "../hooks/useFetchAll";
 import {
   addOneDoc,
   deleteOneDoc,
-  getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
@@ -18,19 +17,15 @@ import {
   updateSubjectReducer,
   addSubjectReducer,
   deleteSubjectReducer,
-  setSubjectReducer,
 } from "../redux/reducers/subjectReducer";
 
 const Subjects = () => {
   const dispatch = useDispatch();
 
+  const { isLoadingSubject } = useFetchAll();
+
   const subjectData = useSelector((state) => state.subject);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-
-  useEffect(() => {
-    if (subjectData.isSubjectsFetched === false)
-      dispatch(getAllDocs(SUBJECT_COLLECTION_NAME, setSubjectReducer));
-  }, [dispatch, subjectData]);
 
   const formSubmitHandler = (e, id = null) => {
     const filteredData = {
@@ -58,6 +53,8 @@ const Subjects = () => {
   const deleteHandler = (id) => {
     dispatch(deleteOneDoc(SUBJECT_COLLECTION_NAME, deleteSubjectReducer, id));
   };
+
+  if (isLoadingSubject) return <>Loading</>;
 
   return (
     <PageWrapper

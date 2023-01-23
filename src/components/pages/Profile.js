@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 
 import PageWrapper from "../HOC/PageWrapper";
 
@@ -16,7 +15,6 @@ import {
 import {
   addOneDoc,
   deleteOneDoc,
-  getAllDocs,
   updateOneDoc,
 } from "../redux/actionThunk/firebaseThunk";
 import {
@@ -24,27 +22,16 @@ import {
   addWorkingDayReducer,
   deleteTimingReducer,
   deleteWorkingDayReducer,
-  setTimingReducer,
-  setWorkingDaysReducer,
   updateTimingReducer,
   updateWorkingDayReducer,
 } from "../redux/reducers/profileReducer";
+import useFetchAll from "../hooks/useFetchAll";
 
 const Profile = () => {
   const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (profileData.isBellTimingsFetched === false) {
-      console.log("Bell Timing fetched");
-      dispatch(getAllDocs(timingCollectionName, setTimingReducer));
-    }
-
-    if (profileData.isWorkingDaysFetched === false) {
-      console.log("Working Days fetched");
-      dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
-    }
-  }, [dispatch, profileData]);
+  const { isLoadingBellTimings, isLoadingWorkingDays } = useFetchAll();
 
   const bellTimingFormSubmitHandler = (e, id = null) => {
     // Data checking
@@ -97,24 +84,32 @@ const Profile = () => {
 
   return (
     <>
-      <PageWrapper
-        title={"Bell Timings"}
-        formFields={TIMING_FORM_FIELDS}
-        tableHeadings={TIMING_TABLE_HEADING}
-        tableBodykey={TIMING_TABLE_BODY_KEY}
-        tableBodyData={profileData ? profileData.bellTimings : []}
-        formSubmitHandler={bellTimingFormSubmitHandler}
-        deleteHandler={bellTimingDeleteHandler}
-      />
-      <PageWrapper
-        title={"Working Days"}
-        formFields={WORKING_DAY_FORM_FIELDS}
-        tableHeadings={WORKING_DAY_TABLE_HEADING}
-        tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
-        tableBodyData={profileData ? profileData.workingDays : []}
-        formSubmitHandler={workingDaysFormSubmitHandler}
-        deleteHandler={workingDaysDeleteHandler}
-      />
+      {isLoadingBellTimings ? (
+        <>Loading</>
+      ) : (
+        <PageWrapper
+          title={"Bell Timings"}
+          formFields={TIMING_FORM_FIELDS}
+          tableHeadings={TIMING_TABLE_HEADING}
+          tableBodykey={TIMING_TABLE_BODY_KEY}
+          tableBodyData={profileData ? profileData.bellTimings : []}
+          formSubmitHandler={bellTimingFormSubmitHandler}
+          deleteHandler={bellTimingDeleteHandler}
+        />
+      )}
+      {isLoadingWorkingDays ? (
+        <>Loading</>
+      ) : (
+        <PageWrapper
+          title={"Working Days"}
+          formFields={WORKING_DAY_FORM_FIELDS}
+          tableHeadings={WORKING_DAY_TABLE_HEADING}
+          tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
+          tableBodyData={profileData ? profileData.workingDays : []}
+          formSubmitHandler={workingDaysFormSubmitHandler}
+          deleteHandler={workingDaysDeleteHandler}
+        />
+      )}
     </>
   );
 };

@@ -1,40 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  timingCollectionName,
-  workingDayCollectionName,
-} from "../constants/profileConstants";
-import { SEMESTER_COLLECTION_NAME } from "../constants/semesterConstant";
-import { SUBJECT_COLLECTION_NAME } from "../constants/subjectCostant";
-import { getAllDocs } from "../redux/actionThunk/firebaseThunk";
-import {
-  setTimingReducer,
-  setWorkingDaysReducer,
-} from "../redux/reducers/profileReducer";
-import { setSemesterReducer } from "../redux/reducers/semesterReducer";
-import { setSubjectReducer } from "../redux/reducers/subjectReducer";
+import useFetchAll from "../hooks/useFetchAll";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
+  const { all } = useFetchAll();
 
-  const profileData = useSelector((state) => state.profile);
-  const subjectData = useSelector((state) => state.subject);
-  const semesterData = useSelector((state) => state.semester);
-
-  useEffect(() => {
-    if (profileData.isBellTimingsFetched === false)
-      dispatch(getAllDocs(timingCollectionName, setTimingReducer));
-
-    if (profileData.isWorkingDaysFetched === false)
-      dispatch(getAllDocs(workingDayCollectionName, setWorkingDaysReducer));
-
-    if (subjectData.isSubjectsFetched === false)
-      dispatch(getAllDocs(SUBJECT_COLLECTION_NAME, setSubjectReducer));
-
-    if (semesterData.isSemestersFetched === false)
-      dispatch(getAllDocs(SEMESTER_COLLECTION_NAME, setSemesterReducer));
-  }, [dispatch, subjectData, profileData, semesterData]);
+  if (all) return <>Loading</>;
 
   return (
     <Box>
