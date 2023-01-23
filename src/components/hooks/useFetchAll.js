@@ -100,7 +100,14 @@ const useFetchAll = () => {
           setIsLoadingTeacher
         )
       );
-  }, [dispatch, subjectData, profileData, semesterData, teacherData]);
+  }, [
+    dispatch,
+    subjectData,
+    profileData,
+    semesterData,
+    teacherData,
+    classroomData,
+  ]);
 
   return {
     isLoadingWorkingDays,
