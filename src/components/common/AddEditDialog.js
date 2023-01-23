@@ -13,10 +13,13 @@ import {
 } from "../utils/customComponents";
 import MultipleSelectorField from "./MultipleSelectorField";
 import ColorSelector from "./ColorSelector";
+import GroupComponent from "../utils/GroupComponent";
 
 const inputFieldSelector = (obj, index, formData) => {
   if (obj.type === "color") {
     return <ColorSelector formData={formData} obj={obj} />;
+  } else if (obj.type === "groups") {
+    return <GroupComponent formData={formData} obj={obj} />;
   } else if (obj.type === "select") {
     return (
       <CustomTextField

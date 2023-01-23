@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   SEMESTER_COLLECTION_NAME,
@@ -8,7 +9,10 @@ import {
 } from "../constants/semesterConstant";
 
 import PageWrapper from "../HOC/PageWrapper";
-import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
+import {
+  clearGroupReducer,
+  clearTimeOffReducer,
+} from "../redux/reducers/commonReducers";
 
 import {
   addOneDoc,
@@ -27,6 +31,7 @@ const Semesters = () => {
   const dispatch = useDispatch();
 
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
+  const groupList = useSelector((state) => state.common.groupList) || [];
   const semesterData = useSelector((state) => state.semester);
 
   useEffect(() => {
@@ -38,7 +43,7 @@ const Semesters = () => {
     const filteredData = {
       semester_name: e.target.semester_name.value,
       semester_code: e.target.semester_code.value,
-      semester_groups: e.target.semester_groups.value,
+      semester_groups: groupList,
       semester_time_off: timeOffList,
     };
     if (id === null) {
@@ -56,6 +61,7 @@ const Semesters = () => {
       );
     }
     dispatch(clearTimeOffReducer());
+    dispatch(clearGroupReducer());
   };
 
   const deleteHandler = (id) => {
@@ -64,7 +70,7 @@ const Semesters = () => {
   return (
     <PageWrapper
       title={"Semesters"}
-      tableBodyData={semesterData.semesterList || []}
+      tableBodyData={semesterData?.semesterList || []}
       tableHeadings={SEMESTER_TABLE_HEADING}
       tableBodykey={SEMESTER_TABLE_BODY_KEY}
       formFields={SEMESTER_FORM_FIELDS}

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   timeOffList: [],
   selectedColor: "#000000",
+  groupList: [{ id: "1", group_name: "Whole Class", group_code: "" }],
 };
 
 const subjectSlice = createSlice({
@@ -21,8 +22,22 @@ const subjectSlice = createSlice({
     setTimeOffReducer: (state, action) => {
       state.timeOffList = action.payload;
     },
-    setSelectedColor: (state, action) => {
+    setSelectedColorReducer: (state, action) => {
       state.selectedColor = action.payload;
+    },
+    addGroupReducer: (state, action) => {
+      state.groupList.push(action.payload);
+    },
+    clearGroupReducer: (state) => {
+      state.groupList = [
+        { id: "1", group_name: "Whole Class", group_code: "" },
+      ];
+    },
+    removeFromGroupReducer: (state, action) => {
+      if (action.payload !== 0) state.groupList.splice(action.payload, 1);
+    },
+    setGroupListReducer: (state, action) => {
+      state.groupList = action.payload;
     },
   },
 });
@@ -32,7 +47,11 @@ export const {
   clearTimeOffReducer,
   removeFromTimeOffReducer,
   setTimeOffReducer,
-  setSelectedColor,
+  setSelectedColorReducer,
+  addGroupReducer,
+  clearGroupReducer,
+  removeFromGroupReducer,
+  setGroupListReducer,
 } = subjectSlice.actions;
 
 export default subjectSlice.reducer;

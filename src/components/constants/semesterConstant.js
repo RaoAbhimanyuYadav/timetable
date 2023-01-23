@@ -27,7 +27,7 @@ export const SEMESTER_FORM_FIELDS = [
   },
   {
     label: "Total groups",
-    type: "number",
+    type: "groups",
     key: "semester_groups",
     default: 1,
   },
@@ -44,7 +44,7 @@ export const SEMESTER_DUMMY_DATA = [
     id: "1",
     semester_name: "A",
     semester_code: "EC-101",
-    semester_groups: 1,
+    semester_groups: [{ id: 1, group_name: "Group 1", group_code: "G1" }],
     semester_time_off: [
       {
         day_id: "abc",
