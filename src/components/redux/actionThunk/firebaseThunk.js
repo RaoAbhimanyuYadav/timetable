@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore/lite";
 
 import { db, auth } from "../../api/firebase";
-import { setUserReducer } from "../reducers/authReducer";
+import { setDataFetchedReducer, setUserReducer } from "../reducers/authReducer";
 
 export const addOneDoc =
   (collectionName, reducer, docData, user) => async (dispatch) => {
@@ -35,6 +35,7 @@ export const getAllDocs =
       collectionList.forEach((element, i) => {
         dispatch(reducers[i](fetchedData[element]));
       });
+      dispatch(setDataFetchedReducer(true));
     } else {
       // error in fetching
     }

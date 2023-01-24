@@ -21,12 +21,13 @@ import { setTeacherReducer } from "../redux/reducers/teacherReducers";
 const useFetchAll = () => {
   const dispatch = useDispatch();
 
+  const dataFetched = useSelector((state) => state.auth.dataFetched);
   const user = useSelector((state) => state.auth.user);
 
-  const [isLoading, setIsLoading] = useState(user ? false : true);
+  const [isLoading, setIsLoading] = useState(!dataFetched);
 
   useEffect(() => {
-    if (!user)
+    if (!dataFetched)
       dispatch(
         getAllDocs(
           [
@@ -49,7 +50,7 @@ const useFetchAll = () => {
           user
         )
       );
-  }, [dispatch, user]);
+  }, [dispatch, dataFetched, user]);
 
   return {
     isLoading,
