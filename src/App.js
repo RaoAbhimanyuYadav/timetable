@@ -3,7 +3,7 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import store from "./components/redux/store";
 import { Provider } from "react-redux";
 import "./App.css";
-import Routes from "./Routes";
+import RouteSelector from "./RouteSelector";
 
 const darkTheme = createTheme({
   palette: {
@@ -16,7 +16,7 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
-        <Routes />
+        <RouteSelector />
       </ThemeProvider>
     </Provider>
   );

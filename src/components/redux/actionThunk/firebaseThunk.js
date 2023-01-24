@@ -1,4 +1,9 @@
 import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import {
   collection,
   getDocs,
   doc,
@@ -7,7 +12,8 @@ import {
   addDoc,
 } from "firebase/firestore/lite";
 
-import { db } from "../../api/firebase";
+import { db, auth } from "../../api/firebase";
+import { setUserReducer } from "../reducers/authReducer";
 
 export const addOneDoc =
   (collectionName, reducer, docData) => async (dispatch) => {
@@ -34,3 +40,54 @@ export const deleteOneDoc =
     await deleteDoc(doc(db, collectionName, id));
     dispatch(reducer({ id: id }));
   };
+
+export const addNewUser =
+  (email, password, redirectFunc) => async (dispatch) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const body = {
+          email: userCredential.user.email,
+          refreshToken: userCredential.user.refreshToken,
+          uid: userCredential.user.uid,
+        };
+        dispatch(setUserReducer(body));
+        redirectFunc();
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
+
+export const login = (email, password, redirectFunc) => async (dispatch) => {
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const body = {
+        email: userCredential.user.email,
+        refreshToken: userCredential.user.refreshToken,
+        uid: userCredential.user.uid,
+      };
+      dispatch(setUserReducer(body));
+      redirectFunc();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+};
+
+export const logout = () => async (dispatch) => {
+  signOut(auth)
+    .then(() => {
+      // Sign-out successful.
+      dispatch(setUserReducer(null));
+    })
+    .catch((error) => {
+      // An error happened.
+      console.log(error);
+    });
+};

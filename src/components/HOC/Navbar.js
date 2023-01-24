@@ -18,9 +18,14 @@ import {
   verifiedSettings,
   unverifiedSettings,
 } from "../constants/navbarConstants";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actionThunk/firebaseThunk";
 
 function Navbar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user);
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -82,6 +87,9 @@ function Navbar() {
                       letterSpacing: ".05rem",
                       fontSize: "16px",
                       padding: "10px",
+                      boxShadow: "20px 20px 50px 10px #164b9f inset",
+                      borderRadius: "10px",
+                      margin: "auto 15px",
                     }}
                   >
                     {page.name}
@@ -112,20 +120,16 @@ function Navbar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {(true ? verifiedSettings : unverifiedSettings).map(
+                {(user ? verifiedSettings : unverifiedSettings).map(
                   (setting) => (
                     <MenuItem
                       sx={{ minHeight: "auto" }}
                       key={setting.name}
                       onClick={() => {
                         handleCloseUserMenu();
-                        if (setting.href === "profile") {
-                          navigate("/profile");
-                        }
-                        // if (authCntxt.isLoggedIn) authCntxt.logout();
-                        // else {
-                        //   navigate("/login");
-                        // }
+                        setting.href === "logout"
+                          ? dispatch(logout())
+                          : navigate(`/${setting.href}`);
                       }}
                     >
                       <Typography
@@ -137,7 +141,6 @@ function Navbar() {
                           fontSize: { xs: "12px", md: "16px" },
                         }}
                       >
-                        {/* {authCntxt.isLoggedIn ? setting : "Login"} */}
                         {setting.name}
                       </Typography>
                     </MenuItem>

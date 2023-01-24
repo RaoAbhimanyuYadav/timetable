@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 
 import { getFirestore } from "firebase/firestore/lite";
 
+import { getAuth } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDz4IZKkIZCQ7os0SXR8w_Ge_GS74SdqEQ",
   authDomain: "nith-timtable.firebaseapp.com",
@@ -12,5 +14,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
 
 export const db = getFirestore(app);

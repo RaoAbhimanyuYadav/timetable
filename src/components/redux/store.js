@@ -4,6 +4,7 @@
 // export const store =    configureStore({ reducer: reducers });
 
 import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./reducers/authReducer";
 import classroomReducers from "./reducers/classroomReducers";
 import commonReducers from "./reducers/commonReducers";
 import profileReducer from "./reducers/profileReducer";
@@ -19,5 +20,6 @@ export default configureStore({
     semester: semesterReducer,
     classroom: classroomReducers,
     teacher: teacherReducers,
+    auth: authReducer,
   },
 });
