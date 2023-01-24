@@ -24,6 +24,7 @@ import Teachers from "./components/pages/Teachers";
 import Login from "./components/pages/Login";
 import SignUp from "./components/pages/SignUp";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
+import RestrictedRoute from "./components/utils/RestrictedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -85,8 +86,22 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+      <Route
+        path="/login"
+        element={
+          <RestrictedRoute>
+            <Login />
+          </RestrictedRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <RestrictedRoute>
+            <SignUp />
+          </RestrictedRoute>
+        }
+      />
     </Route>
   )
 );
