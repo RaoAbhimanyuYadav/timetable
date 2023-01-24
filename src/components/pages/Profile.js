@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 import PageWrapper from "../HOC/PageWrapper";
 
@@ -28,88 +29,102 @@ import {
 import useFetchAll from "../hooks/useFetchAll";
 
 const Profile = () => {
-  const profileData = useSelector((state) => state.profile);
   const dispatch = useDispatch();
 
-  const { isLoadingBellTimings, isLoadingWorkingDays } = useFetchAll();
+  const profileData = useSelector((state) => state.profile);
+  const user = useSelector((state) => state.auth.user);
 
-  const bellTimingFormSubmitHandler = (e, id = null) => {
+  const { isLoading } = useFetchAll();
+
+  const bellTimingFormSubmitHandler = (e, data) => {
     // Data checking
     const filteredData = {
+      id: uuidv4(),
       name: e.target.name.value,
       start_time: e.target.start_time.value,
       end_time: e.target.end_time.value,
     };
-    if (id === null)
-      dispatch(addOneDoc(timingCollectionName, addTimingReducer, filteredData));
-    else
+    if (data)
       dispatch(
         updateOneDoc(
           timingCollectionName,
           updateTimingReducer,
+          data,
           filteredData,
-          id
+          user
         )
       );
+    else
+      dispatch(
+        addOneDoc(timingCollectionName, addTimingReducer, filteredData, user)
+      );
   };
 
-  const bellTimingDeleteHandler = (id) => {
-    dispatch(deleteOneDoc(timingCollectionName, deleteTimingReducer, id));
+  const bellTimingDeleteHandler = (data) => {
+    dispatch(
+      deleteOneDoc(timingCollectionName, deleteTimingReducer, data, user)
+    );
   };
 
-  const workingDaysFormSubmitHandler = (e, id = null) => {
+  const workingDaysFormSubmitHandler = (e, data) => {
     const filteredData = {
+      id: uuidv4(),
       name: e.target.name.value,
     };
-    if (id === null)
-      dispatch(
-        addOneDoc(workingDayCollectionName, addWorkingDayReducer, filteredData)
-      );
-    else
+    if (data)
       dispatch(
         updateOneDoc(
           workingDayCollectionName,
           updateWorkingDayReducer,
+          data,
           filteredData,
-          id
+          user
+        )
+      );
+    else
+      dispatch(
+        addOneDoc(
+          workingDayCollectionName,
+          addWorkingDayReducer,
+          filteredData,
+          user
         )
       );
   };
 
-  const workingDaysDeleteHandler = (id) => {
+  const workingDaysDeleteHandler = (data) => {
     dispatch(
-      deleteOneDoc(workingDayCollectionName, deleteWorkingDayReducer, id)
+      deleteOneDoc(
+        workingDayCollectionName,
+        deleteWorkingDayReducer,
+        data,
+        user
+      )
     );
   };
 
-  return (
+  return isLoading ? (
+    <>Loading</>
+  ) : (
     <>
-      {isLoadingBellTimings ? (
-        <>Loading</>
-      ) : (
-        <PageWrapper
-          title={"Bell Timings"}
-          formFields={TIMING_FORM_FIELDS}
-          tableHeadings={TIMING_TABLE_HEADING}
-          tableBodykey={TIMING_TABLE_BODY_KEY}
-          tableBodyData={profileData ? profileData.bellTimings : []}
-          formSubmitHandler={bellTimingFormSubmitHandler}
-          deleteHandler={bellTimingDeleteHandler}
-        />
-      )}
-      {isLoadingWorkingDays ? (
-        <>Loading</>
-      ) : (
-        <PageWrapper
-          title={"Working Days"}
-          formFields={WORKING_DAY_FORM_FIELDS}
-          tableHeadings={WORKING_DAY_TABLE_HEADING}
-          tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
-          tableBodyData={profileData ? profileData.workingDays : []}
-          formSubmitHandler={workingDaysFormSubmitHandler}
-          deleteHandler={workingDaysDeleteHandler}
-        />
-      )}
+      <PageWrapper
+        title={"Bell Timings"}
+        formFields={TIMING_FORM_FIELDS}
+        tableHeadings={TIMING_TABLE_HEADING}
+        tableBodykey={TIMING_TABLE_BODY_KEY}
+        tableBodyData={profileData ? profileData.bellTimings : []}
+        formSubmitHandler={bellTimingFormSubmitHandler}
+        deleteHandler={bellTimingDeleteHandler}
+      />
+      <PageWrapper
+        title={"Working Days"}
+        formFields={WORKING_DAY_FORM_FIELDS}
+        tableHeadings={WORKING_DAY_TABLE_HEADING}
+        tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
+        tableBodyData={profileData ? profileData.workingDays : []}
+        formSubmitHandler={workingDaysFormSubmitHandler}
+        deleteHandler={workingDaysDeleteHandler}
+      />
     </>
   );
 };

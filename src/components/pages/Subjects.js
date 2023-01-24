@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   SUBJECT_COLLECTION_NAME,
   SUBJECT_FORM_FIELDS,
@@ -22,39 +24,49 @@ import {
 const Subjects = () => {
   const dispatch = useDispatch();
 
-  const { isLoadingSubject } = useFetchAll();
+  const { isLoading } = useFetchAll();
 
+  const user = useSelector((state) => state.auth.user);
   const subjectData = useSelector((state) => state.subject);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
 
-  const formSubmitHandler = (e, id = null) => {
+  const formSubmitHandler = (e, data) => {
     const filteredData = {
+      id: uuidv4(),
       subject_name: e.target.subject_name.value,
       subject_code: e.target.subject_code.value,
       subject_time_off: timeOffList,
     };
-    if (id) {
+    if (data) {
       dispatch(
         updateOneDoc(
           SUBJECT_COLLECTION_NAME,
           updateSubjectReducer,
+          data,
           filteredData,
-          id
+          user
         )
       );
-    } else if (id === null) {
+    } else {
       dispatch(
-        addOneDoc(SUBJECT_COLLECTION_NAME, addSubjectReducer, filteredData)
+        addOneDoc(
+          SUBJECT_COLLECTION_NAME,
+          addSubjectReducer,
+          filteredData,
+          user
+        )
       );
     }
     dispatch(clearTimeOffReducer());
   };
 
-  const deleteHandler = (id) => {
-    dispatch(deleteOneDoc(SUBJECT_COLLECTION_NAME, deleteSubjectReducer, id));
+  const deleteHandler = (data) => {
+    dispatch(
+      deleteOneDoc(SUBJECT_COLLECTION_NAME, deleteSubjectReducer, data, user)
+    );
   };
 
-  if (isLoadingSubject) return <>Loading</>;
+  if (isLoading) return <>Loading</>;
 
   return (
     <PageWrapper

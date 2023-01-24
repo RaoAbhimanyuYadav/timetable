@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   TEACHER_COLLECTION_NAME,
   TEACHER_FORM_FIELDS,
@@ -22,42 +24,52 @@ import {
 const Teachers = () => {
   const dispatch = useDispatch();
 
-  const { isLoadingTeacher } = useFetchAll();
+  const { isLoading } = useFetchAll();
 
   const teacherData = useSelector((state) => state.teacher);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const selectedColor =
     useSelector((state) => state.common.selectedColor) || [];
+  const user = useSelector((state) => state.auth.user);
 
-  const formSubmitHandler = (e, id = null) => {
+  const formSubmitHandler = (e, data) => {
     const filteredData = {
+      id: uuidv4(),
       teacher_name: e.target.teacher_name.value,
       teacher_code: e.target.teacher_code.value,
       teacher_color: selectedColor,
       teacher_time_off: timeOffList,
     };
-    if (id) {
+    if (data) {
       dispatch(
         updateOneDoc(
           TEACHER_COLLECTION_NAME,
           updateTeacherReducer,
+          data,
           filteredData,
-          id
+          user
         )
       );
-    } else if (id === null) {
+    } else {
       dispatch(
-        addOneDoc(TEACHER_COLLECTION_NAME, addTeacherReducer, filteredData)
+        addOneDoc(
+          TEACHER_COLLECTION_NAME,
+          addTeacherReducer,
+          filteredData,
+          user
+        )
       );
     }
     dispatch(clearTimeOffReducer());
   };
 
-  const deleteHandler = (id) => {
-    dispatch(deleteOneDoc(TEACHER_COLLECTION_NAME, deleteTeacherReducer, id));
+  const deleteHandler = (data) => {
+    dispatch(
+      deleteOneDoc(TEACHER_COLLECTION_NAME, deleteTeacherReducer, data, user)
+    );
   };
 
-  if (isLoadingTeacher) return <>Loading</>;
+  if (isLoading) return <>Loading</>;
 
   return (
     <PageWrapper

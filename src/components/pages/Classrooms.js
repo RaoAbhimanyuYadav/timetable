@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   CLASSROOM_COLLECTION_NAME,
   CLASSROOM_FORM_FIELDS,
@@ -24,38 +26,53 @@ const Classrooms = () => {
 
   const classroomData = useSelector((state) => state.classroom);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
+  const user = useSelector((state) => state.auth.user);
 
-  const { isLoadingClassroom } = useFetchAll();
+  const { isLoading } = useFetchAll();
 
-  const formSubmitHandler = (e, id = null) => {
+  const formSubmitHandler = (e, data) => {
     const filteredData = {
+      id: uuidv4(),
       classroom_name: e.target.classroom_name.value,
       classroom_code: e.target.classroom_code.value,
       classroom_time_off: timeOffList,
     };
-    if (id) {
+    if (data) {
       dispatch(
         updateOneDoc(
           CLASSROOM_COLLECTION_NAME,
           updateClassroomReducer,
+          data,
           filteredData,
-          id
+          user
         )
       );
-    } else if (id === null) {
+    } else {
       dispatch(
-        addOneDoc(CLASSROOM_COLLECTION_NAME, addClassroomReducer, filteredData)
+        addOneDoc(
+          CLASSROOM_COLLECTION_NAME,
+          addClassroomReducer,
+          filteredData,
+          user
+        )
       );
     }
     dispatch(clearTimeOffReducer());
   };
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (data) => {
     dispatch(
-      deleteOneDoc(CLASSROOM_COLLECTION_NAME, deleteClassroomReducer, id)
+      deleteOneDoc(
+        CLASSROOM_COLLECTION_NAME,
+        deleteClassroomReducer,
+        data,
+        user
+      )
     );
   };
-  if (isLoadingClassroom) return <>Loading</>;
+
+  if (isLoading) return <>Loading</>;
+
   return (
     <PageWrapper
       title={"Classrooms"}

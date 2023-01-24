@@ -17,11 +17,13 @@ import { setUserReducer } from "../reducers/authReducer";
 
 export const addOneDoc =
   (collectionName, reducer, docData, user) => async (dispatch) => {
+    const docRef = doc(db, "users", user.uid);
+
     const data = {};
     data[collectionName] = arrayUnion(docData);
-    const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, data);
-    dispatch(reducer({ ...docData }));
+
+    dispatch(reducer(docData));
   };
 
 export const getAllDocs =
@@ -29,38 +31,40 @@ export const getAllDocs =
     const docSnap = await getDoc(doc(db, "users", user.uid));
 
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
       const fetchedData = docSnap.data();
       collectionList.forEach((element, i) => {
-        console.log(element);
         dispatch(reducers[i](fetchedData[element]));
       });
     } else {
       // error in fetching
     }
+
     setIsLoading(false);
   };
 
 export const updateOneDoc =
   (collectionName, reducer, docData, newDocData, user) => async (dispatch) => {
     const docRef = doc(db, "users", user.uid);
+
     const data = {};
     data[collectionName] = arrayRemove(docData);
-    console.log(data);
     await updateDoc(docRef, data);
+
     const newData = {};
     newData[collectionName] = arrayUnion(newDocData);
-    console.log(newData);
     await updateDoc(docRef, newData);
+
     dispatch(reducer({ newData: newDocData, oldData: docData }));
   };
 
 export const deleteOneDoc =
   (collectionName, reducer, docData, user) => async (dispatch) => {
+    const docRef = doc(db, "users", user.uid);
+
     const data = {};
     data[collectionName] = arrayRemove(docData);
-    const docRef = doc(db, "users", user.uid);
     await updateDoc(docRef, data);
+
     dispatch(reducer(docData));
   };
 

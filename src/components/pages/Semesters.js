@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   SEMESTER_COLLECTION_NAME,
   SEMESTER_FORM_FIELDS,
@@ -26,30 +28,38 @@ import useFetchAll from "../hooks/useFetchAll";
 
 const Semesters = () => {
   const dispatch = useDispatch();
-  const { isLoadingSemester } = useFetchAll();
+  const { isLoading } = useFetchAll();
 
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const groupList = useSelector((state) => state.common.groupList) || [];
   const semesterData = useSelector((state) => state.semester);
+  const user = useSelector((state) => state.auth.user);
 
-  const formSubmitHandler = (e, id = null) => {
+  const formSubmitHandler = (e, data) => {
     const filteredData = {
+      id: uuidv4(),
       semester_name: e.target.semester_name.value,
       semester_code: e.target.semester_code.value,
       semester_groups: groupList,
       semester_time_off: timeOffList,
     };
-    if (id === null) {
-      dispatch(
-        addOneDoc(SEMESTER_COLLECTION_NAME, addSemesterReducer, filteredData)
-      );
-    } else if (id) {
+    if (data) {
       dispatch(
         updateOneDoc(
           SEMESTER_COLLECTION_NAME,
           updateSemesterReducer,
+          data,
           filteredData,
-          id
+          user
+        )
+      );
+    } else {
+      dispatch(
+        addOneDoc(
+          SEMESTER_COLLECTION_NAME,
+          addSemesterReducer,
+          filteredData,
+          user
         )
       );
     }
@@ -57,11 +67,13 @@ const Semesters = () => {
     dispatch(clearGroupReducer());
   };
 
-  const deleteHandler = (id) => {
-    dispatch(deleteOneDoc(SEMESTER_COLLECTION_NAME, deleteSemesterReducer, id));
+  const deleteHandler = (data) => {
+    dispatch(
+      deleteOneDoc(SEMESTER_COLLECTION_NAME, deleteSemesterReducer, data, user)
+    );
   };
 
-  if (isLoadingSemester) return <>Loading</>;
+  if (isLoading) return <>Loading</>;
   return (
     <PageWrapper
       title={"Semesters"}
