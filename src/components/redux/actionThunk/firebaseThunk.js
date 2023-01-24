@@ -4,61 +4,88 @@ import {
   signOut,
 } from "firebase/auth";
 import {
-  collection,
-  getDocs,
   doc,
   setDoc,
-  deleteDoc,
-  addDoc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore/lite";
 
 import { db, auth } from "../../api/firebase";
 import { setUserReducer } from "../reducers/authReducer";
 
 export const addOneDoc =
-  (collectionName, reducer, docData) => async (dispatch) => {
-    const newDocRef = await addDoc(collection(db, collectionName), docData);
-    dispatch(reducer({ ...docData, id: newDocRef.id }));
+  (collectionName, reducer, docData, user) => async (dispatch) => {
+    const data = {};
+    data[collectionName] = arrayUnion(docData);
+    const docRef = doc(db, "users", user.uid);
+    await updateDoc(docRef, data);
+    dispatch(reducer({ ...docData }));
   };
 
 export const getAllDocs =
-  (collectionName, reducer, setIsLoading) => async (dispatch) => {
-    const snapshot = await getDocs(collection(db, collectionName));
-    const list = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    dispatch(reducer(list));
+  (collectionList, reducers, setIsLoading, user) => async (dispatch) => {
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      const fetchedData = docSnap.data();
+      collectionList.forEach((element, i) => {
+        console.log(element);
+        dispatch(reducers[i](fetchedData[element]));
+      });
+    } else {
+      // error in fetching
+    }
     setIsLoading(false);
   };
 
 export const updateOneDoc =
-  (collectionName, reducer, docData, id) => async (dispatch) => {
-    await setDoc(doc(db, collectionName, id), docData);
-    dispatch(reducer({ ...docData, id: id }));
+  (collectionName, reducer, docData, newDocData, user) => async (dispatch) => {
+    const docRef = doc(db, "users", user.uid);
+    const data = {};
+    data[collectionName] = arrayRemove(docData);
+    console.log(data);
+    await updateDoc(docRef, data);
+    const newData = {};
+    newData[collectionName] = arrayUnion(newDocData);
+    console.log(newData);
+    await updateDoc(docRef, newData);
+    dispatch(reducer({ newData: newDocData, oldData: docData }));
   };
 
 export const deleteOneDoc =
-  (collectionName, reducer, id) => async (dispatch) => {
-    await deleteDoc(doc(db, collectionName, id));
-    dispatch(reducer({ id: id }));
+  (collectionName, reducer, docData, user) => async (dispatch) => {
+    const data = {};
+    data[collectionName] = arrayRemove(docData);
+    const docRef = doc(db, "users", user.uid);
+    await updateDoc(docRef, data);
+    dispatch(reducer(docData));
   };
 
 export const addNewUser =
   (email, password, redirectFunc) => async (dispatch) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const body = {
-          email: userCredential.user.email,
-          refreshToken: userCredential.user.refreshToken,
-          uid: userCredential.user.uid,
-        };
-        dispatch(setUserReducer(body));
-        redirectFunc();
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    ).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+    if (userCredential) {
+      // Signed in
+      const body = {
+        email: userCredential.user.email,
+        refreshToken: userCredential.user.refreshToken,
+        uid: userCredential.user.uid,
+      };
+      await setDoc(doc(db, "users", body.uid), { email: body.email });
+      dispatch(setUserReducer(body));
+      redirectFunc();
+    }
   };
 
 export const login = (email, password, redirectFunc) => async (dispatch) => {

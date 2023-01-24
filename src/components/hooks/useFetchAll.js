@@ -21,108 +21,38 @@ import { setTeacherReducer } from "../redux/reducers/teacherReducers";
 const useFetchAll = () => {
   const dispatch = useDispatch();
 
-  const profileData = useSelector((state) => state.profile);
-  const subjectData = useSelector((state) => state.subject);
-  const semesterData = useSelector((state) => state.semester);
-  const classroomData = useSelector((state) => state.classroom);
-  const teacherData = useSelector((state) => state.teacher);
+  const user = useSelector((state) => state.auth.user);
 
-  const [isLoadingWorkingDays, setIsLoadingWorkingDays] = useState(
-    !profileData.isWorkingDaysFetched
-  );
-  const [isLoadingBellTimings, setIsLoadingBellTimings] = useState(
-    !profileData.isBellTimingsFetched
-  );
-  const [isLoadingSubject, setIsLoadingSubject] = useState(
-    !subjectData.isSubjectsFetched
-  );
-  const [isLoadingSemester, setIsLoadingSemester] = useState(
-    !semesterData.isSemestersFetched
-  );
-  const [isLoadingClassroom, setIsLoadingClassroom] = useState(
-    !classroomData.isClassroomsFetched
-  );
-  const [isLoadingTeacher, setIsLoadingTeacher] = useState(
-    !teacherData.isTeachersFetched
-  );
+  const [isLoading, setIsLoading] = useState(user ? false : true);
 
   useEffect(() => {
-    if (profileData.isBellTimingsFetched === false)
+    if (!user)
       dispatch(
         getAllDocs(
-          timingCollectionName,
-          setTimingReducer,
-          setIsLoadingBellTimings
+          [
+            timingCollectionName,
+            workingDayCollectionName,
+            SUBJECT_COLLECTION_NAME,
+            SEMESTER_COLLECTION_NAME,
+            CLASSROOM_COLLECTION_NAME,
+            TEACHER_COLLECTION_NAME,
+          ],
+          [
+            setTimingReducer,
+            setWorkingDaysReducer,
+            setSubjectReducer,
+            setSemesterReducer,
+            setClassroomReducer,
+            setTeacherReducer,
+          ],
+          setIsLoading,
+          user
         )
       );
-
-    if (profileData.isWorkingDaysFetched === false)
-      dispatch(
-        getAllDocs(
-          workingDayCollectionName,
-          setWorkingDaysReducer,
-          setIsLoadingWorkingDays
-        )
-      );
-
-    if (subjectData.isSubjectsFetched === false)
-      dispatch(
-        getAllDocs(
-          SUBJECT_COLLECTION_NAME,
-          setSubjectReducer,
-          setIsLoadingSubject
-        )
-      );
-
-    if (semesterData.isSemestersFetched === false)
-      dispatch(
-        getAllDocs(
-          SEMESTER_COLLECTION_NAME,
-          setSemesterReducer,
-          setIsLoadingSemester
-        )
-      );
-
-    if (classroomData.isClassroomsFetched === false)
-      dispatch(
-        getAllDocs(
-          CLASSROOM_COLLECTION_NAME,
-          setClassroomReducer,
-          setIsLoadingClassroom
-        )
-      );
-
-    if (teacherData.isTeachersFetched === false)
-      dispatch(
-        getAllDocs(
-          TEACHER_COLLECTION_NAME,
-          setTeacherReducer,
-          setIsLoadingTeacher
-        )
-      );
-  }, [
-    dispatch,
-    subjectData,
-    profileData,
-    semesterData,
-    teacherData,
-    classroomData,
-  ]);
+  }, [dispatch, user]);
 
   return {
-    isLoadingWorkingDays,
-    isLoadingBellTimings,
-    isLoadingSubject,
-    isLoadingSemester,
-    isLoadingClassroom,
-    isLoadingTeacher,
-    all:
-      isLoadingWorkingDays &&
-      isLoadingBellTimings &&
-      isLoadingSubject &&
-      isLoadingClassroom &&
-      isLoadingSemester &&
-      isLoadingTeacher,
+    isLoading,
   };
 };
 

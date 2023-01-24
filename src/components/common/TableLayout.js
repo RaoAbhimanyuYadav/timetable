@@ -100,7 +100,7 @@ const TableLayout = ({
                   <CellInsideWrapper>
                     <ConfirmDelete
                       objName={objNameExtractor(obj)}
-                      id={obj.id}
+                      data={obj}
                       deleteHandler={deleteHandler}
                     />
                   </CellInsideWrapper>

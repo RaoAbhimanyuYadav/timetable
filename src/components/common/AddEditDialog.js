@@ -71,7 +71,8 @@ export default function AddEditDialog({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    formData ? formSubmitHandler(event, formData.id) : formSubmitHandler(event);
+
+    formSubmitHandler(event, formData);
   };
 
   return (

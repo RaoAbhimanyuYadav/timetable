@@ -4,7 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 import { CustomButton, CustomDialogTitle } from "../utils/customComponents";
 
-export default function ConfirmDelete({ objName, id, deleteHandler }) {
+export default function ConfirmDelete({ objName, data, deleteHandler }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -35,7 +35,7 @@ export default function ConfirmDelete({ objName, id, deleteHandler }) {
           <CustomButton
             onClick={() => {
               handleClose();
-              deleteHandler(id);
+              deleteHandler(data);
             }}
             autoFocus
           >
