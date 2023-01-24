@@ -14,6 +14,14 @@ import {
 
 import { db, auth } from "../../api/firebase";
 import { setDataFetchedReducer, setUserReducer } from "../reducers/authReducer";
+import { setClassroomReducer } from "../reducers/classroomReducers";
+import {
+  setTimingReducer,
+  setWorkingDaysReducer,
+} from "../reducers/profileReducer";
+import { setSemesterReducer } from "../reducers/semesterReducer";
+import { setSubjectReducer } from "../reducers/subjectReducer";
+import { setTeacherReducer } from "../reducers/teacherReducers";
 
 export const addOneDoc =
   (collectionName, reducer, docData, user) => async (dispatch) => {
@@ -33,7 +41,7 @@ export const getAllDocs =
     if (docSnap.exists()) {
       const fetchedData = docSnap.data();
       collectionList.forEach((element, i) => {
-        dispatch(reducers[i](fetchedData[element]));
+        dispatch(reducers[i](fetchedData[element] ? fetchedData[element] : []));
       });
       dispatch(setDataFetchedReducer(true));
     } else {
@@ -117,6 +125,17 @@ export const logout = () => async (dispatch) => {
     .then(() => {
       // Sign-out successful.
       dispatch(setUserReducer(null));
+      [
+        setTimingReducer,
+        setWorkingDaysReducer,
+        setSubjectReducer,
+        setSemesterReducer,
+        setClassroomReducer,
+        setTeacherReducer,
+      ].forEach((reducer) => {
+        dispatch(reducer([]));
+      });
+      dispatch(setDataFetchedReducer(false));
     })
     .catch((error) => {
       // An error happened.
