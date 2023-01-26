@@ -27,7 +27,7 @@ const TableLayout = ({
         <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
       ));
     }
-    if (key.includes("_color")) {
+    if (key.includes("color")) {
       return (
         <Box
           sx={{
