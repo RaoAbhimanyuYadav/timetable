@@ -18,9 +18,9 @@ const classroomSlice = createSlice({
     },
     updateClassroomReducer: (state, action) => {
       const index = state.classroomList.findIndex(
-        (sub) => sub.id === action.payload.oldData.id
+        (sub) => sub.id === action.payload.id
       );
-      state.classroomList.splice(index, 1, action.payload.newData);
+      state.classroomList.splice(index, 1, action.payload);
     },
     deleteClassroomReducer: (state, action) => {
       const index = state.classroomList.findIndex(
