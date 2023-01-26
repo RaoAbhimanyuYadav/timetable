@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+
 import { useDispatch, useSelector } from "react-redux";
 import CustomDialog from "../HOC/CustomDialog";
 import {
@@ -35,12 +35,7 @@ const GroupComponent = ({ formData, obj }) => {
 
   useEffect(() => {
     if (formData) dispatch(setGroupListReducer(formData[obj.key]));
-    else
-      dispatch(
-        setGroupListReducer([
-          { id: "1", group_name: "Whole Class", group_code: "" },
-        ])
-      );
+    else dispatch(setGroupListReducer([{ name: "Whole", code: "W" }]));
   }, [formData, dispatch, obj]);
 
   const handleSubmit = (e) => {
@@ -49,9 +44,8 @@ const GroupComponent = ({ formData, obj }) => {
 
     dispatch(
       addGroupReducer({
-        id: uuidv4(),
-        group_name: name,
-        group_code: code,
+        name: name,
+        code: code,
       })
     );
     handleClose();
@@ -107,11 +101,8 @@ const GroupComponent = ({ formData, obj }) => {
       />
 
       {groupList.map((ele, i) => (
-        <Box
-          key={ele.id}
-          sx={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <CustomTypography>{`${ele.group_name}(${ele.group_code})`}</CustomTypography>
+        <Box key={i} sx={{ display: "flex", justifyContent: "space-between" }}>
+          <CustomTypography>{`${ele.name}(${ele.code})`}</CustomTypography>
           {i ? (
             <CustomButton
               onClick={() => {

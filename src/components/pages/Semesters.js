@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 
 import {
-  SEMESTER_COLLECTION_NAME,
+  SEMESTER_URL,
   SEMESTER_FORM_FIELDS,
   SEMESTER_TABLE_BODY_KEY,
   SEMESTER_TABLE_HEADING,
@@ -15,27 +14,51 @@ import {
 } from "../redux/reducers/commonReducers";
 
 import useFetchAll from "../hooks/useFetchAll";
+import { useEffect } from "react";
+import {
+  addData,
+  deleteData,
+  getData,
+  updateData,
+} from "../redux/actionThunk/apiThunk";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import {
+  addSemesterReducer,
+  deleteSemesterReducer,
+  setSemesterReducer,
+  updateSemesterReducer,
+} from "../redux/reducers/semesterReducer";
 
 const Semesters = () => {
   const dispatch = useDispatch();
+  const axios = useAxiosPrivate();
   const { isLoading } = useFetchAll();
 
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const groupList = useSelector((state) => state.common.groupList) || [];
   const semesterData = useSelector((state) => state.semester);
 
+  useEffect(() => {
+    if (!semesterData.isSemestersFetched)
+      dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
+  }, []);
+
   const formSubmitHandler = (e, data) => {
     const filteredData = {
-      id: uuidv4(),
-      semester_name: e.target.semester_name.value,
-      semester_code: e.target.semester_code.value,
-      semester_groups: groupList,
-      semester_time_off: timeOffList,
+      name: e.target.name.value,
+      code: e.target.code.value,
+      semester_group_set: groupList,
+      semester_time_off_set: timeOffList,
     };
     if (data) {
+      filteredData["id"] = data.id;
       // update doc
+      dispatch(
+        updateData(axios, SEMESTER_URL, updateSemesterReducer, filteredData)
+      );
     } else {
       // create doc
+      dispatch(addData(axios, SEMESTER_URL, addSemesterReducer, filteredData));
     }
     dispatch(clearTimeOffReducer());
     dispatch(clearGroupReducer());
@@ -43,6 +66,7 @@ const Semesters = () => {
 
   const deleteHandler = (data) => {
     // delete doc
+    dispatch(deleteData(axios, SEMESTER_URL, deleteSemesterReducer, data.id));
   };
 
   if (isLoading) return <>Loading</>;

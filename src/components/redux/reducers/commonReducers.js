@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   timeOffList: [],
   selectedColor: "#000000",
-  groupList: [{ id: "1", group_name: "Whole Class", group_code: "" }],
+  groupList: [{ name: "Whole", code: "W" }],
 };
 
 const subjectSlice = createSlice({
@@ -29,9 +29,7 @@ const subjectSlice = createSlice({
       state.groupList.push(action.payload);
     },
     clearGroupReducer: (state) => {
-      state.groupList = [
-        { id: "1", group_name: "Whole Class", group_code: "" },
-      ];
+      state.groupList = [{ name: "Whole", code: "W" }];
     },
     removeFromGroupReducer: (state, action) => {
       if (action.payload !== 0) state.groupList.splice(action.payload, 1);

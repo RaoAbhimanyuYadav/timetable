@@ -51,7 +51,7 @@ const Profile = () => {
       dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
   }, [dispatch, axios, profileData]);
 
-  const bellTimingFormSubmitHandler = async (e, data) => {
+  const bellTimingFormSubmitHandler = (e, data) => {
     // Data checking
     const filteredData = {
       name: e.target.name.value,

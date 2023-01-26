@@ -18,9 +18,9 @@ const semesterSlice = createSlice({
     },
     updateSemesterReducer: (state, action) => {
       const index = state.semesterList.findIndex(
-        (sem) => sem.id === action.payload.oldData.id
+        (sem) => sem.id === action.payload.id
       );
-      state.semesterList.splice(index, 1, action.payload.newData);
+      state.semesterList.splice(index, 1, action.payload);
     },
     deleteSemesterReducer: (state, action) => {
       const index = state.semesterList.findIndex(

@@ -22,9 +22,9 @@ const TableLayout = ({
   };
 
   const nameExtractor = (key, obj) => {
-    if (key.includes("_groups")) {
+    if (key.includes("_group_set")) {
       return obj[key].map((ele) => (
-        <span key={ele.id}>{`${ele.group_name}(${ele.group_code})`}</span>
+        <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
       ));
     }
     if (key.includes("_color")) {

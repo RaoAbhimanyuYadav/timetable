@@ -60,7 +60,8 @@ const Subjects = () => {
   };
 
   useEffect(() => {
-    dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
+    if (!subjectData.isSubjectsFetched)
+      dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
   }, [axios]);
 
   if (isLoading) return <>Loading</>;
