@@ -42,10 +42,10 @@ const TableLayout = ({
       return obj[key];
     if (typeof obj[key] === "object") {
       if (Array.isArray(obj[key])) {
-        if (key.includes("_time_off")) {
+        if (key.includes("_time_off_set")) {
           return obj[key].map((ele, i) => (
-            <span id={i} key={i}>
-              {`${ele.day} : ${ele.time_start}-${ele.time_end}`}
+            <span key={ele.id}>
+              {`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}
               <br />
             </span>
           ));

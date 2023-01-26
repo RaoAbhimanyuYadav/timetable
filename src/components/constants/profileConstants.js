@@ -2,9 +2,9 @@ export const TIMING_TABLE_HEADING = ["Name", "Start Time", "End Time"];
 
 export const TIMING_TABLE_BODY_KEY = ["name", "start_time", "end_time"];
 
-export const WORKING_DAY_TABLE_HEADING = ["Name"];
+export const WORKING_DAY_TABLE_HEADING = ["Name", "Code"];
 
-export const WORKING_DAY_TABLE_BODY_KEY = ["name"];
+export const WORKING_DAY_TABLE_BODY_KEY = ["name", "code"];
 
 export const DUMMY_DATA = {
   nameOfOrganisation: "Abhimanyu",
@@ -62,6 +62,12 @@ export const WORKING_DAY_FORM_FIELDS = [
       },
     ],
   },
+  {
+    label: "Code",
+    type: "text",
+    key: "code",
+    default: "",
+  },
 ];
 export const TIMING_FORM_FIELDS = [
   {
@@ -84,6 +90,6 @@ export const TIMING_FORM_FIELDS = [
   },
 ];
 
-export const timingCollectionName = "timings";
+export const BELL_TIMING_URL = "belltiming/";
 
-export const workingDayCollectionName = "working_days";
+export const WORKING_DAY_URL = "workingday/";
