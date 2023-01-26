@@ -59,12 +59,8 @@ const MultipleSelectorField = ({ formData, obj }) => {
 
     dispatch(
       addTimeOffReducer({
-        day_id: dayObj.id,
-        day: dayObj.name,
-        time_id: timeObj.id,
-        time_name: timeObj.name,
-        time_start: timeObj.start_time,
-        time_end: timeObj.end_time,
+        bell_timing: timeObj,
+        working_day: dayObj,
       })
     );
     handleClose();
@@ -109,7 +105,7 @@ const MultipleSelectorField = ({ formData, obj }) => {
           key={i}
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          <CustomTypography>{`${ele.day} : ${ele.time_start}-${ele.time_end}`}</CustomTypography>
+          <CustomTypography>{`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}</CustomTypography>
           <CustomButton
             onClick={() => {
               handleDelete(i);

@@ -18,9 +18,9 @@ const subjectSlice = createSlice({
     },
     updateSubjectReducer: (state, action) => {
       const index = state.subjectList.findIndex(
-        (sub) => sub.id === action.payload.oldData.id
+        (sub) => sub.id === action.payload.id
       );
-      state.subjectList.splice(index, 1, action.payload.newData);
+      state.subjectList.splice(index, 1, action.payload);
     },
     deleteSubjectReducer: (state, action) => {
       const index = state.subjectList.findIndex(
