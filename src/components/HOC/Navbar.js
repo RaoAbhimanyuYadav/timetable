@@ -19,13 +19,13 @@ import {
   unverifiedSettings,
 } from "../constants/navbarConstants";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/actionThunk/firebaseThunk";
+import { logout } from "../redux/actionThunk/authThunk";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.auth.user);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -120,7 +120,7 @@ function Navbar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {(user ? verifiedSettings : unverifiedSettings).map(
+                {(accessToken ? verifiedSettings : unverifiedSettings).map(
                   (setting) => (
                     <MenuItem
                       sx={{ minHeight: "auto" }}

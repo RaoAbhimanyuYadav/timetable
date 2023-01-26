@@ -1,7 +1,13 @@
 import React from "react";
+import useRefreshToken from "../hooks/useRefreshToken";
 
 const Generate = () => {
-  return <div>Generate</div>;
+  const refresh = useRefreshToken();
+  const clickHandler = async (e) => {
+    const res = await refresh();
+    console.log(res);
+  };
+  return <button onClick={clickHandler}>Generate</button>;
 };
 
 export default Generate;

@@ -2,9 +2,9 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const RestrictedRoute = ({ children }) => {
-  const user = useSelector((state) => state.auth.user);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
-  if (user) {
+  if (accessToken) {
     return <Navigate to="/" replace />;
   }
   return children;

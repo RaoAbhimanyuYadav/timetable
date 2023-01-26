@@ -4,13 +4,7 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useDispatch } from "react-redux";
-
-import { auth } from "./components/api/firebase";
-
-import { setUserReducer } from "./components/redux/reducers/authReducer";
+import { useState } from "react";
 
 import Navbar from "./components/HOC/Navbar";
 import Classrooms from "./components/pages/Classrooms";
@@ -107,26 +101,7 @@ const router = createBrowserRouter(
 );
 
 const RouteSelector = () => {
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        const body = {
-          email: user.email,
-          refreshToken: user.refreshToken,
-          uid: user.uid,
-        };
-        dispatch(setUserReducer(body));
-      } else {
-        // User is signed out
-        dispatch(setUserReducer(null));
-      }
-      setLoading(false);
-    });
-  }, [dispatch]);
+  const [loading, setLoading] = useState(false);
 
   return loading ? <>Loading</> : <RouterProvider router={router} />;
 };

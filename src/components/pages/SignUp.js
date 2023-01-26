@@ -11,7 +11,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addNewUser } from "../redux/actionThunk/firebaseThunk";
+import { signup } from "../redux/actionThunk/authThunk";
 
 function Copyright(props) {
   return (
@@ -50,7 +50,7 @@ export default function SignUp() {
       password: data.get("password"),
     };
 
-    dispatch(addNewUser(body.email, body.password, redirectHandler));
+    dispatch(signup(body.email, body.password, redirectHandler));
   };
 
   return (

@@ -13,26 +13,13 @@ import {
   timingCollectionName,
   workingDayCollectionName,
 } from "../constants/profileConstants";
-import {
-  addOneDoc,
-  deleteOneDoc,
-  updateOneDoc,
-} from "../redux/actionThunk/firebaseThunk";
-import {
-  addTimingReducer,
-  addWorkingDayReducer,
-  deleteTimingReducer,
-  deleteWorkingDayReducer,
-  updateTimingReducer,
-  updateWorkingDayReducer,
-} from "../redux/reducers/profileReducer";
+
 import useFetchAll from "../hooks/useFetchAll";
 
 const Profile = () => {
   const dispatch = useDispatch();
 
   const profileData = useSelector((state) => state.profile);
-  const user = useSelector((state) => state.auth.user);
 
   const { isLoading } = useFetchAll();
 
@@ -44,26 +31,15 @@ const Profile = () => {
       start_time: e.target.start_time.value,
       end_time: e.target.end_time.value,
     };
-    if (data)
-      dispatch(
-        updateOneDoc(
-          timingCollectionName,
-          updateTimingReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
-    else
-      dispatch(
-        addOneDoc(timingCollectionName, addTimingReducer, filteredData, user)
-      );
+    if (data) {
+      // update doc
+    } else {
+      // create doc
+    }
   };
 
   const bellTimingDeleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(timingCollectionName, deleteTimingReducer, data, user)
-    );
+    // delete doc
   };
 
   const workingDaysFormSubmitHandler = (e, data) => {
@@ -71,36 +47,15 @@ const Profile = () => {
       id: uuidv4(),
       name: e.target.name.value,
     };
-    if (data)
-      dispatch(
-        updateOneDoc(
-          workingDayCollectionName,
-          updateWorkingDayReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
-    else
-      dispatch(
-        addOneDoc(
-          workingDayCollectionName,
-          addWorkingDayReducer,
-          filteredData,
-          user
-        )
-      );
+    if (data) {
+      // update doc
+    } else {
+      // create doc
+    }
   };
 
   const workingDaysDeleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(
-        workingDayCollectionName,
-        deleteWorkingDayReducer,
-        data,
-        user
-      )
-    );
+    // delete doc
   };
 
   return isLoading ? (

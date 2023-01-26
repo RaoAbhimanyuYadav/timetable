@@ -14,16 +14,6 @@ import {
   clearTimeOffReducer,
 } from "../redux/reducers/commonReducers";
 
-import {
-  addOneDoc,
-  deleteOneDoc,
-  updateOneDoc,
-} from "../redux/actionThunk/firebaseThunk";
-import {
-  addSemesterReducer,
-  deleteSemesterReducer,
-  updateSemesterReducer,
-} from "../redux/reducers/semesterReducer";
 import useFetchAll from "../hooks/useFetchAll";
 
 const Semesters = () => {
@@ -33,7 +23,6 @@ const Semesters = () => {
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const groupList = useSelector((state) => state.common.groupList) || [];
   const semesterData = useSelector((state) => state.semester);
-  const user = useSelector((state) => state.auth.user);
 
   const formSubmitHandler = (e, data) => {
     const filteredData = {
@@ -44,33 +33,16 @@ const Semesters = () => {
       semester_time_off: timeOffList,
     };
     if (data) {
-      dispatch(
-        updateOneDoc(
-          SEMESTER_COLLECTION_NAME,
-          updateSemesterReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
+      // update doc
     } else {
-      dispatch(
-        addOneDoc(
-          SEMESTER_COLLECTION_NAME,
-          addSemesterReducer,
-          filteredData,
-          user
-        )
-      );
+      // create doc
     }
     dispatch(clearTimeOffReducer());
     dispatch(clearGroupReducer());
   };
 
   const deleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(SEMESTER_COLLECTION_NAME, deleteSemesterReducer, data, user)
-    );
+    // delete doc
   };
 
   if (isLoading) return <>Loading</>;

@@ -9,17 +9,8 @@ import {
 } from "../constants/teacherConstant";
 import PageWrapper from "../HOC/PageWrapper";
 import useFetchAll from "../hooks/useFetchAll";
-import {
-  addOneDoc,
-  deleteOneDoc,
-  updateOneDoc,
-} from "../redux/actionThunk/firebaseThunk";
+
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
-import {
-  addTeacherReducer,
-  deleteTeacherReducer,
-  updateTeacherReducer,
-} from "../redux/reducers/teacherReducers";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -30,7 +21,6 @@ const Teachers = () => {
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
   const selectedColor =
     useSelector((state) => state.common.selectedColor) || [];
-  const user = useSelector((state) => state.auth.user);
 
   const formSubmitHandler = (e, data) => {
     const filteredData = {
@@ -41,32 +31,15 @@ const Teachers = () => {
       teacher_time_off: timeOffList,
     };
     if (data) {
-      dispatch(
-        updateOneDoc(
-          TEACHER_COLLECTION_NAME,
-          updateTeacherReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
+      // update doc
     } else {
-      dispatch(
-        addOneDoc(
-          TEACHER_COLLECTION_NAME,
-          addTeacherReducer,
-          filteredData,
-          user
-        )
-      );
+      // create doc
     }
     dispatch(clearTimeOffReducer());
   };
 
   const deleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(TEACHER_COLLECTION_NAME, deleteTeacherReducer, data, user)
-    );
+    // delete doc
   };
 
   if (isLoading) return <>Loading</>;

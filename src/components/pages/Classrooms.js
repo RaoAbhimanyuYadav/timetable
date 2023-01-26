@@ -9,16 +9,7 @@ import {
 } from "../constants/classroomConstants";
 import PageWrapper from "../HOC/PageWrapper";
 import useFetchAll from "../hooks/useFetchAll";
-import {
-  addOneDoc,
-  deleteOneDoc,
-  updateOneDoc,
-} from "../redux/actionThunk/firebaseThunk";
-import {
-  addClassroomReducer,
-  deleteClassroomReducer,
-  updateClassroomReducer,
-} from "../redux/reducers/classroomReducers";
+
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
 const Classrooms = () => {
@@ -26,7 +17,6 @@ const Classrooms = () => {
 
   const classroomData = useSelector((state) => state.classroom);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-  const user = useSelector((state) => state.auth.user);
 
   const { isLoading } = useFetchAll();
 
@@ -38,37 +28,15 @@ const Classrooms = () => {
       classroom_time_off: timeOffList,
     };
     if (data) {
-      dispatch(
-        updateOneDoc(
-          CLASSROOM_COLLECTION_NAME,
-          updateClassroomReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
+      // update doc
     } else {
-      dispatch(
-        addOneDoc(
-          CLASSROOM_COLLECTION_NAME,
-          addClassroomReducer,
-          filteredData,
-          user
-        )
-      );
+      // create doc
     }
     dispatch(clearTimeOffReducer());
   };
 
   const deleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(
-        CLASSROOM_COLLECTION_NAME,
-        deleteClassroomReducer,
-        data,
-        user
-      )
-    );
+    // delete doc
   };
 
   if (isLoading) return <>Loading</>;

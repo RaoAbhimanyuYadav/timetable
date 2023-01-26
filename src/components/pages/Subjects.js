@@ -9,24 +9,14 @@ import {
 } from "../constants/subjectCostant";
 import PageWrapper from "../HOC/PageWrapper";
 import useFetchAll from "../hooks/useFetchAll";
-import {
-  addOneDoc,
-  deleteOneDoc,
-  updateOneDoc,
-} from "../redux/actionThunk/firebaseThunk";
+
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
-import {
-  updateSubjectReducer,
-  addSubjectReducer,
-  deleteSubjectReducer,
-} from "../redux/reducers/subjectReducer";
 
 const Subjects = () => {
   const dispatch = useDispatch();
 
   const { isLoading } = useFetchAll();
 
-  const user = useSelector((state) => state.auth.user);
   const subjectData = useSelector((state) => state.subject);
   const timeOffList = useSelector((state) => state.common.timeOffList) || [];
 
@@ -38,32 +28,15 @@ const Subjects = () => {
       subject_time_off: timeOffList,
     };
     if (data) {
-      dispatch(
-        updateOneDoc(
-          SUBJECT_COLLECTION_NAME,
-          updateSubjectReducer,
-          data,
-          filteredData,
-          user
-        )
-      );
+      // update doc
     } else {
-      dispatch(
-        addOneDoc(
-          SUBJECT_COLLECTION_NAME,
-          addSubjectReducer,
-          filteredData,
-          user
-        )
-      );
+      // create doc
     }
     dispatch(clearTimeOffReducer());
   };
 
   const deleteHandler = (data) => {
-    dispatch(
-      deleteOneDoc(SUBJECT_COLLECTION_NAME, deleteSubjectReducer, data, user)
-    );
+    // delete doc
   };
 
   if (isLoading) return <>Loading</>;

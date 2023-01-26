@@ -1,23 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,
   dataFetched: false,
+  accessToken: null,
 };
 
 const authSlice = createSlice({
   name: "classroom",
   initialState,
   reducers: {
-    setUserReducer: (state, action) => {
-      state.user = action.payload;
-    },
     setDataFetchedReducer: (state, action) => {
       state.dataFetched = action.payload;
+    },
+    setAccessTokenReducer: (state, action) => {
+      state.accessToken = action.payload;
     },
   },
 });
 
-export const { setUserReducer, setDataFetchedReducer } = authSlice.actions;
+export const { setDataFetchedReducer, setAccessTokenReducer } =
+  authSlice.actions;
 
 export default authSlice.reducer;
