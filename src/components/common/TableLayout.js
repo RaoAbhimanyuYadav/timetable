@@ -40,6 +40,7 @@ const TableLayout = ({
     }
     if (typeof obj[key] === "string" || typeof obj[key] === "number")
       return obj[key];
+    if (typeof obj[key] === "boolean") return obj[key] ? "Yes" : "No";
     if (typeof obj[key] === "object") {
       if (Array.isArray(obj[key])) {
         if (key.includes("_time_off_set")) {
@@ -50,6 +51,8 @@ const TableLayout = ({
             </span>
           ));
         }
+      } else {
+        return `${obj[key].name}(${obj[key].code})`;
       }
     }
   };

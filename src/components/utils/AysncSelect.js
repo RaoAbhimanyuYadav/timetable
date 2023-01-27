@@ -1,0 +1,54 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLessonAssignment } from "../redux/actionThunk/betweenSliceThunk";
+import { resetLessonAssignmentReducer } from "../redux/reducers/lessonReducer";
+import { CustomMenuItem, CustomTextField } from "./customComponents";
+
+const AysncSelect = ({ formData, obj }) => {
+    const dispatch = useDispatch();
+
+    let key = obj.key;
+    let listName = obj.listName;
+    if (obj.key === "semester_group") {
+        key = "semester";
+        listName = "semesterList";
+    }
+    const data = useSelector((state) => state[key][listName]) || [];
+
+    const groupData = useSelector((state) => state.lesson.groupList) || [];
+    const val = useSelector((state) => state.lesson[obj.key]);
+
+    useEffect(() => {
+        if (formData) {
+            dispatch(setLessonAssignment(formData[obj.key].id, obj.key));
+        }
+        return () => {
+            dispatch(
+                resetLessonAssignmentReducer({
+                    key: obj.key,
+                })
+            );
+        };
+    }, [formData, dispatch, obj]);
+
+    return (
+        <CustomTextField
+            select
+            id={obj.key}
+            name={obj.key}
+            defaultValue={formData ? formData[obj.key].id : obj.default}
+            onChange={(e) => {
+                dispatch(setLessonAssignment(e.target.value, obj.key));
+            }}
+            value={val}
+        >
+            {(obj.key === "semester_group" ? groupData : data).map((option) => (
+                <CustomMenuItem key={option.id} value={option.id}>
+                    {option.name}({option.code})
+                </CustomMenuItem>
+            ))}
+        </CustomTextField>
+    );
+};
+
+export default AysncSelect;
