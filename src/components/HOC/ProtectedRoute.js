@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
         if (accessToken) {
             fetchAll(setLoading);
         }
-    }, [accessToken]);
+    }, [accessToken, fetchAll]);
 
     if (!accessToken) {
         return <Navigate to="/login" state={{ from: location }} replace />;

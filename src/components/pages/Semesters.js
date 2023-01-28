@@ -1,86 +1,95 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  SEMESTER_URL,
-  SEMESTER_FORM_FIELDS,
-  SEMESTER_TABLE_BODY_KEY,
-  SEMESTER_TABLE_HEADING,
+    SEMESTER_URL,
+    SEMESTER_FORM_FIELDS,
+    SEMESTER_TABLE_BODY_KEY,
+    SEMESTER_TABLE_HEADING,
 } from "../constants/semesterConstant";
 
 import PageWrapper from "../HOC/PageWrapper";
 import {
-  clearGroupReducer,
-  clearTimeOffReducer,
+    clearGroupReducer,
+    clearTimeOffReducer,
 } from "../redux/reducers/commonReducers";
 
 import useFetchAll from "../hooks/useFetchAll";
 import { useEffect } from "react";
 import {
-  addData,
-  deleteData,
-  getData,
-  updateData,
+    addData,
+    deleteData,
+    getData,
+    updateData,
 } from "../redux/actionThunk/apiThunk";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import {
-  addSemesterReducer,
-  deleteSemesterReducer,
-  setSemesterReducer,
-  updateSemesterReducer,
+    addSemesterReducer,
+    deleteSemesterReducer,
+    setSemesterReducer,
+    updateSemesterReducer,
 } from "../redux/reducers/semesterReducer";
 
 const Semesters = () => {
-  const dispatch = useDispatch();
-  const axios = useAxiosPrivate();
-  const { isLoading } = useFetchAll();
+    const dispatch = useDispatch();
+    const axios = useAxiosPrivate();
+    const { isLoading } = useFetchAll();
 
-  const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-  const groupList = useSelector((state) => state.common.groupList) || [];
-  const semesterData = useSelector((state) => state.semester);
+    const timeOffList = useSelector((state) => state.common.timeOffList) || [];
+    const groupList = useSelector((state) => state.common.groupList) || [];
+    const semesterData = useSelector((state) => state.semester);
 
-  useEffect(() => {
-    if (!semesterData.isSemestersFetched)
-      dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
-  }, []);
+    useEffect(() => {
+        if (!semesterData.isSemestersFetched)
+            dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
+    }, [semesterData, dispatch, axios]);
 
-  const formSubmitHandler = (e, data) => {
-    const filteredData = {
-      name: e.target.name.value,
-      code: e.target.code.value,
-      semester_group_set: groupList,
-      semester_time_off_set: timeOffList,
+    const formSubmitHandler = (e, data) => {
+        const filteredData = {
+            name: e.target.name.value,
+            code: e.target.code.value,
+            semester_group_set: groupList,
+            semester_time_off_set: timeOffList,
+        };
+        if (data) {
+            filteredData["id"] = data.id;
+            // update doc
+            dispatch(
+                updateData(
+                    axios,
+                    SEMESTER_URL,
+                    updateSemesterReducer,
+                    filteredData
+                )
+            );
+        } else {
+            // create doc
+            dispatch(
+                addData(axios, SEMESTER_URL, addSemesterReducer, filteredData)
+            );
+        }
+        dispatch(clearTimeOffReducer());
+        dispatch(clearGroupReducer());
     };
-    if (data) {
-      filteredData["id"] = data.id;
-      // update doc
-      dispatch(
-        updateData(axios, SEMESTER_URL, updateSemesterReducer, filteredData)
-      );
-    } else {
-      // create doc
-      dispatch(addData(axios, SEMESTER_URL, addSemesterReducer, filteredData));
-    }
-    dispatch(clearTimeOffReducer());
-    dispatch(clearGroupReducer());
-  };
 
-  const deleteHandler = (data) => {
-    // delete doc
-    dispatch(deleteData(axios, SEMESTER_URL, deleteSemesterReducer, data.id));
-  };
+    const deleteHandler = (data) => {
+        // delete doc
+        dispatch(
+            deleteData(axios, SEMESTER_URL, deleteSemesterReducer, data.id)
+        );
+    };
 
-  if (isLoading) return <>Loading</>;
-  return (
-    <PageWrapper
-      title={"Semesters"}
-      tableBodyData={semesterData?.semesterList || []}
-      tableHeadings={SEMESTER_TABLE_HEADING}
-      tableBodykey={SEMESTER_TABLE_BODY_KEY}
-      formFields={SEMESTER_FORM_FIELDS}
-      formSubmitHandler={formSubmitHandler}
-      deleteHandler={deleteHandler}
-    />
-  );
+    if (isLoading) return <>Loading</>;
+    return (
+        <PageWrapper
+            title={"Semesters"}
+            tableBodyData={semesterData?.semesterList || []}
+            tableHeadings={SEMESTER_TABLE_HEADING}
+            tableBodykey={SEMESTER_TABLE_BODY_KEY}
+            formFields={SEMESTER_FORM_FIELDS}
+            formSubmitHandler={formSubmitHandler}
+            deleteHandler={deleteHandler}
+        />
+    );
 };
 
 export default Semesters;
