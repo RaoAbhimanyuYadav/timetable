@@ -1,14 +1,28 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 
+import useAxiosPrivate from "./useAxiosPrivate";
+
+import { KEY_REDUCER } from "../utils/authFunctions";
+
 const useFetchAll = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const axios = useAxiosPrivate();
 
-  const [isLoading, setIsLoading] = useState(false);
+    const fetchAll = async (setLoading) => {
+        try {
+            const resp = await axios.get("all/");
+            const data = resp.data;
+            KEY_REDUCER.forEach((pair) => {
+                dispatch(pair.reducer(data[pair.key]));
+            });
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return {
-    isLoading,
-  };
+    return fetchAll;
 };
 
 export default useFetchAll;

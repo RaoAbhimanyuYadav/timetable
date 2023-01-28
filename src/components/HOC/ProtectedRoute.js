@@ -1,14 +1,28 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
+import useFetchAll from "../hooks/useFetchAll";
 
 const ProtectedRoute = ({ children }) => {
-  const accessToken = useSelector((state) => state.auth.accessToken);
-  let location = useLocation();
+    const [loading, setLoading] = useState(true);
 
-  if (!accessToken) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  return children;
+    const accessToken = useSelector((state) => state.auth.accessToken);
+
+    let location = useLocation();
+
+    const fetchAll = useFetchAll();
+
+    useEffect(() => {
+        if (accessToken) {
+            fetchAll(setLoading);
+        }
+    }, [accessToken]);
+
+    if (!accessToken) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return loading ? <>Loading</> : children;
 };
 
 export default ProtectedRoute;
