@@ -50,6 +50,10 @@ const subjectSlice = createSlice({
             );
             state.lessonList.splice(index, 1);
         },
+        resetLessonReducer: (state) => {
+            state.isLessonsFetched = false;
+            state.lessonList = [];
+        },
     },
 });
 
@@ -60,6 +64,7 @@ export const {
     setLessonReducer,
     updateLessonReducer,
     deleteLessonReducer,
+    resetLessonReducer,
 } = subjectSlice.actions;
 
 export default subjectSlice.reducer;
