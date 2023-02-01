@@ -7,7 +7,6 @@ import {
     SUBJECT_TABLE_HEADING,
 } from "../constants/subjectCostant";
 import PageWrapper from "../HOC/PageWrapper";
-import useFetchAll from "../hooks/useFetchAll";
 
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
@@ -30,7 +29,6 @@ const Subjects = () => {
     const dispatch = useDispatch();
 
     const axios = useAxiosPrivate();
-    const { isLoading } = useFetchAll();
 
     const subjectData = useSelector((state) => state.subject);
     const timeOffList = useSelector((state) => state.common.timeOffList) || [];
@@ -67,11 +65,9 @@ const Subjects = () => {
     };
 
     useEffect(() => {
-        if (!subjectData.isSubjectsFetched)
+        if (subjectData.isSubjectsFetched)
             dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
     }, [axios, subjectData, dispatch]);
-
-    if (isLoading) return <>Loading</>;
 
     return (
         <PageWrapper

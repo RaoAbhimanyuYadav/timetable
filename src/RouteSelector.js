@@ -97,8 +97,8 @@ const RouteSelector = () => {
     const refresh = useRefreshToken();
 
     useEffect(() => {
-        refresh(setLoading);
-    }, [refresh]);
+        if (loading) refresh(setLoading);
+    }, [refresh, loading]);
 
     return loading ? <>Loading</> : <RouterProvider router={router} />;
 };

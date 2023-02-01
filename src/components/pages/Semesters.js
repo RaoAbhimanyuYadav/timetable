@@ -13,7 +13,6 @@ import {
     clearTimeOffReducer,
 } from "../redux/reducers/commonReducers";
 
-import useFetchAll from "../hooks/useFetchAll";
 import { useEffect } from "react";
 import {
     addData,
@@ -32,14 +31,13 @@ import {
 const Semesters = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
-    const { isLoading } = useFetchAll();
 
     const timeOffList = useSelector((state) => state.common.timeOffList) || [];
     const groupList = useSelector((state) => state.common.groupList) || [];
     const semesterData = useSelector((state) => state.semester);
 
     useEffect(() => {
-        if (!semesterData.isSemestersFetched)
+        if (semesterData.isSemestersFetched)
             dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
     }, [semesterData, dispatch, axios]);
 
@@ -78,7 +76,6 @@ const Semesters = () => {
         );
     };
 
-    if (isLoading) return <>Loading</>;
     return (
         <PageWrapper
             title={"Semesters"}

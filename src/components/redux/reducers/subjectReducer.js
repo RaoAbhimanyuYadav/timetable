@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     subjectList: [],
-    isSubjectsFetched: false,
+    isSubjectsFetched: true,
 };
 
 const subjectSlice = createSlice({
@@ -14,7 +14,7 @@ const subjectSlice = createSlice({
         },
         setSubjectReducer: (state, action) => {
             state.subjectList = action.payload;
-            state.isSubjectsFetched = true;
+            state.isSubjectsFetched = false;
         },
         updateSubjectReducer: (state, action) => {
             const index = state.subjectList.findIndex(
@@ -29,7 +29,7 @@ const subjectSlice = createSlice({
             state.subjectList.splice(index, 1);
         },
         resetSubjectReducer: (state) => {
-            state.isSubjectsFetched = false;
+            state.isSubjectsFetched = true;
             state.subjectList = [];
         },
     },

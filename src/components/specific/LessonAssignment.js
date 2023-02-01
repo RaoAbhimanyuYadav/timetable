@@ -8,12 +8,7 @@ import {
 
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import {
-    addData,
-    deleteData,
-    getData,
-    updateData,
-} from "../redux/actionThunk/apiThunk";
+import { addData, deleteData, updateData } from "../redux/actionThunk/apiThunk";
 import {
     addLesson,
     deleteLesson,

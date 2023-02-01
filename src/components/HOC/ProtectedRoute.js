@@ -13,10 +13,10 @@ const ProtectedRoute = ({ children }) => {
     const fetchAll = useFetchAll();
 
     useEffect(() => {
-        if (accessToken) {
+        if (accessToken && loading) {
             fetchAll(setLoading);
-        }
-    }, [accessToken, fetchAll]);
+        } // eslint-disable-next-line
+    }, []);
 
     if (!accessToken) {
         return <Navigate to="/login" state={{ from: location }} replace />;

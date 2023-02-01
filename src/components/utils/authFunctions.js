@@ -73,7 +73,7 @@ export const resetAllState = (dispatch) => {
     });
 
     dispatch(setAccessTokenReducer(null));
-    dispatch(setDataFetchedReducer(false));
+    dispatch(setDataFetchedReducer(true));
 };
 
 export const unauthorized = (err, dispatch) => {

@@ -9,7 +9,7 @@ import {
 } from "../constants/classroomConstants";
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useFetchAll from "../hooks/useFetchAll";
+
 import {
     addData,
     deleteData,
@@ -35,10 +35,8 @@ const Classrooms = () => {
     const selectedSemesters =
         useSelector((state) => state.semester.selectedSemesters) || [];
 
-    const { isLoading } = useFetchAll();
-
     useEffect(() => {
-        if (!classroomData.isClassroomsFetched)
+        if (classroomData.isClassroomsFetched)
             dispatch(getData(axios, CLASSROOM_URL, setClassroomReducer));
     }, [classroomData, dispatch, axios]);
 
@@ -75,8 +73,6 @@ const Classrooms = () => {
             deleteData(axios, CLASSROOM_URL, deleteClassroomReducer, data.id)
         );
     };
-
-    if (isLoading) return <>Loading</>;
 
     return (
         <PageWrapper

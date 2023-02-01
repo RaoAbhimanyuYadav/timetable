@@ -14,7 +14,6 @@ import {
     BELL_TIMING_URL,
 } from "../constants/profileConstants";
 
-import useFetchAll from "../hooks/useFetchAll";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 import {
@@ -41,12 +40,10 @@ const Profile = () => {
 
     const profileData = useSelector((state) => state.profile);
 
-    const { isLoading } = useFetchAll();
-
     useEffect(() => {
-        if (!profileData.isBellTimingsFetched)
+        if (profileData.isBellTimingsFetched)
             dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
-        if (!profileData.isWorkingDaysFetched)
+        if (profileData.isWorkingDaysFetched)
             dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
     }, [dispatch, axios, profileData]);
 
@@ -119,9 +116,7 @@ const Profile = () => {
         );
     };
 
-    return isLoading ? (
-        <>Loading</>
-    ) : (
+    return (
         <>
             <PageWrapper
                 title={"Bell Timings"}

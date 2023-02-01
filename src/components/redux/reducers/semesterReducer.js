@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     semesterList: [],
-    isSemestersFetched: false,
+    isSemestersFetched: true,
     selectedSemesters: [],
 };
 
@@ -15,7 +15,7 @@ const semesterSlice = createSlice({
         },
         setSemesterReducer: (state, action) => {
             state.semesterList = action.payload;
-            state.isSemestersFetched = true;
+            state.isSemestersFetched = false;
         },
         updateSemesterReducer: (state, action) => {
             const index = state.semesterList.findIndex(
@@ -30,7 +30,7 @@ const semesterSlice = createSlice({
             state.semesterList.splice(index, 1);
         },
         resetSemesterReducer: (state) => {
-            state.isSemestersFetched = false;
+            state.isSemestersFetched = true;
             state.semesterList = [];
         },
         setSelectedSemesterReducer: (state, action) => {

@@ -9,7 +9,6 @@ import {
 } from "../constants/teacherConstant";
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useFetchAll from "../hooks/useFetchAll";
 import {
     addData,
     deleteData,
@@ -29,15 +28,13 @@ const Teachers = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const { isLoading } = useFetchAll();
-
     const teacherData = useSelector((state) => state.teacher);
     const timeOffList = useSelector((state) => state.common.timeOffList) || [];
     const selectedColor =
         useSelector((state) => state.common.selectedColor) || [];
 
     useEffect(() => {
-        if (!teacherData.isTeachersFetched)
+        if (teacherData.isTeachersFetched)
             dispatch(getData(axios, TEACHER_URL, setTeacherReducer));
     }, [teacherData, dispatch, axios]);
 
@@ -72,8 +69,6 @@ const Teachers = () => {
         // delete doc
         dispatch(deleteData(axios, TEACHER_URL, deleteTeacherReducer, data.id));
     };
-
-    if (isLoading) return <>Loading</>;
 
     return (
         <PageWrapper
