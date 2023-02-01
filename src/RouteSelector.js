@@ -10,7 +10,6 @@ import Navbar from "./components/HOC/Navbar";
 import Classrooms from "./components/pages/Classrooms";
 import Generate from "./components/pages/Generate";
 import HomePage from "./components/pages/Homepage";
-import LessonAssignment from "./components/pages/LessonAssignment";
 import Profile from "./components/pages/Profile";
 import Semesters from "./components/pages/Semesters";
 import Subjects from "./components/pages/Subjects";
@@ -62,14 +61,6 @@ const router = createBrowserRouter(
                 element={
                     <ProtectedRoute>
                         <Teachers />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/lessons"
-                element={
-                    <ProtectedRoute>
-                        <LessonAssignment />
                     </ProtectedRoute>
                 }
             />

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     LESSON_FORM_FIELDS,
@@ -16,11 +15,10 @@ import {
     updateData,
 } from "../redux/actionThunk/apiThunk";
 import {
-    addLessonReducer,
-    deleteLessonReducer,
-    setLessonReducer,
-    updateLessonReducer,
-} from "../redux/reducers/lessonReducer";
+    addLesson,
+    deleteLesson,
+    updateLesson,
+} from "../redux/actionThunk/betweenSliceThunk";
 
 const LessonAssignment = () => {
     const dispatch = useDispatch();
@@ -33,7 +31,6 @@ const LessonAssignment = () => {
         semester,
         semester_group,
         lessonList,
-        isLessonsFetched,
     } = useSelector((state) => state.lesson);
 
     const formSubmitHandler = (e, data) => {
@@ -51,25 +48,16 @@ const LessonAssignment = () => {
         if (data) {
             filteredData["id"] = data.id;
             // update
-            dispatch(
-                updateData(axios, LESSON_URL, updateLessonReducer, filteredData)
-            );
+            dispatch(updateData(axios, LESSON_URL, updateLesson, filteredData));
         } else {
             // create
-            dispatch(
-                addData(axios, LESSON_URL, addLessonReducer, filteredData)
-            );
+            dispatch(addData(axios, LESSON_URL, addLesson, filteredData));
         }
     };
 
     const deleteHandler = (data) => {
-        dispatch(deleteData(axios, LESSON_URL, deleteLessonReducer, data.id));
+        dispatch(deleteData(axios, LESSON_URL, deleteLesson, data.id));
     };
-
-    useEffect(() => {
-        if (!isLessonsFetched)
-            dispatch(getData(axios, LESSON_URL, setLessonReducer));
-    }, [axios, dispatch, isLessonsFetched]);
 
     return (
         <PageWrapper

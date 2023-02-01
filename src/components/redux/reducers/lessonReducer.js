@@ -8,7 +8,6 @@ const initialState = {
     groupList: [],
     semester_group: "",
     lessonList: [],
-    isLessonsFetched: false,
 };
 
 const subjectSlice = createSlice({
@@ -36,7 +35,6 @@ const subjectSlice = createSlice({
         },
         setLessonReducer: (state, action) => {
             state.lessonList = action.payload;
-            state.isLessonsFetched = true;
         },
         updateLessonReducer: (state, action) => {
             const index = state.lessonList.findIndex(
@@ -51,7 +49,6 @@ const subjectSlice = createSlice({
             state.lessonList.splice(index, 1);
         },
         resetLessonReducer: (state) => {
-            state.isLessonsFetched = false;
             state.lessonList = [];
         },
     },

@@ -3,6 +3,7 @@ import { Box, Table, TableBody, TableHead, TableRow } from "@mui/material";
 import AddEditDialog from "./AddEditDialog";
 import ConfirmDelete from "./ConfirmDelete";
 import { CustomCell, CellInsideWrapper } from "../utils/customComponents";
+import LessonAssignButton from "../specific/LessonAssignButton";
 
 const TableLayout = ({
     tableBodyData,
@@ -22,6 +23,9 @@ const TableLayout = ({
     };
 
     const nameExtractor = (key, obj) => {
+        if (key.includes("_button")) {
+            return <LessonAssignButton teacher={obj} />;
+        }
         if (key.includes("_group_set")) {
             return obj[key].map((ele) => (
                 <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>

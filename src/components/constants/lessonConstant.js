@@ -1,5 +1,5 @@
 export const LESSON_TABLE_BODY_KEY = [
-    "teacher",
+    // "teacher",
     "subject",
     "classroom",
     "semester",
@@ -9,7 +9,7 @@ export const LESSON_TABLE_BODY_KEY = [
 ];
 
 export const LESSON_TABLE_HEADING = [
-    "Teacher",
+    // "Teacher",
     "Subject",
     "Classroom",
     "Semester",
@@ -19,13 +19,13 @@ export const LESSON_TABLE_HEADING = [
 ];
 
 export const LESSON_FORM_FIELDS = [
-    {
-        label: "Teacher",
-        type: "asyncSelect",
-        key: "teacher",
-        default: "",
-        listName: "teacherList",
-    },
+    // {
+    //     label: "Teacher",
+    //     type: "asyncSelect",
+    //     key: "teacher",
+    //     default: "",
+    //     listName: "teacherList",
+    // },
     {
         label: "Subject",
         type: "asyncSelect",

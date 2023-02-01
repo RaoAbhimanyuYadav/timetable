@@ -3,6 +3,7 @@ export const TEACHER_TABLE_BODY_KEY = [
     "code",
     "color",
     "teacher_time_off_set",
+    "assign_lesson_button",
 ];
 
 export const TEACHER_TABLE_HEADING = [
@@ -10,6 +11,7 @@ export const TEACHER_TABLE_HEADING = [
     "Nick Name",
     "Color",
     "Timing OFF",
+    "Assign Lessons",
 ];
 
 export const TEACHER_FORM_FIELDS = [
