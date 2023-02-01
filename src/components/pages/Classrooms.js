@@ -32,6 +32,8 @@ const Classrooms = () => {
 
     const classroomData = useSelector((state) => state.classroom);
     const timeOffList = useSelector((state) => state.common.timeOffList) || [];
+    const selectedSemesters =
+        useSelector((state) => state.semester.selectedSemesters) || [];
 
     const { isLoading } = useFetchAll();
 
@@ -45,6 +47,7 @@ const Classrooms = () => {
             name: e.target.name.value,
             code: e.target.code.value,
             classroom_time_off_set: timeOffList,
+            semesters: selectedSemesters,
         };
         if (data) {
             filteredData["id"] = data.id;

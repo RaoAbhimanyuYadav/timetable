@@ -15,6 +15,7 @@ import MultipleSelectorField from "./MultipleSelectorField";
 import ColorSelector from "./ColorSelector";
 import GroupComponent from "../utils/GroupComponent";
 import AysncSelect from "../utils/AysncSelect";
+import CheckBoxes from "./CheckBoxes";
 
 const inputFieldSelector = (obj, index, formData) => {
     if (obj.type === "color") {
@@ -37,8 +38,10 @@ const inputFieldSelector = (obj, index, formData) => {
                 ))}
             </CustomTextField>
         );
-    } else if (obj.type === "checkboxes") {
+    } else if (obj.type === "time_off") {
         return <MultipleSelectorField formData={formData} obj={obj} />;
+    } else if (obj.type === "checkboxes") {
+        return <CheckBoxes formData={formData} obj={obj} />;
     } else if (obj.type === "asyncSelect") {
         return <AysncSelect formData={formData} obj={obj} />;
     } else if (obj.type === "checkbox") {

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     semesterList: [],
     isSemestersFetched: false,
+    selectedSemesters: [],
 };
 
 const semesterSlice = createSlice({
@@ -32,6 +33,20 @@ const semesterSlice = createSlice({
             state.isSemestersFetched = false;
             state.semesterList = [];
         },
+        setSelectedSemesterReducer: (state, action) => {
+            state.selectedSemesters = action.payload;
+        },
+        resetSelectedSemesterReducer: (state) => {
+            state.selectedSemesters = [];
+        },
+        addToSelectedSemesterReducer: (state, action) => {
+            state.selectedSemesters.push(action.payload);
+        },
+        removeFromSelectedSemesterReducer: (state, action) => {
+            state.selectedSemesters = state.selectedSemesters.filter(
+                (sem) => sem.id !== action.payload
+            );
+        },
     },
 });
 
@@ -41,6 +56,10 @@ export const {
     updateSemesterReducer,
     deleteSemesterReducer,
     resetSemesterReducer,
+    setSelectedSemesterReducer,
+    resetSelectedSemesterReducer,
+    addToSelectedSemesterReducer,
+    removeFromSelectedSemesterReducer,
 } = semesterSlice.actions;
 
 export default semesterSlice.reducer;

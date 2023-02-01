@@ -5,116 +5,122 @@ import ConfirmDelete from "./ConfirmDelete";
 import { CustomCell, CellInsideWrapper } from "../utils/customComponents";
 
 const TableLayout = ({
-  tableBodyData,
-  tableBodykey,
-  tableHeadings,
-  deleteHandler,
-  formFields,
-  formSubmitHandler,
+    tableBodyData,
+    tableBodykey,
+    tableHeadings,
+    deleteHandler,
+    formFields,
+    formSubmitHandler,
 }) => {
-  const objNameExtractor = (obj) => {
-    let name = "";
-    tableBodykey.forEach((key) => {
-      if (typeof obj[key] === "string" || typeof obj[key] === "number")
-        name += obj[key] + " ";
-    });
-    return name;
-  };
+    const objNameExtractor = (obj) => {
+        let name = "";
+        tableBodykey.forEach((key) => {
+            if (typeof obj[key] === "string" || typeof obj[key] === "number")
+                name += obj[key] + " ";
+        });
+        return name;
+    };
 
-  const nameExtractor = (key, obj) => {
-    if (key.includes("_group_set")) {
-      return obj[key].map((ele) => (
-        <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
-      ));
-    }
-    if (key.includes("color")) {
-      return (
-        <Box
-          sx={{
-            backgroundColor: `${obj[key]}`,
-            width: "40px",
-            aspectRatio: "2/1",
-          }}
-        ></Box>
-      );
-    }
-    if (typeof obj[key] === "string" || typeof obj[key] === "number")
-      return obj[key];
-    if (typeof obj[key] === "boolean") return obj[key] ? "Yes" : "No";
-    if (typeof obj[key] === "object") {
-      if (Array.isArray(obj[key])) {
-        if (key.includes("_time_off_set")) {
-          return obj[key].map((ele, i) => (
-            <span key={ele.id}>
-              {`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}
-              <br />
-            </span>
-          ));
+    const nameExtractor = (key, obj) => {
+        if (key.includes("_group_set")) {
+            return obj[key].map((ele) => (
+                <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
+            ));
         }
-      } else {
-        return `${obj[key].name}(${obj[key].code})`;
-      }
-    }
-  };
+        if (key.includes("color")) {
+            return (
+                <Box
+                    sx={{
+                        backgroundColor: `${obj[key]}`,
+                        width: "40px",
+                        aspectRatio: "2/1",
+                    }}
+                ></Box>
+            );
+        }
+        if (typeof obj[key] === "string" || typeof obj[key] === "number")
+            return obj[key];
+        if (typeof obj[key] === "boolean") return obj[key] ? "Yes" : "No";
+        if (typeof obj[key] === "object") {
+            if (Array.isArray(obj[key])) {
+                if (key.includes("_time_off_set")) {
+                    return obj[key].map((ele) => (
+                        <span key={ele.id}>
+                            {`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}
+                            <br />
+                        </span>
+                    ));
+                } else if (key.includes("semesters")) {
+                    return obj[key].map((ele) => (
+                        <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
+                    ));
+                }
+            } else {
+                return `${obj[key].name}(${obj[key].code})`;
+            }
+        }
+    };
 
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {tableHeadings.map((instance, index) => {
-            return (
-              <CustomCell key={index}>
-                <CellInsideWrapper sx={{ fontWeight: "700" }}>
-                  {instance}
-                </CellInsideWrapper>
-              </CustomCell>
-            );
-          })}
-          <CustomCell></CustomCell>
-          <CustomCell></CustomCell>
-        </TableRow>
-      </TableHead>
-      {tableBodyData.length === 0 ? (
-        <></>
-      ) : (
-        <TableBody>
-          {tableBodyData.map((obj, i) => {
-            return (
-              <TableRow key={i}>
-                {tableBodykey.map((instance, index) => {
-                  return (
-                    <CustomCell key={index}>
-                      <CellInsideWrapper>
-                        {nameExtractor(instance, obj)}
-                      </CellInsideWrapper>
-                    </CustomCell>
-                  );
-                })}
-                <CustomCell>
-                  <CellInsideWrapper>
-                    <AddEditDialog
-                      formFields={formFields}
-                      formSubmitHandler={formSubmitHandler}
-                      formData={obj}
-                    />
-                  </CellInsideWrapper>
-                </CustomCell>
-                <CustomCell>
-                  <CellInsideWrapper>
-                    <ConfirmDelete
-                      objName={objNameExtractor(obj)}
-                      data={obj}
-                      deleteHandler={deleteHandler}
-                    />
-                  </CellInsideWrapper>
-                </CustomCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      )}
-    </Table>
-  );
+    return (
+        <Table>
+            <TableHead>
+                <TableRow>
+                    {tableHeadings.map((instance, index) => {
+                        return (
+                            <CustomCell key={index}>
+                                <CellInsideWrapper sx={{ fontWeight: "700" }}>
+                                    {instance}
+                                </CellInsideWrapper>
+                            </CustomCell>
+                        );
+                    })}
+                    <CustomCell></CustomCell>
+                    <CustomCell></CustomCell>
+                </TableRow>
+            </TableHead>
+            {tableBodyData.length === 0 ? (
+                <></>
+            ) : (
+                <TableBody>
+                    {tableBodyData.map((obj, i) => {
+                        return (
+                            <TableRow key={i}>
+                                {tableBodykey.map((instance, index) => {
+                                    return (
+                                        <CustomCell key={index}>
+                                            <CellInsideWrapper>
+                                                {nameExtractor(instance, obj)}
+                                            </CellInsideWrapper>
+                                        </CustomCell>
+                                    );
+                                })}
+                                <CustomCell>
+                                    <CellInsideWrapper>
+                                        <AddEditDialog
+                                            formFields={formFields}
+                                            formSubmitHandler={
+                                                formSubmitHandler
+                                            }
+                                            formData={obj}
+                                        />
+                                    </CellInsideWrapper>
+                                </CustomCell>
+                                <CustomCell>
+                                    <CellInsideWrapper>
+                                        <ConfirmDelete
+                                            objName={objNameExtractor(obj)}
+                                            data={obj}
+                                            deleteHandler={deleteHandler}
+                                        />
+                                    </CellInsideWrapper>
+                                </CustomCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            )}
+        </Table>
+    );
 };
 
 export default TableLayout;
