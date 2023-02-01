@@ -1,6 +1,7 @@
 export const SEMESTER_TABLE_BODY_KEY = [
     "name",
     "code",
+    "classroom",
     "semester_group_set",
     "semester_time_off_set",
 ];
@@ -8,6 +9,7 @@ export const SEMESTER_TABLE_BODY_KEY = [
 export const SEMESTER_TABLE_HEADING = [
     "Name",
     "Semester Code",
+    "Classroom",
     "Groups",
     "Timing OFF",
 ];
@@ -24,6 +26,13 @@ export const SEMESTER_FORM_FIELDS = [
         type: "text",
         key: "code",
         default: "",
+    },
+    {
+        label: "Classroom",
+        type: "asyncSelect",
+        key: "classroom",
+        default: "",
+        listName: "classroomList",
     },
     {
         label: "Total groups",

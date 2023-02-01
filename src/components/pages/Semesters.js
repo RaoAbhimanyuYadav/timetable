@@ -35,6 +35,7 @@ const Semesters = () => {
     const timeOffList = useSelector((state) => state.common.timeOffList) || [];
     const groupList = useSelector((state) => state.common.groupList) || [];
     const semesterData = useSelector((state) => state.semester);
+    const classroomId = useSelector((state) => state.lesson.classroom);
 
     useEffect(() => {
         if (semesterData.isSemestersFetched)
@@ -45,9 +46,11 @@ const Semesters = () => {
         const filteredData = {
             name: e.target.name.value,
             code: e.target.code.value,
+            classroom: { id: classroomId },
             semester_group_set: groupList,
             semester_time_off_set: timeOffList,
         };
+
         if (data) {
             filteredData["id"] = data.id;
             // update doc

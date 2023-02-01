@@ -4,13 +4,14 @@ export const verifiedPages = [
         href: "subjects",
     },
     {
-        name: "Semesters",
-        href: "semesters",
-    },
-    {
         name: "Classrooms",
         href: "classrooms",
     },
+    {
+        name: "Semesters",
+        href: "semesters",
+    },
+
     {
         name: "Teachers",
         href: "teachers",
