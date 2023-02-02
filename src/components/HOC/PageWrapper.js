@@ -39,14 +39,16 @@ const PageWrapper = ({
                     maxWidth={"md"}
                 />
             </Box>
-            <TableLayout
-                tableBodyData={tableBodyData}
-                tableHeadings={tableHeadings}
-                tableBodykey={tableBodykey}
-                deleteHandler={deleteHandler}
-                formFields={formFields}
-                formSubmitHandler={formSubmitHandler}
-            />
+            <Box sx={{ height: "80vh", overflow: "scroll" }}>
+                <TableLayout
+                    tableBodyData={tableBodyData}
+                    tableHeadings={tableHeadings}
+                    tableBodykey={tableBodykey}
+                    deleteHandler={deleteHandler}
+                    formFields={formFields}
+                    formSubmitHandler={formSubmitHandler}
+                />
+            </Box>
         </Box>
     );
 };

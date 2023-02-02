@@ -33,13 +33,7 @@ export const LESSON_FORM_FIELDS = [
         default: "",
         listName: "subjectList",
     },
-    {
-        label: "Classroom",
-        type: "asyncSelect",
-        key: "classroom",
-        default: "",
-        listName: "classroomList",
-    },
+
     {
         label: "Semester",
         type: "asyncSelect",
@@ -53,6 +47,13 @@ export const LESSON_FORM_FIELDS = [
         key: "semester_group",
         default: "",
         listName: "groupList",
+    },
+    {
+        label: "Classroom",
+        type: "asyncSelect",
+        key: "classroom",
+        default: "",
+        listName: "classroomList",
     },
     {
         label: "Lesson per week",

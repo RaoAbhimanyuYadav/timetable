@@ -24,6 +24,17 @@ export const setLessonAssignment = (id, key) => async (dispatch, getState) => {
             groupData,
         })
     );
+    if (key === "semester") {
+        const sem = getState().semester.semesterList.find(
+            (sem) => sem.id === id
+        );
+        dispatch(
+            setLessonAssignmentReducer({
+                id: sem.classroom.id,
+                key: "classroom",
+            })
+        );
+    }
 };
 
 export const addToSelectedSemester = (id) => async (dispatch, getState) => {
