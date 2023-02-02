@@ -11,11 +11,11 @@ import {
     CustomMenuItem,
     CustomTextField,
 } from "../utils/customComponents";
-import MultipleSelectorField from "./MultipleSelectorField";
 import ColorSelector from "./ColorSelector";
 import GroupComponent from "../utils/GroupComponent";
 import AysncSelect from "../utils/AysncSelect";
 import CheckBoxes from "./CheckBoxes";
+import TimeOff from "../specific/TimeOff";
 
 const inputFieldSelector = (obj, index, formData) => {
     if (obj.type === "color") {
@@ -39,7 +39,7 @@ const inputFieldSelector = (obj, index, formData) => {
             </CustomTextField>
         );
     } else if (obj.type === "time_off") {
-        return <MultipleSelectorField formData={formData} obj={obj} />;
+        return <TimeOff formData={formData} obj={obj} />;
     } else if (obj.type === "checkboxes") {
         return <CheckBoxes formData={formData} obj={obj} />;
     } else if (obj.type === "asyncSelect") {
@@ -73,6 +73,7 @@ export default function AddEditDialog({
     formFields,
     formData,
     formSubmitHandler,
+    maxWidth,
 }) {
     const [open, setOpen] = React.useState(false);
 
@@ -96,7 +97,7 @@ export default function AddEditDialog({
                 {formData ? "Edit" : "Add"}
             </CustomButton>
             <Dialog
-                maxWidth="xs"
+                maxWidth={maxWidth ? maxWidth : "xs"}
                 fullWidth={true}
                 open={open}
                 onClose={handleClose}

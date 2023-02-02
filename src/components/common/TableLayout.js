@@ -4,6 +4,7 @@ import AddEditDialog from "./AddEditDialog";
 import ConfirmDelete from "./ConfirmDelete";
 import { CustomCell, CellInsideWrapper } from "../utils/customComponents";
 import LessonAssignButton from "../specific/LessonAssignButton";
+import TimeOffRender from "../specific/TimeOffRender";
 
 const TableLayout = ({
     tableBodyData,
@@ -48,12 +49,7 @@ const TableLayout = ({
         if (typeof obj[key] === "object") {
             if (Array.isArray(obj[key])) {
                 if (key.includes("_time_off_set")) {
-                    return obj[key].map((ele) => (
-                        <span key={ele.id}>
-                            {`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}
-                            <br />
-                        </span>
-                    ));
+                    return <TimeOffRender data={obj[key]} />;
                 } else if (key.includes("semesters")) {
                     return obj[key].map((ele) => (
                         <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
@@ -106,6 +102,7 @@ const TableLayout = ({
                                                 formSubmitHandler
                                             }
                                             formData={obj}
+                                            maxWidth={"md"}
                                         />
                                     </CellInsideWrapper>
                                 </CustomCell>
