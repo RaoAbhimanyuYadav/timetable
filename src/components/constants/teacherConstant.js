@@ -41,6 +41,17 @@ export const TEACHER_FORM_FIELDS = [
     },
 ];
 
+export const TEACHER_FORM_KEY_LIST = [
+    {
+        key: "color",
+        statePath: (getstate) => getstate().common.selectedColor,
+    },
+    {
+        key: "teacher_time_off_set",
+        statePath: (getstate) => getstate().common.timeOffList,
+    },
+];
+
 export const TEACHER_DUMMY_DATA = [
     {
         id: "7e3b2ae8-e606-40a9-8bf5-3f763105e157",
