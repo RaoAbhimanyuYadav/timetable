@@ -39,6 +39,17 @@ export const CLASSROOM_FORM_FIELDS = [
     // },
 ];
 
+export const CLASSROOM_FORM_KEY_LIST = [
+    // {
+    //     key: "semesters",
+    //     statePath: (getstate) => getstate().semester.selectedSemesters,
+    // },
+    {
+        key: "classroom_time_off_set",
+        statePath: (getstate) => getstate().common.timeOffList,
+    },
+];
+
 export const CLASSROOM_DUMMY_DATA = [
     {
         id: "049651ac-7d8b-4fac-85f1-ff17aae11127",
