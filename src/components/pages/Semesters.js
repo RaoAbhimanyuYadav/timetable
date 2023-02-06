@@ -5,6 +5,7 @@ import {
     SEMESTER_FORM_FIELDS,
     SEMESTER_TABLE_BODY_KEY,
     SEMESTER_TABLE_HEADING,
+    SEMESTER_FORM_KEY_LIST,
 } from "../constants/semesterConstant";
 
 import PageWrapper from "../HOC/PageWrapper";
@@ -13,7 +14,7 @@ import {
     clearTimeOffReducer,
 } from "../redux/reducers/commonReducers";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
     addData,
     deleteData,
@@ -32,23 +33,25 @@ const Semesters = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-    const groupList = useSelector((state) => state.common.groupList) || [];
-    const semesterData = useSelector((state) => state.semester);
-    const classroomId = useSelector((state) => state.lesson.classroom);
+    const selectorFunc = useCallback(
+        (state) => state.semester.semesterList,
+        []
+    );
+
+    const isSemestersFetched = useSelector(
+        (state) => state.semester.isSemestersFetched
+    );
 
     useEffect(() => {
-        if (semesterData.isSemestersFetched)
+        if (isSemestersFetched) {
             dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
-    }, [semesterData, dispatch, axios]);
+        }
+    }, [isSemestersFetched]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
             name: e.target.name.value,
             code: e.target.code.value,
-            classroom: { id: classroomId },
-            semester_group_set: groupList,
-            semester_time_off_set: timeOffList,
         };
 
         if (data) {
@@ -59,13 +62,20 @@ const Semesters = () => {
                     axios,
                     SEMESTER_URL,
                     updateSemesterReducer,
-                    filteredData
+                    filteredData,
+                    SEMESTER_FORM_KEY_LIST
                 )
             );
         } else {
             // create doc
             dispatch(
-                addData(axios, SEMESTER_URL, addSemesterReducer, filteredData)
+                addData(
+                    axios,
+                    SEMESTER_URL,
+                    addSemesterReducer,
+                    filteredData,
+                    SEMESTER_FORM_KEY_LIST
+                )
             );
         }
         dispatch(clearTimeOffReducer());
@@ -82,7 +92,7 @@ const Semesters = () => {
     return (
         <PageWrapper
             title={"Semesters"}
-            tableBodyData={semesterData?.semesterList || []}
+            selectorFunc={selectorFunc}
             tableHeadings={SEMESTER_TABLE_HEADING}
             tableBodykey={SEMESTER_TABLE_BODY_KEY}
             formFields={SEMESTER_FORM_FIELDS}

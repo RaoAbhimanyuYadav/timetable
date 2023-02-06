@@ -48,6 +48,22 @@ export const SEMESTER_FORM_FIELDS = [
     },
 ];
 
+export const SEMESTER_FORM_KEY_LIST = [
+    {
+        key: "semester_group_set",
+        statePath: (getstate) => getstate().common.groupList,
+    },
+    {
+        key: "classroom",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.classroom,
+    },
+    {
+        key: "semester_time_off_set",
+        statePath: (getstate) => getstate().common.timeOffList,
+    },
+];
+
 export const SEMESTER_DUMMY_DATA = [
     {
         id: "1f57483d-5d5f-48fd-b7fe-3ff52b092573",
