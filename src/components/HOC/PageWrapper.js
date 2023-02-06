@@ -5,11 +5,11 @@ import TableLayout from "../common/TableLayout";
 
 const PageWrapper = ({
     title,
-    formFields,
-    formSubmitHandler,
-    tableBodyData,
     tableHeadings,
     tableBodykey,
+    selectorFunc,
+    formFields,
+    formSubmitHandler,
     deleteHandler,
 }) => {
     return (
@@ -41,9 +41,9 @@ const PageWrapper = ({
             </Box>
             <Box sx={{ height: "80vh", overflow: "scroll" }}>
                 <TableLayout
-                    tableBodyData={tableBodyData}
                     tableHeadings={tableHeadings}
                     tableBodykey={tableBodykey}
+                    selectorFunc={selectorFunc}
                     deleteHandler={deleteHandler}
                     formFields={formFields}
                     formSubmitHandler={formSubmitHandler}

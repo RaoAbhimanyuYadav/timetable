@@ -11,23 +11,14 @@ import {
 
 import React from "react";
 
-const TimeOff = ({ formData, obj }) => {
+const TimeOffCheckbox = ({ day, time }) => {
     const dispatch = useDispatch();
 
-    const timings = useSelector((state) => state.profile.bellTimings);
-    const days = useSelector((state) => state.profile.workingDays);
-    const timeOffList = useSelector((state) => state.common.timeOffList);
-
-    useEffect(() => {
-        // set timeOff
-        if (formData) {
-            dispatch(setTimeOffReducer(formData[obj.key]));
-        }
-        return () => {
-            // reset timeoff
-            dispatch(clearTimeOffReducer());
-        };
-    }, [dispatch, formData, obj]);
+    const timeOff = useSelector((state) =>
+        state.common.timeOffList.find(
+            (t) => t.working_day.id === day.id && t.bell_timing.id === time.id
+        )
+    );
 
     const handleChange = (e, day, time) => {
         const filteredData = {
@@ -43,16 +34,31 @@ const TimeOff = ({ formData, obj }) => {
         }
     };
 
-    const isPresent = (day, time) => {
-        const index = timeOffList.findIndex(
-            (timeOff) =>
-                timeOff.bell_timing.id === time.id &&
-                timeOff.working_day.id === day.id
-        );
+    return (
+        <Checkbox
+            size="small"
+            onChange={(e) => handleChange(e, day, time)}
+            checked={timeOff ? true : false}
+        />
+    );
+};
 
-        if (index === -1) return false;
-        return true;
-    };
+const TimeOff = ({ formData, obj }) => {
+    const dispatch = useDispatch();
+
+    const timings = useSelector((state) => state.profile.bellTimings);
+    const days = useSelector((state) => state.profile.workingDays);
+
+    useEffect(() => {
+        // set timeOff
+        if (formData) {
+            dispatch(setTimeOffReducer(formData[obj.key]));
+        }
+        return () => {
+            // reset timeoff
+            dispatch(clearTimeOffReducer());
+        };
+    }, [dispatch, formData, obj]);
 
     return (
         <Table>
@@ -73,11 +79,7 @@ const TimeOff = ({ formData, obj }) => {
                         <CellWrapper>{day.code} </CellWrapper>
                         {timings.map((time) => (
                             <CellWrapper key={time.id}>
-                                <Checkbox
-                                    size="small"
-                                    onChange={(e) => handleChange(e, day, time)}
-                                    checked={isPresent(day, time)}
-                                />
+                                <TimeOffCheckbox day={day} time={time} />
                             </CellWrapper>
                         ))}
                     </TableRow>
