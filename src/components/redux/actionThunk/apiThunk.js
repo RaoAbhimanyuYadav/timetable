@@ -26,7 +26,9 @@ const keyListFunc = (keyList, data, getState) => {
 export const addData =
     (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
         try {
-            data = keyListFunc(keyList, data, getState);
+            if (keyList) {
+                data = keyListFunc(keyList, data, getState);
+            }
             const resp = await axios.post(URL, data);
             dispatch(reducer(resp.data.data));
         } catch (err) {
@@ -38,7 +40,9 @@ export const addData =
 export const updateData =
     (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
         try {
-            data = keyListFunc(keyList, data, getState);
+            if (keyList) {
+                data = keyListFunc(keyList, data, getState);
+            }
             const resp = await axios.put(URL, data);
             dispatch(reducer(resp.data.data));
         } catch (err) {

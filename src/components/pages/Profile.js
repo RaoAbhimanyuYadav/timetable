@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import PageWrapper from "../HOC/PageWrapper";
 
@@ -38,14 +38,30 @@ const Profile = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const profileData = useSelector((state) => state.profile);
+    const isBellTimingsFetched = useSelector(
+        (state) => state.profile.isBellTimingsFetched
+    );
+    const isWorkingDaysFetched = useSelector(
+        (state) => state.profile.isWorkingDaysFetched
+    );
+
+    const bellTimingSelectorFunc = useCallback(
+        (state) => state.profile.bellTimings,
+        []
+    );
+    const workingDaySelectorFunc = useCallback(
+        (state) => state.profile.workingDays,
+        []
+    );
 
     useEffect(() => {
-        if (profileData.isBellTimingsFetched)
+        if (isBellTimingsFetched) {
             dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
-        if (profileData.isWorkingDaysFetched)
+        }
+        if (isWorkingDaysFetched) {
             dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
-    }, [dispatch, axios, profileData]);
+        } // eslint-disable-next-line
+    }, [isWorkingDaysFetched, isBellTimingsFetched]);
 
     const bellTimingFormSubmitHandler = (e, data) => {
         // Data checking
@@ -123,7 +139,7 @@ const Profile = () => {
                 formFields={TIMING_FORM_FIELDS}
                 tableHeadings={TIMING_TABLE_HEADING}
                 tableBodykey={TIMING_TABLE_BODY_KEY}
-                tableBodyData={profileData ? profileData.bellTimings : []}
+                selectorFunc={bellTimingSelectorFunc}
                 formSubmitHandler={bellTimingFormSubmitHandler}
                 deleteHandler={bellTimingDeleteHandler}
             />
@@ -132,7 +148,7 @@ const Profile = () => {
                 formFields={WORKING_DAY_FORM_FIELDS}
                 tableHeadings={WORKING_DAY_TABLE_HEADING}
                 tableBodykey={WORKING_DAY_TABLE_BODY_KEY}
-                tableBodyData={profileData ? profileData.workingDays : []}
+                selectorFunc={workingDaySelectorFunc}
                 formSubmitHandler={workingDaysFormSubmitHandler}
                 deleteHandler={workingDaysDeleteHandler}
             />

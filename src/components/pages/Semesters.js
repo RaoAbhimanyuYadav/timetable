@@ -45,7 +45,7 @@ const Semesters = () => {
     useEffect(() => {
         if (isSemestersFetched) {
             dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
-        }
+        } // eslint-disable-next-line
     }, [isSemestersFetched]);
 
     const formSubmitHandler = (e, data) => {
