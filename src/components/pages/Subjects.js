@@ -5,6 +5,7 @@ import {
     SUBJECT_FORM_FIELDS,
     SUBJECT_TABLE_BODY_KEY,
     SUBJECT_TABLE_HEADING,
+    SUBJECT_FORM_KEY_LIST,
 } from "../constants/subjectCostant";
 import PageWrapper from "../HOC/PageWrapper";
 
@@ -51,13 +52,7 @@ const Subjects = () => {
                         SUBJECT_URL,
                         updateSubjectReducer,
                         filteredData,
-                        [
-                            {
-                                key: "subject_time_off_set",
-                                statePath: (getstate) =>
-                                    getstate().common.timeOffList,
-                            },
-                        ]
+                        SUBJECT_FORM_KEY_LIST
                     )
                 );
             } else {
@@ -68,13 +63,7 @@ const Subjects = () => {
                         SUBJECT_URL,
                         addSubjectReducer,
                         filteredData,
-                        [
-                            {
-                                key: "subject_time_off_set",
-                                statePath: (getstate) =>
-                                    getstate().common.timeOffList,
-                            },
-                        ]
+                        SUBJECT_FORM_KEY_LIST
                     )
                 );
             }

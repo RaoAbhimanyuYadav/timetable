@@ -23,6 +23,13 @@ export const SUBJECT_FORM_FIELDS = [
     },
 ];
 
+export const SUBJECT_FORM_KEY_LIST = [
+    {
+        key: "subject_time_off_set",
+        statePath: (getstate) => getstate().common.timeOffList,
+    },
+];
+
 export const SUBJECT_DUMMY_DATA = [
     {
         id: "7ff426de-c8a7-4bd6-aeb1-b7d58a38e3ce",

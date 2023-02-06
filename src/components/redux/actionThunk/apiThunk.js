@@ -10,12 +10,23 @@ export const getData = (axios, URL, reducer) => async (dispatch) => {
     }
 };
 
+const keyListFunc = (keyList, data, getState) => {
+    keyList.forEach((element) => {
+        if (element.createObjWithId) {
+            let obj = {};
+            obj["id"] = element.statePath(getState);
+            data[element.key] = obj;
+        } else {
+            data[element.key] = element.statePath(getState);
+        }
+    });
+    return data;
+};
+
 export const addData =
     (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
         try {
-            keyList.forEach((element) => {
-                data[element.key] = element.statePath(getState);
-            });
+            data = keyListFunc(keyList, data, getState);
             const resp = await axios.post(URL, data);
             dispatch(reducer(resp.data.data));
         } catch (err) {
@@ -27,9 +38,7 @@ export const addData =
 export const updateData =
     (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
         try {
-            keyList.forEach((element) => {
-                data[element.key] = element.statePath(getState);
-            });
+            data = keyListFunc(keyList, data, getState);
             const resp = await axios.put(URL, data);
             dispatch(reducer(resp.data.data));
         } catch (err) {
