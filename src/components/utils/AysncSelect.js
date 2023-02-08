@@ -7,15 +7,8 @@ import { CustomMenuItem, CustomTextField } from "./customComponents";
 const AysncSelect = ({ formData, obj }) => {
     const dispatch = useDispatch();
 
-    let key = obj.key;
-    let listName = obj.listName;
-    if (obj.key === "semester_group") {
-        key = "semester";
-        listName = "semesterList";
-    }
-    const data = useSelector((state) => state[key][listName]) || [];
+    const data = useSelector(obj.selectorFunc) || [];
 
-    const groupData = useSelector((state) => state.lesson.groupList) || [];
     const val = useSelector((state) => state.lesson[obj.key]);
 
     useEffect(() => {
@@ -42,7 +35,7 @@ const AysncSelect = ({ formData, obj }) => {
             }}
             value={val}
         >
-            {(obj.key === "semester_group" ? groupData : data).map((option) => (
+            {data.map((option) => (
                 <CustomMenuItem key={option.id} value={option.id}>
                     {option.name}({option.code})
                 </CustomMenuItem>

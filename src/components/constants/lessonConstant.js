@@ -31,7 +31,7 @@ export const LESSON_FORM_FIELDS = [
         type: "asyncSelect",
         key: "subject",
         default: "",
-        listName: "subjectList",
+        selectorFunc: (state) => state.subject.subjectList,
     },
 
     {
@@ -39,21 +39,21 @@ export const LESSON_FORM_FIELDS = [
         type: "asyncSelect",
         key: "semester",
         default: "",
-        listName: "semesterList",
+        selectorFunc: (state) => state.semester.semesterList,
     },
     {
         label: "Group",
         type: "asyncSelect",
         key: "semester_group",
         default: "",
-        listName: "groupList",
+        selectorFunc: (state) => state.lesson.groupList,
     },
     {
         label: "Classroom",
         type: "asyncSelect",
         key: "classroom",
         default: "",
-        listName: "classroomList",
+        selectorFunc: (state) => state.classroom.classroomList,
     },
     {
         label: "Lesson per week",
@@ -66,6 +66,34 @@ export const LESSON_FORM_FIELDS = [
         type: "checkbox",
         key: "is_lab",
         default: false,
+    },
+];
+
+export const LESSON_FORM_KEY_LIST = [
+    {
+        key: "teacher",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.teacher,
+    },
+    {
+        key: "classroom",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.classroom,
+    },
+    {
+        key: "subject",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.subject,
+    },
+    {
+        key: "semester",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.semester,
+    },
+    {
+        key: "semester_group",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.semester_group,
     },
 ];
 
