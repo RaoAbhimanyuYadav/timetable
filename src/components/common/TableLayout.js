@@ -20,6 +20,11 @@ const TableLayout = ({
         <Table>
             <TableHead>
                 <TableRow>
+                    <CustomCell>
+                        <CellInsideWrapper sx={{ fontWeight: "700" }}>
+                            Index
+                        </CellInsideWrapper>
+                    </CustomCell>
                     {tableHeadings.map((instance) => {
                         return (
                             <CustomCell key={instance}>
@@ -37,9 +42,14 @@ const TableLayout = ({
                 <></>
             ) : (
                 <TableBody>
-                    {data.map((obj) => {
+                    {data.map((obj, i) => {
                         return (
                             <TableRow key={obj.id}>
+                                <CustomCell>
+                                    <CellInsideWrapper>
+                                        {i + 1}
+                                    </CellInsideWrapper>
+                                </CustomCell>
                                 {tableBodykey.map((instance) => {
                                     return (
                                         <CustomCell key={instance}>

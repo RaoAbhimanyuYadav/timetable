@@ -32,7 +32,7 @@ export const SEMESTER_FORM_FIELDS = [
         type: "asyncSelect",
         key: "classroom",
         default: "",
-        listName: "classroomList",
+        selectorFunc: (state) => state.classroom.classroomList,
     },
     {
         label: "Total groups",
