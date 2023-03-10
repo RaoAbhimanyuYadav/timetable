@@ -160,15 +160,13 @@ const Generate = () => {
         setSemesters(semesterData);
     }, [teacherData, bellTimings, workingDays, semesterData]);
     useEffect(() => {
-        console.log(
-            generateTimeTable(
-                bellTimings,
-                workingDays,
-                teacherData,
-                semesterData,
-                classroomData,
-                subjectData
-            )
+        generateTimeTable(
+            bellTimings,
+            workingDays,
+            teacherData,
+            semesterData,
+            classroomData,
+            subjectData
         );
     }, []);
 

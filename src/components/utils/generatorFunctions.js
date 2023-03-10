@@ -1,99 +1,4 @@
-class LessonObj {
-    constructor(lsn, teacher) {
-        this.id = lsn.id;
-        this.is_lab = lsn.is_lab;
-        this.lesson_per_week = lsn.lesson_per_week;
-        this.classroom = lsn.classroom;
-        this.semester = lsn.semester;
-        this.subject = lsn.subject;
-        this.teacher = this.appendTeacher(teacher);
-        this.time_off = [];
-
-        this.generateTimeOff();
-    }
-
-    appendTeacher(teacher) {
-        let newTeacher = { ...teacher };
-        delete newTeacher.lesson_set;
-        return newTeacher;
-    }
-
-    isTimeOffPresent(newTimeOff) {
-        for (let i = 0; i < this.time_off.length; i++) {
-            let oldTimeOff = this.time_off[i];
-            if (
-                oldTimeOff.bell_timing.id === newTimeOff.bell_timing.id &&
-                oldTimeOff.working_day.id === newTimeOff.working_day.id
-            )
-                return true;
-        }
-        return false;
-    }
-
-    addTimeOffToLesson(timeOffList) {
-        timeOffList.forEach((timeOff) => {
-            if (!this.isTimeOffPresent(timeOff)) {
-                let updatedTimeOff = { ...timeOff };
-                delete updatedTimeOff.id;
-                this.time_off = [...this.time_off, updatedTimeOff];
-            }
-        });
-    }
-
-    generateTimeOff() {
-        this.addTimeOffToLesson(this.classroom["classroom_time_off_set"]);
-        this.addTimeOffToLesson(this.semester["semester_time_off_set"]);
-        this.addTimeOffToLesson(this.subject["subject_time_off_set"]);
-        this.addTimeOffToLesson(this.teacher["teacher_time_off_set"]);
-    }
-}
-
-class LessonClass {
-    constructor() {
-        this.lessons = [];
-    }
-
-    addLesson(teacher) {
-        let lessonList = teacher["lesson_set"];
-        if (lessonList && lessonList.length > 0) {
-            let transformedData = lessonList.map(
-                (lsn) => new LessonObj(lsn, teacher)
-            );
-            this.lessons = [...this.lessons, ...transformedData];
-        }
-    }
-    insertLessons(teachers) {
-        teachers.forEach((teacher) => {
-            this.addLesson(teacher);
-        });
-        console.log(this.lessons);
-    }
-}
-
-class TimeNode {
-    constructor(time) {
-        this.id = time.id;
-        this.name = time.name;
-        this.start_time = time.start_time;
-        this.end_time = time.end_time;
-        this.next = null;
-    }
-}
-
-class TimeLinkedList {
-    constructor(timeList) {
-        this.root = null;
-        this.generateList(timeList);
-    }
-    generateList(timeList) {
-        this.root = new TimeNode(timeList[0]);
-        let preNode = this.root;
-        for (let i = 1; i < timeList.length; i++) {
-            preNode.next = new TimeNode(timeList[i]);
-            preNode = preNode.next;
-        }
-    }
-}
+import { AllotedLessons, LessonClass, TimeLinkedList } from "./classes";
 
 class Slot {
     constructor(semester) {
@@ -147,7 +52,7 @@ class SemObj {
 
 class TimeTable {
     constructor(semesterList, dayList, timeList) {
-        this.data = this.createSemesters(semesterList, dayList, timeList);
+        this.data = {};
     }
     createSemesters(semesterList, dayList, timeList) {
         let semesters = {};
@@ -169,9 +74,56 @@ export const generateTimeTable = (
 ) => {
     const lessonsData = new LessonClass();
     lessonsData.insertLessons(teachers);
-    const timeTable = new TimeTable(semesters, days, timings);
-    console.log(timeTable.data);
+    console.log("Lessons are: ", lessonsData.lessons);
+
     const timeLinked = new TimeLinkedList(timings);
-    console.log(timeLinked.root);
-    return {};
+    // console.log("Time Linked List is: ", timeLinked.root);
+
+    const timeTable = new TimeTable();
+    // console.log("Generated Empty timetable is: ", timeTable.data);
+
+    const data = new AllotedLessons(timings);
+
+    lessonsData.lessons.every((lsn) => {
+        while (lsn.lesson_per_week > 0) {
+            // Search for the day
+            let dayIndex;
+            for (dayIndex = 0; dayIndex < days.length; dayIndex++) {
+                if (data.isDayAvailableForLesson(lsn, days[dayIndex])) break;
+            }
+            // days are filled
+            if (dayIndex >= days.length) {
+                console.log("No Day Available");
+                break;
+            }
+            // Day is available ##########
+            // Search for the Slot
+            let timeIndex;
+            for (timeIndex = 0; timeIndex < timings.length; timeIndex++) {
+                if (
+                    data.isTimeAvailableForSemster(
+                        days[dayIndex],
+                        lsn,
+                        timings[timeIndex]
+                    )
+                )
+                    break;
+            }
+            // time filled
+            if (timeIndex === timings.length) {
+                console.log("No Time Slot Available");
+                break;
+            }
+
+            // Slot available ###########
+            // Assign Lecture
+            data.assignLecture(days[dayIndex], timings[timeIndex], lsn);
+
+            // lecture Assigned
+            lsn.lesson_per_week--;
+        }
+
+        return true;
+    });
+    console.log(data);
 };
