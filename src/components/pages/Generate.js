@@ -77,13 +77,21 @@ const ContentWrapper = ({ data }) => {
     );
 };
 const Lecture = ({ data, rows }) => {
+    let newData = [];
+    for (let i = 1; i <= rows && rows > 1; i++) {
+        let grp = `G${i}`;
+        let index = data.findIndex((d) => d.semGroup.code === grp);
+        if (index === -1) newData.push(null);
+        else newData.push(data[index]);
+    }
+
     return (
         <Grid
             container
             sx={{ display: "grid", height: "100%" }}
             gridTemplateRows={`repeat(${rows}, 1fr)`}
         >
-            {data.map((d) => (
+            {(rows > 1 ? newData : data).map((d) => (
                 <ContentWrapper data={d} />
             ))}
         </Grid>
@@ -96,7 +104,7 @@ const EmptyDiv = () => {
 
 const DataDiv = ({ slotData }) => {
     if (slotData[0].isGrouped)
-        return <Lecture data={slotData} rows={slotData.length} />;
+        return <Lecture data={slotData} rows={slotData[0].totalGroups} />;
 
     return <Lecture data={slotData} rows={1} />;
 };
