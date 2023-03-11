@@ -20,7 +20,7 @@ const Cell = ({ children, colSpan }) => {
             sx={{
                 textAlign: "center",
                 border: "1px solid black",
-                height: "40px",
+                height: "100px",
                 padding: "0",
             }}
         >
@@ -29,38 +29,33 @@ const Cell = ({ children, colSpan }) => {
     );
 };
 
-const ContentDiv = ({ subject, teacher, room }) => {
+const HeaderDiv = ({ children }) => {
+    return <Box sx={{ padding: "5px" }}>{children}</Box>;
+};
+
+const gridItemCSS = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+};
+
+const Content = ({ subject, teacher, room }) => {
     return (
-        <Grid container>
-            <Grid item xs={12}>
+        <Grid container sx={{ height: "100%" }}>
+            <Grid item xs={12} sx={gridItemCSS}>
                 {subject}
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} sx={gridItemCSS}>
                 {room}
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} sx={gridItemCSS}>
                 {teacher}
             </Grid>
         </Grid>
     );
 };
 
-const HeaderDiv = ({ children }) => {
-    return <Box sx={{ padding: "5px" }}>{children}</Box>;
-};
-
-const LectureDiv = ({ data }) => {
-    return (
-        <Box
-            sx={{
-                backgroundColor: data.teacher.color,
-            }}
-        >
-            {data.subject.name}
-        </Box>
-    );
-};
-const GroupContent = ({ data }) => {
+const ContentWrapper = ({ data }) => {
     if (!data) return <Grid item xs={12}></Grid>;
     return (
         <Grid
@@ -68,25 +63,29 @@ const GroupContent = ({ data }) => {
             xs={12}
             sx={{
                 backgroundColor: data.teacher.color,
+                height: "100%",
+                maxWidth: `${data.colSpan * 100}% !important`,
+                width: `${data.colSpan * 100}% !important`,
             }}
         >
-            <ContentDiv
-                room={data.classroom.name}
-                subject={data.subject.name}
-                teacher={data.teacher.name}
+            <Content
+                room={data.classroom.code}
+                subject={data.subject.code}
+                teacher={data.teacher.code}
             />
         </Grid>
     );
 };
-const LabDiv = ({ data }) => {
+const Lecture = ({ data, rows }) => {
     return (
         <Grid
             container
-            sx={{ display: "grid" }}
-            gridTemplateRows="repeat(2, 1fr)"
+            sx={{ display: "grid", height: "100%" }}
+            gridTemplateRows={`repeat(${rows}, 1fr)`}
         >
-            <GroupContent data={data[0]} />
-            <GroupContent data={data[1]} />
+            {data.map((d) => (
+                <ContentWrapper data={d} />
+            ))}
         </Grid>
     );
 };
@@ -95,21 +94,21 @@ const EmptyDiv = () => {
     return <></>;
 };
 
-const DataDiv = ({ data }) => {
-    if (data[0].colSpan > 1) return <LabDiv data={data} />;
-    return <LectureDiv data={data[0]} />;
+const DataDiv = ({ slotData }) => {
+    if (slotData[0].isGrouped)
+        return <Lecture data={slotData} rows={slotData.length} />;
+
+    return <Lecture data={slotData} rows={1} />;
 };
 
 const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
-    const data =
+    const slotData =
         generatedTimeTable[sem.id] && generatedTimeTable[sem.id][day.id]
             ? generatedTimeTable[sem.id][day.id][timeslot.id]
             : undefined;
 
     return (
-        <Cell colSpan={data?.colSpan}>
-            {data ? <DataDiv data={data} /> : <EmptyDiv />}
-        </Cell>
+        <Cell>{slotData ? <DataDiv slotData={slotData} /> : <EmptyDiv />}</Cell>
     );
 };
 
@@ -162,7 +161,7 @@ const Generate = () => {
 
     return (
         <Box sx={{ margin: "50px", overflow: "scroll" }}>
-            <Table>
+            <Table sx={{ tableLayout: "fixed", width: "5000px" }}>
                 <TableHead>
                     <TableRow>
                         <Cell />
