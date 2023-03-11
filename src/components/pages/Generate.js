@@ -50,7 +50,15 @@ const HeaderDiv = ({ children }) => {
 };
 
 const LectureDiv = ({ data }) => {
-    return <Box>{data.subject}</Box>;
+    return (
+        <Box
+            sx={{
+                backgroundColor: data.teacher.color,
+            }}
+        >
+            {data.subject.name}
+        </Box>
+    );
 };
 const GroupContent = ({ data }) => {
     if (!data) return <Grid item xs={12}></Grid>;
@@ -59,13 +67,13 @@ const GroupContent = ({ data }) => {
             item
             xs={12}
             sx={{
-                backgroundColor: data.backgroundColor,
+                backgroundColor: data.teacher.color,
             }}
         >
             <ContentDiv
-                room={data.room}
-                subject={data.subject}
-                teacher={data.teacher}
+                room={data.classroom.name}
+                subject={data.subject.name}
+                teacher={data.teacher.name}
             />
         </Grid>
     );
@@ -77,8 +85,8 @@ const LabDiv = ({ data }) => {
             sx={{ display: "grid" }}
             gridTemplateRows="repeat(2, 1fr)"
         >
-            <GroupContent data={data.groups["G1"]} />
-            <GroupContent data={data.groups["G2"]} />
+            <GroupContent data={data[0]} />
+            <GroupContent data={data[1]} />
         </Grid>
     );
 };
@@ -88,8 +96,8 @@ const EmptyDiv = () => {
 };
 
 const DataDiv = ({ data }) => {
-    if (data.colSpan > 1) return <LabDiv data={data} />;
-    return <LectureDiv data={data} />;
+    if (data[0].colSpan > 1) return <LabDiv data={data} />;
+    return <LectureDiv data={data[0]} />;
 };
 
 const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
@@ -110,27 +118,7 @@ const Generate = () => {
     const [days, setDays] = useState([]);
     const [timeSlots, setTimeSlots] = useState([]);
     const [semesters, setSemesters] = useState([]);
-    const [generatedTimeTable, setGeneratedTimeTable] = useState({
-        "315f4199-18fe-4fd5-aa01-35d6b84ca8e8": {
-            "0ecd900f-0077-43ec-83b0-545619b653bb": {
-                "150cac9c-684f-4337-ae79-d6a65d57ba0d": {
-                    isGrouped: true,
-                    groups: {
-                        G1: {
-                            subject: "Ec-101",
-                            teacher: "SKU",
-                            room: "F1",
-
-                            backgroundColor: "#f1f121",
-                        },
-                    },
-                    colSpan: 2,
-                    height: "25px",
-                    totalGroups: 2,
-                },
-            },
-        },
-    });
+    const [generatedTimeTable, setGeneratedTimeTable] = useState();
 
     const teacherData = useSelector((state) => state.teacher.teacherList);
     const bellTimings = useSelector((state) => state.profile.bellTimings);
@@ -160,13 +148,15 @@ const Generate = () => {
         setSemesters(semesterData);
     }, [teacherData, bellTimings, workingDays, semesterData]);
     useEffect(() => {
-        generateTimeTable(
-            bellTimings,
-            workingDays,
-            teacherData,
-            semesterData,
-            classroomData,
-            subjectData
+        setGeneratedTimeTable(
+            generateTimeTable(
+                bellTimings,
+                workingDays,
+                teacherData,
+                semesterData,
+                classroomData,
+                subjectData
+            )
         );
     }, []);
 

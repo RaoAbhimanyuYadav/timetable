@@ -74,7 +74,7 @@ export const generateTimeTable = (
 ) => {
     const lessonsData = new LessonClass();
     lessonsData.insertLessons(teachers);
-    console.log("Lessons are: ", lessonsData.lessons);
+    // console.log("Lessons are: ", lessonsData.lessons);
 
     const timeLinked = new TimeLinkedList(timings);
     // console.log("Time Linked List is: ", timeLinked.root);
@@ -125,5 +125,31 @@ export const generateTimeTable = (
 
         return true;
     });
+
     console.log(data);
+    let finalData = {};
+    // Data manipuation for rendering
+    data.days.forEach((d) => {
+        let day = d.day;
+        d.timings.forEach((t) => {
+            let time = t.time;
+            t.semesterList.forEach((data) => {
+                let semester = data.semester;
+                if (data.visibility === 1) {
+                    if (finalData[semester.id] === undefined)
+                        finalData[semester.id] = {};
+                    if (finalData[semester.id][day.id] === undefined)
+                        finalData[semester.id][day.id] = {};
+                    if (finalData[semester.id][day.id][time.id] === undefined)
+                        finalData[semester.id][day.id][time.id] = [];
+
+                    finalData[semester.id][day.id][time.id] = [
+                        ...finalData[semester.id][day.id][time.id],
+                        data,
+                    ];
+                }
+            });
+        });
+    });
+    return finalData;
 };

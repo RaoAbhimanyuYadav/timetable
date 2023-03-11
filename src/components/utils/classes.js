@@ -98,25 +98,20 @@ export class TimeLinkedList {
 class AllotedSlotNode {
     constructor(lsn, display) {
         // Property
-        this.show = display;
+        this.visibility = display;
         this.isGrouped = lsn.semGroup.code.includes("G");
-        this.groups = [];
         this.colSpan = lsn.is_lab ? 2 : 1;
         this.height = "25px";
         this.totalGroups = lsn.semester.semester_group_set.length - 1;
 
         // Values
-    }
-    appendGroup(lsn) {
-        this.groups.push({
-            semGroup: lsn.semGroup,
-            id: lsn.id,
-            is_lab: lsn.is_lab,
-            classroom: lsn.classroom,
-            semester: lsn.semester,
-            subject: lsn.subject,
-            teacher: lsn.teacher,
-        });
+        this.semGroup = lsn.semGroup;
+        this.id = lsn.id;
+        this.is_lab = lsn.is_lab;
+        this.classroom = lsn.classroom;
+        this.semester = lsn.semester;
+        this.subject = lsn.subject;
+        this.teacher = lsn.teacher;
     }
 }
 
@@ -126,7 +121,7 @@ class SlotNode {
         this.semGroupAssigned = []; //  if(G_) add W also
         this.teacherAssigned = []; // id
         this.classroomAssigned = []; // id
-        this.semesterList = []; // allotedSlotNode
+        this.semesterList = []; // allotedSlotNode -> sem + grp + visiblity
     }
     isGroupAvailable(grp) {
         return this.semGroupAssigned.findIndex((gId) => gId === grp.id) === -1;
@@ -138,7 +133,7 @@ class SlotNode {
     }
     isClassroomAvailable(room) {
         return (
-            !this.classroomAssigned.findIndex((cId) => cId === room.id) === -1
+            this.classroomAssigned.findIndex((cId) => cId === room.id) === -1
         );
     }
     isSlotAvailable(lsn) {
@@ -150,7 +145,6 @@ class SlotNode {
     }
     pushNewSlot(lsn, display) {
         let newSlot = new AllotedSlotNode(lsn, display);
-        newSlot.appendGroup(lsn);
         this.semesterList.push(newSlot);
     }
     assignLectureForTheSlot(lsn, display) {
@@ -174,19 +168,7 @@ class SlotNode {
         this.teacherAssigned.push(lsn.teacher.id);
         // add data to slot
 
-        if (lsn.semGroup.code.includes("W")) {
-            this.pushNewSlot(lsn, display);
-        } else {
-            // try to find either another group is present or not
-            let semIndex = this.semesterList.findIndex(
-                (sem) => sem.semester.id === lsn.semester.id
-            );
-            if (semIndex === -1) {
-                this.pushNewSlot(lsn, display);
-            } else {
-                this.semesterList[semIndex].appendGroup(lsn);
-            }
-        }
+        this.pushNewSlot(lsn, display);
     }
 }
 
@@ -216,7 +198,6 @@ class DayNode {
         while (timeList.id !== time.id) timeList = timeList.next;
         timeList = timeList.next;
         if (timeList === null) return false;
-
         return (
             this.isTimeAvailableForLecture(time, lsn) &&
             this.isTimeAvailableForLecture(timeList, lsn)
