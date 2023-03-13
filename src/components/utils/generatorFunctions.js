@@ -1,86 +1,9 @@
-import { AllotedLessons, LessonClass, TimeLinkedList } from "./classes";
+import { AllotedLessons, LessonClass } from "./classes";
 
-class Slot {
-    constructor(semester) {
-        this.classroom = null;
-        this.isGrouped = false;
-        this.groups = [];
-        this.colSpan = 1;
-        this.height = "25px";
-        this.totalGroups = semester.semester_group_set.length - 1;
-    }
-}
-
-class TimeObj {
-    constructor(time, semester) {
-        this[time.id] = new Slot(semester);
-        this.teachersAssigned = [];
-        this.semesterGroupAssigned = [];
-        this.classroomAssigned = [];
-    }
-}
-
-class DayObj {
-    constructor(day, semester, timeList) {
-        this[day.id] = this.createTimes(timeList, semester);
-        this.subjectAssigned = [];
-        this.timeAssigned = [];
-    }
-    createTimes(timeList, semester) {
-        let times = {};
-        timeList.forEach((time) => {
-            let newTime = new TimeObj(time, semester);
-            times = { ...times, ...newTime };
-        });
-        return times;
-    }
-}
-
-class SemObj {
-    constructor(semester, dayList, timeList) {
-        this[semester.id] = this.createDays(dayList, timeList, semester);
-    }
-    createDays(dayList, timeList, semester) {
-        let days = {};
-        dayList.forEach((day) => {
-            let newDay = new DayObj(day, semester, timeList);
-            days = { ...days, ...newDay };
-        });
-        return days;
-    }
-}
-
-class TimeTable {
-    constructor(semesterList, dayList, timeList) {
-        this.data = {};
-    }
-    createSemesters(semesterList, dayList, timeList) {
-        let semesters = {};
-        semesterList.forEach((sem) => {
-            let semester = new SemObj(sem, dayList, timeList);
-            semesters = { ...semesters, ...semester };
-        });
-        return semesters;
-    }
-}
-
-export const generateTimeTable = (
-    timings,
-    days,
-    teachers,
-    semesters,
-    classrooms,
-    subjects
-) => {
+export const generateTimeTable = (timings, days, teachers) => {
     const lessonsData = new LessonClass();
     lessonsData.insertLessons(teachers);
-    // console.log("Lessons are: ", lessonsData.lessons);
-
-    const timeLinked = new TimeLinkedList(timings);
-    // console.log("Time Linked List is: ", timeLinked.root);
-
-    const timeTable = new TimeTable();
-    // console.log("Generated Empty timetable is: ", timeTable.data);
+    console.log("Lessons are: ", lessonsData.lessons);
 
     const data = new AllotedLessons(timings);
 
@@ -127,6 +50,7 @@ export const generateTimeTable = (
     });
 
     console.log(data);
+
     let finalData = {};
     // Data manipuation for rendering
     data.days.forEach((d) => {
@@ -151,5 +75,6 @@ export const generateTimeTable = (
             });
         });
     });
+
     return finalData;
 };

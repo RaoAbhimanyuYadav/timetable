@@ -1,4 +1,5 @@
 class LessonNode {
+    // Store information regarding a LESSON
     constructor(lsn, teacher) {
         this.id = lsn.id;
         this.is_lab = lsn.is_lab;
@@ -36,7 +37,7 @@ class LessonNode {
             if (!this.isTimeOffPresent(timeOff)) {
                 let updatedTimeOff = { ...timeOff };
                 delete updatedTimeOff.id;
-                this.time_off = [...this.time_off, updatedTimeOff];
+                this.time_off.push(updatedTimeOff);
             }
         });
     }
@@ -60,7 +61,7 @@ export class LessonClass {
             let transformedData = lessonList.map(
                 (lsn) => new LessonNode(lsn, teacher)
             );
-            this.lessons = [...this.lessons, ...transformedData];
+            this.lessons.push(...transformedData);
         }
     }
     insertLessons(teachers) {
@@ -80,7 +81,7 @@ class TimeNode {
     }
 }
 
-export class TimeLinkedList {
+class TimeLinkedList {
     constructor(timeList) {
         this.root = null;
         this.generateList(timeList);
@@ -123,19 +124,23 @@ class SlotNode {
         this.classroomAssigned = []; // id
         this.semesterList = []; // allotedSlotNode -> sem + grp + visiblity
     }
+
     isGroupAvailable(grp) {
         return this.semGroupAssigned.findIndex((gId) => gId === grp.id) === -1;
     }
+
     isTeacherAvailable(teacher) {
         return (
             this.teacherAssigned.findIndex((tId) => tId === teacher.id) === -1
         );
     }
+
     isClassroomAvailable(room) {
         return (
             this.classroomAssigned.findIndex((cId) => cId === room.id) === -1
         );
     }
+
     isSlotAvailable(lsn) {
         return (
             this.isGroupAvailable(lsn.semGroup) &&
@@ -143,10 +148,12 @@ class SlotNode {
             this.isClassroomAvailable(lsn.classroom)
         );
     }
+
     pushNewSlot(lsn, display) {
         let newSlot = new AllotedSlotNode(lsn, display);
         this.semesterList.push(newSlot);
     }
+
     assignLectureForTheSlot(lsn, display) {
         // mark semGroup
         this.semGroupAssigned.push(lsn.semGroup.id);
@@ -167,7 +174,6 @@ class SlotNode {
         // mark teacher
         this.teacherAssigned.push(lsn.teacher.id);
         // add data to slot
-
         this.pushNewSlot(lsn, display);
     }
 }

@@ -91,8 +91,8 @@ const Lecture = ({ data, rows }) => {
             sx={{ display: "grid", height: "100%" }}
             gridTemplateRows={`repeat(${rows}, 1fr)`}
         >
-            {(rows > 1 ? newData : data).map((d) => (
-                <ContentWrapper data={d} />
+            {(rows > 1 ? newData : data).map((d, i) => (
+                <ContentWrapper key={i} data={d} />
             ))}
         </Grid>
     );
@@ -121,7 +121,6 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
 };
 
 const Generate = () => {
-    const [lessons, setLessons] = useState([]);
     const [days, setDays] = useState([]);
     const [timeSlots, setTimeSlots] = useState([]);
     const [semesters, setSemesters] = useState([]);
@@ -131,41 +130,15 @@ const Generate = () => {
     const bellTimings = useSelector((state) => state.profile.bellTimings);
     const workingDays = useSelector((state) => state.profile.workingDays);
     const semesterData = useSelector((state) => state.semester.semesterList);
-    const classroomData = useSelector((state) => state.semester.classroomList);
-    const subjectData = useSelector((state) => state.semester.subjectList);
 
     useEffect(() => {
-        let lessonData = [];
-        teacherData.forEach((t) => {
-            let teacher = {
-                id: t.id,
-                name: t.name,
-                code: t.code,
-                color: t.color,
-                teacher_time_off_set: t.teacher_time_off_set,
-            };
-            t.lesson_set.forEach((l) => {
-                let lesson = { ...l, teacher };
-                lessonData.push(lesson);
-            });
-        });
-        setLessons(lessonData);
         setTimeSlots(bellTimings);
         setDays(workingDays);
         setSemesters(semesterData);
-    }, [teacherData, bellTimings, workingDays, semesterData]);
-    useEffect(() => {
         setGeneratedTimeTable(
-            generateTimeTable(
-                bellTimings,
-                workingDays,
-                teacherData,
-                semesterData,
-                classroomData,
-                subjectData
-            )
+            generateTimeTable(bellTimings, workingDays, teacherData)
         );
-    }, []);
+    }, [bellTimings, workingDays, teacherData, semesterData]);
 
     return (
         <Box sx={{ margin: "50px", overflow: "scroll" }}>
