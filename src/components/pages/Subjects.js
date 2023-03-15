@@ -5,13 +5,14 @@ import {
     SUBJECT_FORM_FIELDS,
     SUBJECT_TABLE_BODY_KEY,
     SUBJECT_TABLE_HEADING,
+    SUBJECT_FORM_KEY_LIST,
 } from "../constants/subjectCostant";
 import PageWrapper from "../HOC/PageWrapper";
 
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
     addData,
     deleteData,
@@ -30,49 +31,67 @@ const Subjects = () => {
 
     const axios = useAxiosPrivate();
 
-    const subjectData = useSelector((state) => state.subject);
-    const timeOffList = useSelector((state) => state.common.timeOffList) || [];
+    const isSubjectsFetched = useSelector(
+        (state) => state.subject.isSubjectsFetched
+    );
 
-    const formSubmitHandler = (e, data) => {
-        const filteredData = {
-            name: e.target.name.value,
-            code: e.target.code.value,
-            subject_time_off_set: timeOffList,
-        };
-        if (data) {
-            filteredData["id"] = data.id;
-            // update doc
-            dispatch(
-                updateData(
-                    axios,
-                    SUBJECT_URL,
-                    updateSubjectReducer,
-                    filteredData
-                )
-            );
-        } else {
-            // create doc
-            dispatch(
-                addData(axios, SUBJECT_URL, addSubjectReducer, filteredData)
-            );
-        }
-        dispatch(clearTimeOffReducer());
-    };
+    const selectorFunc = useCallback((state) => state.subject.subjectList, []);
 
-    const deleteHandler = (data) => {
-        // delete doc
-        dispatch(deleteData(axios, SUBJECT_URL, deleteSubjectReducer, data.id));
-    };
+    const formSubmitHandler = useCallback(
+        (e, data) => {
+            const filteredData = {
+                name: e.target.name.value,
+                code: e.target.code.value,
+            };
+            if (data) {
+                filteredData["id"] = data.id;
+                // update doc
+                dispatch(
+                    updateData(
+                        axios,
+                        SUBJECT_URL,
+                        updateSubjectReducer,
+                        filteredData,
+                        SUBJECT_FORM_KEY_LIST
+                    )
+                );
+            } else {
+                // create doc
+                dispatch(
+                    addData(
+                        axios,
+                        SUBJECT_URL,
+                        addSubjectReducer,
+                        filteredData,
+                        SUBJECT_FORM_KEY_LIST
+                    )
+                );
+            }
+            dispatch(clearTimeOffReducer());
+        },
+        [axios, dispatch]
+    );
+
+    const deleteHandler = useCallback(
+        (data) => {
+            // delete doc
+            dispatch(
+                deleteData(axios, SUBJECT_URL, deleteSubjectReducer, data.id)
+            );
+        },
+        [axios, dispatch]
+    );
 
     useEffect(() => {
-        if (subjectData.isSubjectsFetched)
+        if (isSubjectsFetched) {
             dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
-    }, [axios, subjectData, dispatch]);
+        } // eslint-disable-next-line
+    }, [isSubjectsFetched]);
 
     return (
         <PageWrapper
             title={"Subjects"}
-            tableBodyData={subjectData.subjectList || []}
+            selectorFunc={selectorFunc}
             tableHeadings={SUBJECT_TABLE_HEADING}
             tableBodykey={SUBJECT_TABLE_BODY_KEY}
             formFields={SUBJECT_FORM_FIELDS}

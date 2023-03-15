@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -6,6 +6,7 @@ import {
     TEACHER_FORM_FIELDS,
     TEACHER_TABLE_BODY_KEY,
     TEACHER_TABLE_HEADING,
+    TEACHER_FORM_KEY_LIST,
 } from "../constants/teacherConstant";
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -28,22 +29,21 @@ const Teachers = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const teacherData = useSelector((state) => state.teacher);
-    const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-    const selectedColor =
-        useSelector((state) => state.common.selectedColor) || [];
+    const isTeachersFetched = useSelector(
+        (state) => state.teacher.isTeachersFetched
+    );
+    const selectorFunc = useCallback((state) => state.teacher.teacherList, []);
 
     useEffect(() => {
-        if (teacherData.isTeachersFetched)
+        if (isTeachersFetched) {
             dispatch(getData(axios, TEACHER_URL, setTeacherReducer));
-    }, [teacherData, dispatch, axios]);
+        } // eslint-disable-next-line
+    }, [isTeachersFetched]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
             name: e.target.name.value,
             code: e.target.code.value,
-            color: selectedColor,
-            teacher_time_off_set: timeOffList,
         };
         if (data) {
             filteredData["id"] = data.id;
@@ -53,13 +53,20 @@ const Teachers = () => {
                     axios,
                     TEACHER_URL,
                     updateTeacherReducer,
-                    filteredData
+                    filteredData,
+                    TEACHER_FORM_KEY_LIST
                 )
             );
         } else {
             // create doc
             dispatch(
-                addData(axios, TEACHER_URL, addTeacherReducer, filteredData)
+                addData(
+                    axios,
+                    TEACHER_URL,
+                    addTeacherReducer,
+                    filteredData,
+                    TEACHER_FORM_KEY_LIST
+                )
             );
         }
         dispatch(clearTimeOffReducer());
@@ -73,7 +80,7 @@ const Teachers = () => {
     return (
         <PageWrapper
             title={"Teachers"}
-            tableBodyData={teacherData.teacherList || []}
+            selectorFunc={selectorFunc}
             tableHeadings={TEACHER_TABLE_HEADING}
             tableBodykey={TEACHER_TABLE_BODY_KEY}
             formFields={TEACHER_FORM_FIELDS}

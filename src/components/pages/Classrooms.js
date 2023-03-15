@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -6,6 +6,7 @@ import {
     CLASSROOM_FORM_FIELDS,
     CLASSROOM_TABLE_BODY_KEY,
     CLASSROOM_TABLE_HEADING,
+    CLASSROOM_FORM_KEY_LIST,
 } from "../constants/classroomConstants";
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -30,22 +31,25 @@ const Classrooms = () => {
 
     const axios = useAxiosPrivate();
 
-    const classroomData = useSelector((state) => state.classroom);
-    const timeOffList = useSelector((state) => state.common.timeOffList) || [];
-    const selectedSemesters =
-        useSelector((state) => state.semester.selectedSemesters) || [];
+    const selectorFunc = useCallback(
+        (state) => state.classroom.classroomList,
+        []
+    );
+
+    const isClassroomsFetched = useSelector(
+        (state) => state.classroom.isClassroomsFetched
+    );
 
     useEffect(() => {
-        if (classroomData.isClassroomsFetched)
+        if (isClassroomsFetched) {
             dispatch(getData(axios, CLASSROOM_URL, setClassroomReducer));
-    }, [classroomData, dispatch, axios]);
+        } // eslint-disable-next-line
+    }, [isClassroomsFetched]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
             name: e.target.name.value,
             code: e.target.code.value,
-            classroom_time_off_set: timeOffList,
-            semesters: selectedSemesters,
         };
         if (data) {
             filteredData["id"] = data.id;
@@ -55,13 +59,20 @@ const Classrooms = () => {
                     axios,
                     CLASSROOM_URL,
                     updateClassroomReducer,
-                    filteredData
+                    filteredData,
+                    CLASSROOM_FORM_KEY_LIST
                 )
             );
         } else {
             // create doc
             dispatch(
-                addData(axios, CLASSROOM_URL, addClassroomReducer, filteredData)
+                addData(
+                    axios,
+                    CLASSROOM_URL,
+                    addClassroomReducer,
+                    filteredData,
+                    CLASSROOM_FORM_KEY_LIST
+                )
             );
         }
         dispatch(clearTimeOffReducer());
@@ -77,7 +88,7 @@ const Classrooms = () => {
     return (
         <PageWrapper
             title={"Classrooms"}
-            tableBodyData={classroomData.classroomList || []}
+            selectorFunc={selectorFunc}
             tableHeadings={CLASSROOM_TABLE_HEADING}
             tableBodykey={CLASSROOM_TABLE_BODY_KEY}
             formFields={CLASSROOM_FORM_FIELDS}

@@ -1,6 +1,7 @@
 export const SEMESTER_TABLE_BODY_KEY = [
     "name",
     "code",
+    "classroom",
     "semester_group_set",
     "semester_time_off_set",
 ];
@@ -8,6 +9,7 @@ export const SEMESTER_TABLE_BODY_KEY = [
 export const SEMESTER_TABLE_HEADING = [
     "Name",
     "Semester Code",
+    "Classroom",
     "Groups",
     "Timing OFF",
 ];
@@ -26,6 +28,13 @@ export const SEMESTER_FORM_FIELDS = [
         default: "",
     },
     {
+        label: "Classroom",
+        type: "asyncSelect",
+        key: "classroom",
+        default: "",
+        selectorFunc: (state) => state.classroom.classroomList,
+    },
+    {
         label: "Total groups",
         type: "groups",
         key: "semester_group_set",
@@ -36,6 +45,22 @@ export const SEMESTER_FORM_FIELDS = [
         type: "time_off",
         key: "semester_time_off_set",
         default: 1,
+    },
+];
+
+export const SEMESTER_FORM_KEY_LIST = [
+    {
+        key: "semester_group_set",
+        statePath: (getstate) => getstate().common.groupList,
+    },
+    {
+        key: "classroom",
+        createObjWithId: true,
+        statePath: (getstate) => getstate().lesson.classroom,
+    },
+    {
+        key: "semester_time_off_set",
+        statePath: (getstate) => getstate().common.timeOffList,
     },
 ];
 

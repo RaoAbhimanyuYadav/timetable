@@ -18,7 +18,7 @@ const useFetchAll = () => {
         } catch (err) {
             console.log(err);
         } finally {
-            setLoading(false);
+            setLoading && setLoading(false);
         }
     };
 

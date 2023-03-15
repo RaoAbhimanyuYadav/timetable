@@ -1,77 +1,33 @@
-import { Box, Table, TableBody, TableHead, TableRow } from "@mui/material";
+import { Table, TableBody, TableHead, TableRow } from "@mui/material";
 
 import AddEditDialog from "./AddEditDialog";
 import ConfirmDelete from "./ConfirmDelete";
 import { CustomCell, CellInsideWrapper } from "../utils/customComponents";
-import LessonAssignButton from "../specific/LessonAssignButton";
+import NameExtractor from "../specific/NameExtractor";
+import { useSelector } from "react-redux";
 
 const TableLayout = ({
-    tableBodyData,
     tableBodykey,
     tableHeadings,
+    selectorFunc,
     deleteHandler,
     formFields,
     formSubmitHandler,
 }) => {
-    const objNameExtractor = (obj) => {
-        let name = "";
-        tableBodykey.forEach((key) => {
-            if (typeof obj[key] === "string" || typeof obj[key] === "number")
-                name += obj[key] + " ";
-        });
-        return name;
-    };
-
-    const nameExtractor = (key, obj) => {
-        if (key.includes("_button")) {
-            return <LessonAssignButton teacher={obj} />;
-        }
-        if (key.includes("_group_set")) {
-            return obj[key].map((ele) => (
-                <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
-            ));
-        }
-        if (key.includes("color")) {
-            return (
-                <Box
-                    sx={{
-                        backgroundColor: `${obj[key]}`,
-                        width: "40px",
-                        aspectRatio: "2/1",
-                    }}
-                ></Box>
-            );
-        }
-        if (typeof obj[key] === "string" || typeof obj[key] === "number")
-            return obj[key];
-        if (typeof obj[key] === "boolean") return obj[key] ? "Yes" : "No";
-        if (typeof obj[key] === "object") {
-            if (Array.isArray(obj[key])) {
-                if (key.includes("_time_off_set")) {
-                    return obj[key].map((ele) => (
-                        <span key={ele.id}>
-                            {`${ele.working_day.name} : ${ele.bell_timing.start_time}-${ele.bell_timing.end_time}`}
-                            <br />
-                        </span>
-                    ));
-                } else if (key.includes("semesters")) {
-                    return obj[key].map((ele) => (
-                        <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
-                    ));
-                }
-            } else {
-                return `${obj[key].name}(${obj[key].code})`;
-            }
-        }
-    };
+    const data = useSelector(selectorFunc) || [];
 
     return (
         <Table>
             <TableHead>
                 <TableRow>
-                    {tableHeadings.map((instance, index) => {
+                    <CustomCell>
+                        <CellInsideWrapper sx={{ fontWeight: "700" }}>
+                            Index
+                        </CellInsideWrapper>
+                    </CustomCell>
+                    {tableHeadings.map((instance) => {
                         return (
-                            <CustomCell key={index}>
+                            <CustomCell key={instance}>
                                 <CellInsideWrapper sx={{ fontWeight: "700" }}>
                                     {instance}
                                 </CellInsideWrapper>
@@ -82,18 +38,26 @@ const TableLayout = ({
                     <CustomCell></CustomCell>
                 </TableRow>
             </TableHead>
-            {tableBodyData.length === 0 ? (
+            {data.length === 0 ? (
                 <></>
             ) : (
                 <TableBody>
-                    {tableBodyData.map((obj, i) => {
+                    {data.map((obj, i) => {
                         return (
-                            <TableRow key={i}>
-                                {tableBodykey.map((instance, index) => {
+                            <TableRow key={obj.id}>
+                                <CustomCell>
+                                    <CellInsideWrapper>
+                                        {i + 1}
+                                    </CellInsideWrapper>
+                                </CustomCell>
+                                {tableBodykey.map((instance) => {
                                     return (
-                                        <CustomCell key={index}>
+                                        <CustomCell key={instance}>
                                             <CellInsideWrapper>
-                                                {nameExtractor(instance, obj)}
+                                                <NameExtractor
+                                                    objKey={instance}
+                                                    obj={obj}
+                                                />
                                             </CellInsideWrapper>
                                         </CustomCell>
                                     );
@@ -106,13 +70,14 @@ const TableLayout = ({
                                                 formSubmitHandler
                                             }
                                             formData={obj}
+                                            maxWidth={"md"}
                                         />
                                     </CellInsideWrapper>
                                 </CustomCell>
                                 <CustomCell>
                                     <CellInsideWrapper>
                                         <ConfirmDelete
-                                            objName={objNameExtractor(obj)}
+                                            tableBodykey={tableBodykey}
                                             data={obj}
                                             deleteHandler={deleteHandler}
                                         />
