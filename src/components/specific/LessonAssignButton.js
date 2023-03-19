@@ -34,17 +34,11 @@ const LessonAssignButton = ({ teacher }) => {
         setOpen(true);
     };
 
-    const content = (
-        <>
-            <LessonAssignment lessons={teacher.lesson_set} />
-        </>
-    );
-
     return (
         <>
             <CustomDialog
                 title={`Assign Lecture to ${teacher.name}`}
-                content={content}
+                content={<LessonAssignment />}
                 open={open}
                 onClose={handleClose}
                 maxWidth={"lg"}

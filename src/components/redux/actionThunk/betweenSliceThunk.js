@@ -1,4 +1,7 @@
-import { setLessonAssignmentReducer } from "../reducers/lessonReducer";
+import {
+    setLessonAssignmentReducer,
+    updateInLessonAssignmentReducer,
+} from "../reducers/lessonReducer";
 import { addToSelectedSemesterReducer } from "../reducers/semesterReducer";
 
 export const setLessonAssignment = (id, key) => async (dispatch, getState) => {
@@ -33,6 +36,18 @@ export const setLessonAssignment = (id, key) => async (dispatch, getState) => {
         );
     }
 };
+
+export const updateInLessonAssignment =
+    (payload) => async (dispatch, getState) => {
+        const key = payload.key;
+        const val = payload.value;
+        if (key === "semester") {
+            const groups = getState().semester.semesterList.find(
+                (sem) => sem.id === val.id
+            ).semester_group_set;
+            dispatch(updateInLessonAssignmentReducer({ ...payload, groups }));
+        } else dispatch(updateInLessonAssignmentReducer(payload));
+    };
 
 export const addToSelectedSemester = (id) => async (dispatch, getState) => {
     const data = getState().semester.semesterList.find((sem) => sem.id === id);

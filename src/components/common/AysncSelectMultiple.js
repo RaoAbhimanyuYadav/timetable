@@ -1,12 +1,22 @@
+import { Box } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLessonAssignment } from "../redux/actionThunk/betweenSliceThunk";
 import {
+    setLessonAssignment,
+    updateInLessonAssignment,
+} from "../redux/actionThunk/betweenSliceThunk";
+import {
+    addToLessonAssignmentReducer,
+    deleteFromLessonAssignmentReducer,
     resetLessonAssignmentReducer,
     setLessonAssignmentReducer,
 } from "../redux/reducers/lessonReducer";
 
-import { CustomMenuItem, CustomTextField } from "../utils/customComponents";
+import {
+    CustomButton,
+    CustomMenuItem,
+    CustomTextField,
+} from "../utils/customComponents";
 
 const AysncSelect = ({ formData, obj }) => {
     const dispatch = useDispatch();
@@ -35,35 +45,63 @@ const AysncSelect = ({ formData, obj }) => {
                 })
             );
         };
-    }, [formData, dispatch, obj]);
+    }, [formData, dispatch, obj, tId]);
 
     const handleChange = (e, i) => {
-        const data = [...val];
-        data[i] = { id: e.target.value };
-        dispatch(setLessonAssignment(data, obj.key));
+        dispatch(
+            updateInLessonAssignment({
+                key: obj.key,
+                i,
+                value: { id: e.target.value },
+            })
+        );
     };
 
-    return val.map((d, i) => {
-        return (
-            <CustomTextField
-                key={`${d.id} ${i}`}
-                select
-                id={d.id}
-                defaultValue={d.id}
-                onChange={(e) => {
-                    handleChange(e, i);
-                }}
-            >
-                {(obj.key === "semester_group" ? data[i] || [] : data).map(
-                    (option) => (
-                        <CustomMenuItem key={option.id} value={option.id}>
-                            {option.name}({option.code})
-                        </CustomMenuItem>
-                    )
-                )}
-            </CustomTextField>
-        );
-    });
+    const handleAdd = (e) => {
+        dispatch(addToLessonAssignmentReducer({ key: obj.key }));
+    };
+
+    const handleDelete = (e, i) => {
+        dispatch(deleteFromLessonAssignmentReducer({ key: obj.key, i }));
+    };
+
+    return (
+        <>
+            {val.map((d, i) => (
+                <Box key={`${d.id} ${i}`} sx={{ display: "flex" }}>
+                    <CustomTextField
+                        select
+                        id={d.id}
+                        defaultValue={d.id}
+                        onChange={(e) => {
+                            handleChange(e, i);
+                        }}
+                    >
+                        {(obj.key === "semester_group"
+                            ? data[i] || []
+                            : data
+                        ).map((option) => (
+                            <CustomMenuItem key={option.id} value={option.id}>
+                                {option.name}({option.code})
+                            </CustomMenuItem>
+                        ))}
+                    </CustomTextField>
+                    {obj.key !== "semester_group" && i !== 0 && (
+                        <CustomButton
+                            onClick={(e) => {
+                                handleDelete(e, i);
+                            }}
+                        >
+                            Delete
+                        </CustomButton>
+                    )}
+                </Box>
+            ))}
+            {obj.key !== "semester_group" && (
+                <CustomButton onClick={handleAdd}>Add</CustomButton>
+            )}
+        </>
+    );
 };
 
 export default AysncSelect;
