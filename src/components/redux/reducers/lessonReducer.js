@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    teacher: "",
+    teacherId: "",
     subject: "",
     classroom: "",
-    semester: "",
+    teacher: [{ id: "" }],
+    semester: [{ id: "" }],
+    semester_group: [{ id: "" }],
     groupList: [],
-    semester_group: "",
     lessonList: [],
 };
 
@@ -18,15 +19,17 @@ const subjectSlice = createSlice({
             const payload = action.payload;
             state[payload.key] = payload.id;
             if (payload.key === "semester") {
-                state.semester_group = "";
+                state.semester_group = new Array(
+                    payload.groupData.length || 1
+                ).fill({ id: "" });
                 state.groupList = payload.groupData || [];
             }
         },
         resetLessonAssignmentReducer: (state, action) => {
             const payload = action.payload;
-            state[payload.key] = "";
+            state[payload.key] = payload.value;
             if (payload.key === "semester") {
-                state.semester_group = "";
+                state.semester_group = [{ id: "" }];
                 state.groupList = [];
             }
         },

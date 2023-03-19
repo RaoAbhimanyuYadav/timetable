@@ -14,6 +14,7 @@ import {
 import ColorSelector from "./ColorSelector";
 import GroupComponent from "../utils/GroupComponent";
 import AysncSelect from "../utils/AysncSelect";
+import AysncSelectMultiple from "./AysncSelectMultiple";
 import CheckBoxes from "./CheckBoxes";
 import TimeOff from "../specific/TimeOff";
 
@@ -44,6 +45,8 @@ const inputFieldSelector = (obj, index, formData) => {
         return <CheckBoxes formData={formData} obj={obj} />;
     } else if (obj.type === "asyncSelect") {
         return <AysncSelect formData={formData} obj={obj} />;
+    } else if (obj.type === "asyncSelectMultiple") {
+        return <AysncSelectMultiple formData={formData} obj={obj} />;
     } else if (obj.type === "checkbox") {
         return (
             <input

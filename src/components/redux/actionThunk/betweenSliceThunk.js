@@ -12,11 +12,18 @@ import {
 } from "../reducers/teacherReducers";
 
 export const setLessonAssignment = (id, key) => async (dispatch, getState) => {
-    const groupData =
-        key === "semester"
-            ? getState().semester.semesterList.find((sem) => sem.id === id)
-                  .semester_group_set
-            : [];
+    const groupData = [];
+
+    if (key === "semester") {
+        id.forEach((s) => {
+            if (id !== "")
+                groupData.push(
+                    getState().semester.semesterList.find(
+                        (sem) => sem.id === s.id
+                    ).semester_group_set
+                );
+        });
+    }
     dispatch(
         setLessonAssignmentReducer({
             id,
@@ -24,9 +31,9 @@ export const setLessonAssignment = (id, key) => async (dispatch, getState) => {
             groupData,
         })
     );
-    if (key === "semester") {
+    if (key === "semester" && id.length === 1 && id[0].id !== "") {
         const sem = getState().semester.semesterList.find(
-            (sem) => sem.id === id
+            (sem) => sem.id === id[0].id
         );
         dispatch(
             setLessonAssignmentReducer({

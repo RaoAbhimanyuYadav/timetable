@@ -2,15 +2,9 @@ export const CLASSROOM_TABLE_BODY_KEY = [
     "name",
     "code",
     "classroom_time_off_set",
-    // "semesters",
 ];
 
-export const CLASSROOM_TABLE_HEADING = [
-    "Name",
-    "Code",
-    "Timing OFF",
-    // "Semesters",
-];
+export const CLASSROOM_TABLE_HEADING = ["Name", "Code", "Timing OFF"];
 
 export const CLASSROOM_FORM_FIELDS = [
     {
@@ -31,19 +25,9 @@ export const CLASSROOM_FORM_FIELDS = [
         key: "classroom_time_off_set",
         default: 1,
     },
-    // {
-    //     label: "Semesters",
-    //     type: "checkboxes",
-    //     key: "semesters",
-    //     default: 1,
-    // },
 ];
 
 export const CLASSROOM_FORM_KEY_LIST = [
-    // {
-    //     key: "semesters",
-    //     statePath: (getstate) => getstate().semester.selectedSemesters,
-    // },
     {
         key: "classroom_time_off_set",
         statePath: (getstate) => getstate().common.timeOffList,

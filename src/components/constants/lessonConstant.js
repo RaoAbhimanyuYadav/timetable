@@ -19,13 +19,17 @@ export const LESSON_TABLE_HEADING = [
 ];
 
 export const LESSON_FORM_FIELDS = [
-    // {
-    //     label: "Teacher",
-    //     type: "asyncSelect",
-    //     key: "teacher",
-    //     default: "",
-    //     listName: "teacherList",
-    // },
+    {
+        label: "Teacher",
+        type: "asyncSelectMultiple",
+        key: "teacher",
+        default: [
+            {
+                id: "",
+            },
+        ],
+        selectorFunc: (state) => state.teacher.teacherList,
+    },
     {
         label: "Subject",
         type: "asyncSelect",
@@ -36,16 +40,24 @@ export const LESSON_FORM_FIELDS = [
 
     {
         label: "Semester",
-        type: "asyncSelect",
+        type: "asyncSelectMultiple",
         key: "semester",
-        default: "",
+        default: [
+            {
+                id: "",
+            },
+        ],
         selectorFunc: (state) => state.semester.semesterList,
     },
     {
         label: "Group",
-        type: "asyncSelect",
+        type: "asyncSelectMultiple",
         key: "semester_group",
-        default: "",
+        default: [
+            {
+                id: "",
+            },
+        ],
         selectorFunc: (state) => state.lesson.groupList,
     },
     {

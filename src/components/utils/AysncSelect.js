@@ -19,6 +19,7 @@ const AysncSelect = ({ formData, obj }) => {
             dispatch(
                 resetLessonAssignmentReducer({
                     key: obj.key,
+                    value: "",
                 })
             );
         };

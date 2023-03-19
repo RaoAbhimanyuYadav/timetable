@@ -29,14 +29,12 @@ const NameExtractor = ({ objKey, obj }) => {
         if (Array.isArray(obj[objKey])) {
             if (objKey.includes("_time_off_set")) {
                 return <TimeOffRender data={obj[objKey]} />;
-            } else if (objKey.includes("semesters")) {
-                return obj[objKey].map((ele) => (
-                    <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
-                ));
             }
-        } else {
-            return `${obj[objKey].name}(${obj[objKey].code})`;
+            return obj[objKey].map((ele) => (
+                <span key={ele.id}>{`${ele.name}(${ele.code})`}</span>
+            ));
         }
+        return `${obj[objKey].name}(${obj[objKey].code})`;
     }
 };
 

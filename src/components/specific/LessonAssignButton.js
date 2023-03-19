@@ -17,12 +17,12 @@ const LessonAssignButton = ({ teacher }) => {
     const handleClose = () => {
         setOpen(false);
         dispatch(resetLessonReducer());
-        dispatch(setLessonAssignmentReducer({ key: "teacher", id: "" }));
+        dispatch(setLessonAssignmentReducer({ key: "teacherId", id: "" }));
     };
 
     const handleClick = () => {
         dispatch(
-            setLessonAssignmentReducer({ key: "teacher", id: teacher.id })
+            setLessonAssignmentReducer({ key: "teacherId", id: teacher.id })
         );
         dispatch(setLessonReducer(teacher ? teacher?.lesson_set : []));
         setOpen(true);
