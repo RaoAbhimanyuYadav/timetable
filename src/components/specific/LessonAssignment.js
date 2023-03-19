@@ -12,10 +12,10 @@ import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { addData, deleteData, updateData } from "../redux/actionThunk/apiThunk";
 import {
-    addLesson,
-    deleteLesson,
-    updateLesson,
-} from "../redux/actionThunk/betweenSliceThunk";
+    addLessonReducer,
+    deleteLessonReducer,
+    updateLessonReducer,
+} from "../redux/reducers/lessonReducer";
 
 const LessonAssignment = () => {
     const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const LessonAssignment = () => {
                 updateData(
                     axios,
                     LESSON_URL,
-                    updateLesson,
+                    updateLessonReducer,
                     filteredData,
                     LESSON_FORM_KEY_LIST
                 )
@@ -46,7 +46,7 @@ const LessonAssignment = () => {
                 addData(
                     axios,
                     LESSON_URL,
-                    addLesson,
+                    addLessonReducer,
                     filteredData,
                     LESSON_FORM_KEY_LIST
                 )
@@ -55,7 +55,7 @@ const LessonAssignment = () => {
     };
 
     const deleteHandler = (data) => {
-        dispatch(deleteData(axios, LESSON_URL, deleteLesson, data.id));
+        dispatch(deleteData(axios, LESSON_URL, deleteLessonReducer, data.id));
     };
 
     return (

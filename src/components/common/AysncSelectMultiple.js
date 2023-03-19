@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLessonAssignment } from "../redux/actionThunk/betweenSliceThunk";
-import { resetLessonAssignmentReducer } from "../redux/reducers/lessonReducer";
+import {
+    resetLessonAssignmentReducer,
+    setLessonAssignmentReducer,
+} from "../redux/reducers/lessonReducer";
 
 import { CustomMenuItem, CustomTextField } from "../utils/customComponents";
 
@@ -9,13 +12,20 @@ const AysncSelect = ({ formData, obj }) => {
     const dispatch = useDispatch();
 
     const data = useSelector(obj.selectorFunc) || [];
-    console.log(formData, obj, data);
 
     const val = useSelector((state) => state.lesson[obj.key]);
+    const tId = useSelector((state) => state.lesson.teacherId);
 
     useEffect(() => {
         if (formData) {
             dispatch(setLessonAssignment(formData[obj.key], obj.key));
+        } else if (obj.key === "teacher") {
+            dispatch(
+                setLessonAssignmentReducer({
+                    key: "teacher",
+                    id: [{ id: tId }],
+                })
+            );
         }
         return () => {
             dispatch(

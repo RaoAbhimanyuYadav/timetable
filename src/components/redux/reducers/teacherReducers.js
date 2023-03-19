@@ -32,35 +32,6 @@ const teacherSlice = createSlice({
             state.isTeachersFetched = true;
             state.teacherList = [];
         },
-        addTeacherLessonReducer: (state, action) => {
-            const data = action.payload;
-            const index = state.teacherList.findIndex(
-                (t) => t.id === data.teacher
-            );
-            state.teacherList[index].lesson_set.push(data);
-        },
-        updateTeacherLessonReducer: (state, action) => {
-            const data = action.payload;
-            const index = state.teacherList.findIndex(
-                (t) => t.id === data.teacher
-            );
-            const teacher = state.teacherList[index];
-            const lesInd = teacher.lesson_set.findIndex(
-                (les) => les.id === data.id
-            );
-            state.teacherList[index].lesson_set.splice(lesInd, 1, data);
-        },
-        deleteTeacherLessonReducer: (state, action) => {
-            const data = action.payload;
-            const index = state.teacherList.findIndex(
-                (t) => t.id === data.teacher
-            );
-            const teacher = state.teacherList[index];
-            const lesInd = teacher.lesson_set.findIndex(
-                (les) => les.id === data.id
-            );
-            state.teacherList[index].lesson_set.splice(lesInd, 1);
-        },
     },
 });
 
@@ -70,9 +41,6 @@ export const {
     updateTeacherReducer,
     deleteTeacherReducer,
     resetTeacherReducer,
-    addTeacherLessonReducer,
-    updateTeacherLessonReducer,
-    deleteTeacherLessonReducer,
 } = teacherSlice.actions;
 
 export default teacherSlice.reducer;

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { LESSON_URL } from "../constants/lessonConstant";
 import CustomDialog from "../HOC/CustomDialog";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { getDataWithId } from "../redux/actionThunk/apiThunk";
 import {
     resetLessonReducer,
     setLessonAssignmentReducer,
@@ -11,6 +14,7 @@ import LessonAssignment from "./LessonAssignment";
 
 const LessonAssignButton = ({ teacher }) => {
     const dispatch = useDispatch();
+    const axios = useAxiosPrivate();
 
     const [open, setOpen] = useState(false);
 
@@ -24,7 +28,9 @@ const LessonAssignButton = ({ teacher }) => {
         dispatch(
             setLessonAssignmentReducer({ key: "teacherId", id: teacher.id })
         );
-        dispatch(setLessonReducer(teacher ? teacher?.lesson_set : []));
+        dispatch(
+            getDataWithId(axios, LESSON_URL, setLessonReducer, teacher.id)
+        );
         setOpen(true);
     };
 

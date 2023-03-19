@@ -75,16 +75,16 @@ export const LESSON_FORM_FIELDS = [
     },
     {
         label: "Is Lab",
-        type: "checkbox",
+        type: "number",
         key: "is_lab",
-        default: false,
+        default: 0,
     },
 ];
 
 export const LESSON_FORM_KEY_LIST = [
     {
         key: "teacher",
-        createObjWithId: true,
+        createObjWithId: false,
         statePath: (getstate) => getstate().lesson.teacher,
     },
     {
@@ -99,12 +99,12 @@ export const LESSON_FORM_KEY_LIST = [
     },
     {
         key: "semester",
-        createObjWithId: true,
+        createObjWithId: false,
         statePath: (getstate) => getstate().lesson.semester,
     },
     {
         key: "semester_group",
-        createObjWithId: true,
+        createObjWithId: false,
         statePath: (getstate) => getstate().lesson.semester_group,
     },
 ];
