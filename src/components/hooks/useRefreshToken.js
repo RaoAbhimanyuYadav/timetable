@@ -6,7 +6,7 @@ const useRefreshToken = () => {
     const dispatch = useDispatch();
 
     const refresh = async (setLoading) => {
-        setLoading(true);
+        setLoading && setLoading(true);
         const refreshToken = localStorage.getItem("refresh");
         if (refreshToken) {
             try {
@@ -18,10 +18,10 @@ const useRefreshToken = () => {
             } catch (err) {
                 console.log(err);
             } finally {
-                setLoading(false);
+                setLoading && setLoading(false);
             }
         } else {
-            setLoading(false);
+            setLoading && setLoading(false);
         }
     };
 

@@ -41,11 +41,21 @@ export const updateInLessonAssignment =
     (payload) => async (dispatch, getState) => {
         const key = payload.key;
         const val = payload.value;
+        const i = payload.i;
         if (key === "semester") {
-            const groups = getState().semester.semesterList.find(
+            const seme = getState().semester.semesterList.find(
                 (sem) => sem.id === val.id
-            ).semester_group_set;
+            );
+            const groups = seme.semester_group_set;
             dispatch(updateInLessonAssignmentReducer({ ...payload, groups }));
+            if (i === 0) {
+                dispatch(
+                    setLessonAssignmentReducer({
+                        id: seme.classroom.id,
+                        key: "classroom",
+                    })
+                );
+            }
         } else dispatch(updateInLessonAssignmentReducer(payload));
     };
 
