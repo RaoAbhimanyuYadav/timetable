@@ -6,11 +6,12 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Typography,
 } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { LESSON_URL } from "../constants/lessonConstant";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { generateTimeTable } from "../utils/generatorFunctions";
 
 const Cell = ({ children, colSpan }) => {
@@ -39,7 +40,7 @@ const gridItemCSS = {
     justifyContent: "center",
 };
 
-const Content = ({ subject, teacher, room }) => {
+const Content = ({ subject, teachers, room }) => {
     return (
         <Grid container sx={{ height: "100%" }}>
             <Grid item xs={12} sx={gridItemCSS}>
@@ -49,7 +50,10 @@ const Content = ({ subject, teacher, room }) => {
                 {room}
             </Grid>
             <Grid item xs={6} sx={gridItemCSS}>
-                {teacher}
+                {teachers.map(
+                    (t, i) =>
+                        `${t.code}${i + 1 === teachers.length ? "" : ", "}`
+                )}
             </Grid>
         </Grid>
     );
@@ -62,7 +66,7 @@ const ContentWrapper = ({ data }) => {
             item
             xs={12}
             sx={{
-                backgroundColor: data.teacher.color,
+                backgroundColor: data.color,
                 height: "100%",
                 maxWidth: `${data.colSpan * 100}% !important`,
                 width: `${data.colSpan * 100}% !important`,
@@ -71,7 +75,7 @@ const ContentWrapper = ({ data }) => {
             <Content
                 room={data.classroom.code}
                 subject={data.subject.code}
-                teacher={data.teacher.code}
+                teachers={data.teachers}
             />
         </Grid>
     );
@@ -79,11 +83,12 @@ const ContentWrapper = ({ data }) => {
 const Lecture = ({ data, rows }) => {
     let newData = [];
     for (let i = 1; i <= rows && rows > 1; i++) {
-        let grp = `G${i}`;
-        let index = data.findIndex((d) => d.semGroup.code === grp);
+        let index = data.findIndex((d) => d.grpNum === i);
         if (index === -1) newData.push(null);
         else newData.push(data[index]);
     }
+
+    console.log(data, newData);
 
     return (
         <Grid
@@ -103,10 +108,12 @@ const EmptyDiv = () => {
 };
 
 const DataDiv = ({ slotData }) => {
-    if (slotData[0].isGrouped)
-        return <Lecture data={slotData} rows={slotData[0].totalGroups} />;
-
-    return <Lecture data={slotData} rows={1} />;
+    return (
+        <Lecture
+            data={slotData}
+            rows={slotData[0].isGrouped ? slotData[0].totalGroups : 1}
+        />
+    );
 };
 
 const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
@@ -121,24 +128,24 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
 };
 
 const Generate = () => {
-    const [days, setDays] = useState([]);
-    const [timeSlots, setTimeSlots] = useState([]);
-    const [semesters, setSemesters] = useState([]);
-    const [generatedTimeTable, setGeneratedTimeTable] = useState();
+    const axios = useAxiosPrivate();
 
-    const teacherData = useSelector((state) => state.teacher.teacherList);
-    const bellTimings = useSelector((state) => state.profile.bellTimings);
-    const workingDays = useSelector((state) => state.profile.workingDays);
-    const semesterData = useSelector((state) => state.semester.semesterList);
+    const [generatedTimeTable, setGeneratedTimeTable] = useState([]);
+
+    const timeSlots = useSelector((state) => state.profile.bellTimings);
+    const days = useSelector((state) => state.profile.workingDays);
+    const semesters = useSelector((state) => state.semester.semesterList);
 
     useEffect(() => {
-        setTimeSlots(bellTimings);
-        setDays(workingDays);
-        setSemesters(semesterData);
-        setGeneratedTimeTable(
-            generateTimeTable(bellTimings, workingDays, teacherData)
-        );
-    }, [bellTimings, workingDays, teacherData, semesterData]);
+        const getLessons = async () => {
+            const resp = await axios.get(LESSON_URL);
+            const data = resp.data.data;
+            return data;
+        };
+        getLessons().then((data) => {
+            setGeneratedTimeTable(generateTimeTable(timeSlots, days, data));
+        }); // eslint-disable-next-line
+    }, []);
 
     return (
         <Box sx={{ margin: "50px", overflow: "scroll" }}>

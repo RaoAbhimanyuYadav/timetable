@@ -26,7 +26,7 @@ const LessonAssignment = () => {
     const formSubmitHandler = (e, data) => {
         const filteredData = {
             lesson_per_week: e.target.lesson_per_week.value,
-            is_lab: e.target.is_lab.value,
+            lesson_length: e.target.lesson_length.value,
         };
         if (data) {
             filteredData["id"] = data.id;

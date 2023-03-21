@@ -5,7 +5,7 @@ export const LESSON_TABLE_BODY_KEY = [
     "semester",
     "semester_group",
     "lesson_per_week",
-    "is_lab",
+    "lesson_length",
 ];
 
 export const LESSON_TABLE_HEADING = [
@@ -15,7 +15,7 @@ export const LESSON_TABLE_HEADING = [
     "Semester",
     "Group",
     "Lesson per week",
-    "Is Lab",
+    "Lesson Duration",
 ];
 
 export const LESSON_FORM_FIELDS = [
@@ -74,10 +74,10 @@ export const LESSON_FORM_FIELDS = [
         default: 1,
     },
     {
-        label: "Is Lab",
+        label: "Lesson Duration",
         type: "number",
-        key: "is_lab",
-        default: 0,
+        key: "lesson_length",
+        default: 1,
     },
 ];
 
@@ -214,7 +214,7 @@ export const LESSON_DUMMY_DATA = [
             code: "G1",
         },
         lesson_per_week: 4,
-        is_lab: true,
+        lesson_length: 1,
     },
 ];
 
