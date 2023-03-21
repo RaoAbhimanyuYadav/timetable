@@ -15,6 +15,7 @@ const useRefreshToken = () => {
                 });
                 const token = resp.data.access;
                 dispatch(setAccessTokenReducer(token));
+                return token;
             } catch (err) {
                 console.log(err);
             } finally {

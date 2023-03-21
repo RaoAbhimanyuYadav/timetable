@@ -1,11 +1,9 @@
 import { axiosPrivate } from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
-import { useDispatch, useSelector } from "react-redux";
-import { setAccessTokenReducer } from "../redux/reducers/authReducer";
+import { useSelector } from "react-redux";
 
 const useAxiosPrivate = () => {
-    const dispatch = useDispatch();
     const refresh = useRefreshToken();
     const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -30,7 +28,6 @@ const useAxiosPrivate = () => {
                     prevRequest.headers[
                         "Authorization"
                     ] = `Bearer ${newAccessToken}`;
-                    dispatch(setAccessTokenReducer(newAccessToken));
                     return axiosPrivate(prevRequest);
                 }
                 return Promise.reject(error);
@@ -41,7 +38,7 @@ const useAxiosPrivate = () => {
             axiosPrivate.interceptors.request.eject(requestIntercept);
             axiosPrivate.interceptors.response.eject(responseIntercept);
         };
-    }, [accessToken, refresh, dispatch]);
+    }, [accessToken, refresh]);
 
     return axiosPrivate;
 };
