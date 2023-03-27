@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { generateTimeTable } from "../utils/generatorFunctions";
+import { GeneratorClass } from "../utils/classes";
 
 const Cell = ({ children, colSpan }) => {
     return (
@@ -88,8 +88,6 @@ const Lecture = ({ data, rows }) => {
         else newData.push(data[index]);
     }
 
-    console.log(data, newData);
-
     return (
         <Grid
             container
@@ -143,7 +141,8 @@ const Generate = () => {
             return data;
         };
         getLessons().then((data) => {
-            setGeneratedTimeTable(generateTimeTable(timeSlots, days, data));
+            let classObj = new GeneratorClass(timeSlots, days, data);
+            setGeneratedTimeTable(classObj.generateTimeTable());
         }); // eslint-disable-next-line
     }, []);
 
