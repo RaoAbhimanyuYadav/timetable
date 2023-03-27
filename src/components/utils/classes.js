@@ -379,7 +379,6 @@ export class AllotedLessons {
                 });
             });
         });
-        console.log("Priterred Data is", finalData);
         return finalData;
     }
 }
@@ -416,7 +415,6 @@ export class GeneratorClass {
     }
 
     bruteForceDayTime(lsn) {
-        console.log("lsn going for bruteforce", lsn);
         // try to assign multiple same lsn on same day
         for (let dayIndex = 0; dayIndex < this.days.length; dayIndex++) {
             let timeIndex = this.findTimeIndex(this.days[dayIndex], lsn);
@@ -436,13 +434,11 @@ export class GeneratorClass {
 
         if (dayIndex >= this.days.length) {
             // no day available
-            console.log("No day found");
             return this.bruteForceDayTime(lsn);
         } else {
             while (true) {
                 if (dayIndex >= this.days.length) {
                     // no day time found
-                    console.log("NO time found for day");
                     return this.bruteForceDayTime(lsn);
                 }
                 let day = this.days[dayIndex];
@@ -469,7 +465,6 @@ export class GeneratorClass {
                 dayIndex >= this.days.length ||
                 timeIndex >= this.timings.length
             ) {
-                console.log("no slot available for this lsn", lsn);
                 this.lessonNotAssigned.push(lsn);
                 break;
             }
@@ -486,13 +481,12 @@ export class GeneratorClass {
 
     lessonsLoop(lsns) {
         lsns.sort((a, b) => {
-            if (a.teachers[0].id === b.teachers[0].id) {
-                return b.total_time_off - a.total_time_off === 0
-                    ? b.lesson_per_week - a.lesson_per_week
-                    : b.total_time_off - a.total_time_off;
-            } else return a.teachers[0].id - b.teachers[0].id;
+            // if (a.teachers[0].id === b.teachers[0].id) {
+            return b.total_time_off - a.total_time_off === 0
+                ? b.lesson_per_week - a.lesson_per_week
+                : b.total_time_off - a.total_time_off;
+            // } else return a.teachers[0].id - b.teachers[0].id;
         });
-        console.log(lsns);
         for (let i = 0; i < lsns.length; i++) {
             let lsn = lsns[i];
             this.assignALesson(lsn);
@@ -502,7 +496,5 @@ export class GeneratorClass {
     generateTimeTable() {
         this.lessonsLoop(this.lessons.labs);
         this.lessonsLoop(this.lessons.lectures);
-        console.log(this.lessonNotAssigned);
-        return this.data.generateFormattedData();
     }
 }
