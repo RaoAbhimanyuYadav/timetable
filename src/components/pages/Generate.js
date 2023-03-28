@@ -249,34 +249,35 @@ const Generate = () => {
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
-            console.log(info);
-            console.log(data);
+            // console.log(data);
 
-            setSelectedLesson(data);
+            let lsn = lessons.find((lsn) => lsn.id === data.id);
+            lsn["lesson_per_week"] = 1;
+            setSelectedLesson(lsn);
+
             if (info) {
-                // TODO: remove slot from TT & add to not allotedlist
+                // TODO: add to not allotedlist & highlight selected lesson
                 let dayId = info.day.id;
                 let timeId = info.time.id;
-                let semId = data.semester.id;
-                let i = generatedTimeTable[semId][dayId][timeId].findIndex(
-                    (allotedNode) => allotedNode.semGrp.id === data.semGrp.id
-                );
-                let size = generatedTimeTable[semId][dayId][timeId].length;
-                setGeneratedTimeTable((pre) => {
-                    let newData = { ...pre };
-
+                let tt = { ...generatedTimeTable };
+                lsn.semester_group.forEach((semGrp) => {
+                    let semId = semGrp.semester.id;
+                    let i = generatedTimeTable[semId][dayId][timeId].findIndex(
+                        (allotedNode) => allotedNode.semGrp.id === semGrp.id
+                    );
+                    let size = generatedTimeTable[semId][dayId][timeId].length;
                     if (size === 1) {
-                        delete newData[semId][dayId][timeId];
+                        delete tt[semId][dayId][timeId];
                     } else {
-                        newData[semId][dayId][timeId].splice(i, 1);
+                        tt[semId][dayId][timeId].splice(i, 1);
                     }
-                    return newData;
                 });
+                setGeneratedTimeTable(tt);
             } else {
-                // TODO: slot is a present in not alloted so decrease cnt & if cnt == 0 delete also
+                // TODO: slot is a present in not alloted so just highlight it
             }
         } else if (method === "paste" && selectedLesson) {
-            // TODO: check for the slot availability
+            // TODO: check for the slot availability & if available decrease lesson_per_week if 0 the remove
             let dayId = info.day.id;
             let timeId = info.time.id;
             // already alloted type slot
