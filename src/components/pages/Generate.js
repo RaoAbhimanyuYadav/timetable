@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { AllotedSlotNode, GeneratorClass } from "../utils/classes";
+import { AllotedSlotNode, GeneratorClass, LessonNode } from "../utils/classes";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
@@ -231,7 +231,8 @@ const Generate = () => {
     const handleGenerate = () => {
         if (!lessons) {
             getLessons().then((data) => {
-                setLessons(data);
+                let lsns = data.map((lsn) => new LessonNode(lsn));
+                setLessons(lsns);
                 let classObj = new GeneratorClass(timeSlots, days, data);
                 classObj.generateTimeTable();
                 setExtraLessons(classObj.lessonNotAssigned);
@@ -239,12 +240,13 @@ const Generate = () => {
                 setGeneratedTimeTable(classObj.data.generateFormattedData());
                 console.log(classObj);
             });
-        } else {
-            classObj.generateTimeTable();
-            setExtraLessons(classObj.lessonNotAssigned);
-            setGeneratedTimeTable(classObj.data.generateFormattedData());
-            console.log(classObj);
         }
+        // else {
+        //     classObj.generateTimeTable();
+        //     setExtraLessons(classObj.lessonNotAssigned);
+        //     setGeneratedTimeTable(classObj.data.generateFormattedData());
+        //     console.log(classObj);
+        // }
     };
 
     const handleDaD = (info, data, method) => {
@@ -260,7 +262,7 @@ const Generate = () => {
                 let dayId = info.day.id;
                 let timeId = info.time.id;
                 let tt = { ...generatedTimeTable };
-                lsn.semester_group.forEach((semGrp) => {
+                lsn.semester_groups.forEach((semGrp) => {
                     let semId = semGrp.semester.id;
                     let i = generatedTimeTable[semId][dayId][timeId].findIndex(
                         (allotedNode) => allotedNode.semGrp.id === semGrp.id
@@ -281,35 +283,20 @@ const Generate = () => {
             let dayId = info.day.id;
             let timeId = info.time.id;
             // already alloted type slot
-            if (Array.isArray(selectedLesson.semester_groups)) {
-                selectedLesson.semester_groups.forEach((grp) => {
-                    let semId = grp.semester.id;
-                    setGeneratedTimeTable((pre) => {
-                        let newData = { ...pre };
-                        if (!(semId in newData)) newData[semId] = {};
-                        if (!(dayId in newData[semId]))
-                            newData[semId][dayId] = {};
-                        if (!(timeId in newData[semId][dayId]))
-                            newData[semId][dayId][timeId] = [];
-                        let slot = new AllotedSlotNode(selectedLesson, 0, grp);
-                        newData[semId][dayId][timeId].push(slot);
-                        return newData;
-                    });
-                });
-            } else {
-                let semId = selectedLesson.semester.id;
-                setGeneratedTimeTable((pre) => {
-                    let newData = { ...pre };
-                    if (!(semId in newData)) newData[semId] = {};
-                    if (!(dayId in newData[semId])) newData[semId][dayId] = {};
-                    if (!(timeId in newData[semId][dayId]))
-                        newData[semId][dayId][timeId] = [];
-                    newData[semId][dayId][timeId].push(selectedLesson);
-                    return newData;
-                });
-            }
-            // setSelectedLesson(undefined)
+            let tt = { ...generatedTimeTable };
+            selectedLesson.semester_groups.forEach((grp) => {
+                let semId = grp.semester.id;
+                if (!(semId in tt)) tt[semId] = {};
+                if (!(dayId in tt[semId])) tt[semId][dayId] = {};
+                if (!(timeId in tt[semId][dayId]))
+                    tt[semId][dayId][timeId] = [];
+                let slot = new AllotedSlotNode(selectedLesson, 0, grp);
+                tt[semId][dayId][timeId].push(slot);
+            });
+
+            setGeneratedTimeTable(tt);
         }
+        // setSelectedLesson(undefined)
     };
 
     return (
