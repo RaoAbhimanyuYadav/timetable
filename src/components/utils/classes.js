@@ -1,4 +1,4 @@
-class LessonNode {
+export class LessonNode {
     // Store information regarding a LESSON
     constructor(lsn) {
         this.id = lsn.id;
@@ -46,13 +46,20 @@ class LessonNode {
         });
 
         // remove timeoff
-        delete this.classroom["classroom_time_off_set"];
-        delete this.subject["subject_time_off_set"];
-        this.semester_groups.forEach((semGrp) => {
-            delete semGrp.semester["semester_time_off_set"];
+        const { classroom_time_off_set, ...classroom } = this.classroom;
+        this.classroom = classroom;
+        const { subject_time_off_set, ...subject } = this.subject;
+        this.subject = subject;
+
+        this.semester_groups = this.semester_groups.map((semGrp) => {
+            const grp = { ...semGrp };
+            const { semester_time_off_set, ...sem } = semGrp.semester;
+            grp.semester = sem;
+            return grp;
         });
-        this.teachers.forEach((tchr) => {
-            delete tchr["teacher_time_off_set"];
+        this.teachers = this.teachers.map((tchr) => {
+            const { teacher_time_off_set, ...teacher } = tchr;
+            return teacher;
         });
         this.formatTimeOff();
     }
