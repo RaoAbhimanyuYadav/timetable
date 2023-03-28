@@ -121,7 +121,7 @@ class TimeLinkedList {
     }
 }
 
-class AllotedSlotNode {
+export class AllotedSlotNode {
     constructor(lsn, hideUI, semGrp) {
         // Property
         this.hideUI = hideUI; //0 to show, 1 to hide

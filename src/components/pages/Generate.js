@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { GeneratorClass } from "../utils/classes";
+import { AllotedSlotNode, GeneratorClass } from "../utils/classes";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
@@ -61,10 +61,10 @@ const Content = ({ subject, teachers, room, height }) => {
     );
 };
 
-const EmptyDiv = ({ info }) => {
+const EmptyDiv = ({ info, handleDaD }) => {
     const [open, setOpen] = useState(false);
     const handlePaste = () => {
-        console.log(info);
+        handleDaD(info, undefined, "paste");
     };
     return (
         <Box
@@ -162,7 +162,7 @@ const Lecture = ({ data, rows, info, handleDaD }) => {
                     />
                 ) : (
                     <Grid key={i} item xs={12}>
-                        <EmptyDiv info={info} />
+                        <EmptyDiv info={info} handleDaD={handleDaD} />
                     </Grid>
                 )
             )}
@@ -201,7 +201,7 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot, handleDaD }) => {
                     handleDaD={handleDaD}
                 />
             ) : (
-                <EmptyDiv info={info} />
+                <EmptyDiv info={info} handleDaD={handleDaD} />
             )}
         </Cell>
     );
@@ -275,8 +275,39 @@ const Generate = () => {
             } else {
                 // TODO: slot is a present in not alloted so decrease cnt & if cnt == 0 delete also
             }
-        } else if (method === "paste") {
+        } else if (method === "paste" && selectedLesson) {
             // TODO: check for the slot availability
+            let dayId = info.day.id;
+            let timeId = info.time.id;
+            // already alloted type slot
+            if (Array.isArray(selectedLesson.semester_groups)) {
+                selectedLesson.semester_groups.forEach((grp) => {
+                    let semId = grp.semester.id;
+                    setGeneratedTimeTable((pre) => {
+                        let newData = { ...pre };
+                        if (!(semId in newData)) newData[semId] = {};
+                        if (!(dayId in newData[semId]))
+                            newData[semId][dayId] = {};
+                        if (!(timeId in newData[semId][dayId]))
+                            newData[semId][dayId][timeId] = [];
+                        let slot = new AllotedSlotNode(selectedLesson, 0, grp);
+                        newData[semId][dayId][timeId].push(slot);
+                        return newData;
+                    });
+                });
+            } else {
+                let semId = selectedLesson.semester.id;
+                setGeneratedTimeTable((pre) => {
+                    let newData = { ...pre };
+                    if (!(semId in newData)) newData[semId] = {};
+                    if (!(dayId in newData[semId])) newData[semId][dayId] = {};
+                    if (!(timeId in newData[semId][dayId]))
+                        newData[semId][dayId][timeId] = [];
+                    newData[semId][dayId][timeId].push(selectedLesson);
+                    return newData;
+                });
+            }
+            // setSelectedLesson(undefined)
         }
     };
 
@@ -294,6 +325,7 @@ const Generate = () => {
                                 widthIn={"px"}
                                 data={lsn}
                                 info={null}
+                                handleDaD={handleDaD}
                             />
                         ))}
                     </Grid>
