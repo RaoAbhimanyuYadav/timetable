@@ -87,24 +87,15 @@ const EmptyDiv = ({ info }) => {
     );
 };
 
-const ContentWrapper = ({ data, info, widthIn, bgColor, height }) => {
+const ContentWrapper = ({
+    data,
+    info,
+    widthIn,
+    bgColor,
+    height,
+    handleDaD,
+}) => {
     const [open, setOpen] = useState(false);
-
-    const handleCut = () => {
-        console.log(info);
-        console.log(data);
-
-        // if (selectedLesson) {
-        //     // TODO: there is already a selected lsn, put that in not alloted list
-        // }
-
-        // setSelectedLesson(data);
-        // if (info) {
-        //     // TODO: remove slot from TT & add to not allotedlist
-        // } else {
-        //     // TODO: slot is a present in not alloted so decrease cnt & if cnt == 0 delete also
-        // }
-    };
 
     return (
         <Grid
@@ -130,7 +121,7 @@ const ContentWrapper = ({ data, info, widthIn, bgColor, height }) => {
                             top: 0,
                             left: "0",
                         }}
-                        onClick={handleCut}
+                        onClick={() => handleDaD(info, data, "cut")}
                     />
                 )}
 
@@ -144,7 +135,7 @@ const ContentWrapper = ({ data, info, widthIn, bgColor, height }) => {
         </Grid>
     );
 };
-const Lecture = ({ data, rows, info }) => {
+const Lecture = ({ data, rows, info, handleDaD }) => {
     let newData = [];
     for (let i = 1; i <= rows && rows > 1; i++) {
         let index = data.findIndex((d) => d.grpNum === i);
@@ -167,6 +158,7 @@ const Lecture = ({ data, rows, info }) => {
                         widthIn={"%"}
                         bgColor={d.color}
                         height={"100%"}
+                        handleDaD={handleDaD}
                     />
                 ) : (
                     <Grid key={i} item xs={12}>
@@ -178,17 +170,18 @@ const Lecture = ({ data, rows, info }) => {
     );
 };
 
-const DataDiv = ({ slotData, info }) => {
+const DataDiv = ({ slotData, info, handleDaD }) => {
     return (
         <Lecture
             info={info}
             data={slotData}
             rows={slotData[0].isGrouped ? slotData[0].totalGroups : 1}
+            handleDaD={handleDaD}
         />
     );
 };
 
-const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
+const DataCell = ({ generatedTimeTable, sem, day, timeslot, handleDaD }) => {
     const slotData =
         generatedTimeTable[sem.id] && generatedTimeTable[sem.id][day.id]
             ? generatedTimeTable[sem.id][day.id][timeslot.id]
@@ -202,7 +195,11 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot }) => {
     return (
         <Cell>
             {slotData ? (
-                <DataDiv slotData={slotData} info={info} />
+                <DataDiv
+                    slotData={slotData}
+                    info={info}
+                    handleDaD={handleDaD}
+                />
             ) : (
                 <EmptyDiv info={info} />
             )}
@@ -247,6 +244,39 @@ const Generate = () => {
             setExtraLessons(classObj.lessonNotAssigned);
             setGeneratedTimeTable(classObj.data.generateFormattedData());
             console.log(classObj);
+        }
+    };
+
+    const handleDaD = (info, data, method) => {
+        if (method === "cut") {
+            console.log(info);
+            console.log(data);
+
+            setSelectedLesson(data);
+            if (info) {
+                // TODO: remove slot from TT & add to not allotedlist
+                let dayId = info.day.id;
+                let timeId = info.time.id;
+                let semId = data.semester.id;
+                let i = generatedTimeTable[semId][dayId][timeId].findIndex(
+                    (allotedNode) => allotedNode.semGrp.id === data.semGrp.id
+                );
+                let size = generatedTimeTable[semId][dayId][timeId].length;
+                setGeneratedTimeTable((pre) => {
+                    let newData = { ...pre };
+
+                    if (size === 1) {
+                        delete newData[semId][dayId][timeId];
+                    } else {
+                        newData[semId][dayId][timeId].splice(i, 1);
+                    }
+                    return newData;
+                });
+            } else {
+                // TODO: slot is a present in not alloted so decrease cnt & if cnt == 0 delete also
+            }
+        } else if (method === "paste") {
+            // TODO: check for the slot availability
         }
     };
 
@@ -322,6 +352,7 @@ const Generate = () => {
                                                 }
                                                 sem={sem}
                                                 timeslot={timeslot}
+                                                handleDaD={handleDaD}
                                             />
                                         ))
                                     )}
