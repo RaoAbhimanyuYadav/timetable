@@ -20,6 +20,7 @@ import {
 } from "../constants/navbarConstants";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actionThunk/authThunk";
+import Notification from "../common/Notification";
 
 const NAVLINK_STYLE = {
     textDecoration: "none",
@@ -52,6 +53,7 @@ function Navbar() {
 
     return (
         <>
+            <Notification />
             <AppBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>

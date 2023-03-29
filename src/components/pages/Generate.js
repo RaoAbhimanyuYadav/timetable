@@ -10,12 +10,13 @@ import {
     TableRow,
 } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { AllotedSlotNode, GeneratorClass, LessonNode } from "../utils/classes";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import { showNotificationReducer } from "../redux/reducers/notificationReducer";
 
 const Cell = ({ children, colSpan }) => {
     return (
@@ -213,6 +214,7 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot, handleDaD }) => {
 
 const Generate = () => {
     const axios = useAxiosPrivate();
+    const dispatch = useDispatch();
 
     const [classObj, setClassObj] = useState(undefined);
     const [generatedTimeTable, setGeneratedTimeTable] = useState([]);
@@ -309,7 +311,12 @@ const Generate = () => {
 
             // TODO: not available => show error
             if (!isSlotAvailable.val) {
-                console.log(isSlotAvailable.msg);
+                dispatch(
+                    showNotificationReducer({
+                        msg: isSlotAvailable.msg.join(", "),
+                        severity: "error",
+                    })
+                );
                 return;
             }
             // available => assign lesson in classObj
@@ -328,7 +335,12 @@ const Generate = () => {
                 (lesson) => lesson.id === selectedLesson.id
             );
             if (i === -1) {
-                console.log("error while pasting");
+                dispatch(
+                    showNotificationReducer({
+                        msg: "Unable to move",
+                        severity: "error",
+                    })
+                );
             } else {
                 newData[i].lesson_per_week--;
                 if (newData[i].lesson_per_week === 0) {
