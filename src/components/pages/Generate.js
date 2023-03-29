@@ -1,4 +1,5 @@
 import {
+    Badge,
     Box,
     Button,
     Grid,
@@ -8,7 +9,7 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -268,8 +269,6 @@ const Generate = () => {
                     return newObj;
                 });
 
-                // TODO: highlight selected lesson
-
                 // UI changes
                 let dayId = info.day.id;
                 let timeId = info.time.id;
@@ -299,8 +298,6 @@ const Generate = () => {
                     }
                     return newData;
                 });
-            } else {
-                // TODO: slot is a present in extraLessons so just highlight it
             }
         } else if (method === "paste" && selectedLesson) {
             // check for the slot availability
@@ -361,13 +358,6 @@ const Generate = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(extraLessons);
-    }, [extraLessons]);
-
-    useEffect(() => {
-        console.log(classObj);
-    }, [classObj]);
     return (
         <Box sx={{ margin: "50px", overflow: "scroll" }}>
             <Button onClick={handleGenerate}>Generate</Button>
@@ -376,17 +366,32 @@ const Generate = () => {
                     <Grid container gap={"10px"}>
                         {extraLessons.map((lsn) => {
                             lsn.colSpan = lsn.lesson_length;
-                            // TODO:  add badge for lessons per week
                             return (
-                                <ContentWrapper
+                                <Badge
                                     key={lsn.id}
-                                    bgColor={lsn.teachers[0].color}
-                                    height="auto"
-                                    widthIn={"px"}
-                                    data={lsn}
-                                    info={null}
-                                    handleDaD={handleDaD}
-                                />
+                                    badgeContent={lsn.lesson_per_week}
+                                    color="primary"
+                                >
+                                    <span
+                                        style={
+                                            selectedLesson &&
+                                            selectedLesson.id === lsn.id
+                                                ? {
+                                                      border: "5px solid darkblue",
+                                                  }
+                                                : {}
+                                        }
+                                    >
+                                        <ContentWrapper
+                                            bgColor={lsn.teachers[0].color}
+                                            height="auto"
+                                            widthIn={"px"}
+                                            data={lsn}
+                                            info={null}
+                                            handleDaD={handleDaD}
+                                        />
+                                    </span>
+                                </Badge>
                             );
                         })}
                     </Grid>
