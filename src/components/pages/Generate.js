@@ -8,7 +8,7 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { LESSON_URL } from "../constants/lessonConstant";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -251,14 +251,25 @@ const Generate = () => {
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
-            // console.log(data);
-
             let lsn = lessons.find((lsn) => lsn.id === data.id);
             lsn["lesson_per_week"] = 1;
             setSelectedLesson(lsn);
 
             if (info) {
-                // TODO: add to not allotedlist & highlight selected lesson
+                // Already alloted lesson i.e. it have day & time
+                // remove entry for the lesson in classObj
+                setClassObj((pre) => {
+                    let newObj = Object.assign(
+                        Object.create(Object.getPrototypeOf(pre)),
+                        pre
+                    );
+                    newObj.removeAllotedLesson(info.day, info.time, lsn);
+                    return newObj;
+                });
+
+                // TODO: highlight selected lesson
+
+                // UI changes
                 let dayId = info.day.id;
                 let timeId = info.time.id;
                 let tt = { ...generatedTimeTable };
@@ -275,14 +286,47 @@ const Generate = () => {
                     }
                 });
                 setGeneratedTimeTable(tt);
+
+                // extralessons list change
+                setExtraLessons((pre) => {
+                    let newData = [...pre];
+                    let i = newData.findIndex((lesson) => lesson.id === lsn.id);
+                    if (i === -1) {
+                        newData.push(lsn);
+                    } else {
+                        newData[i].lesson_per_week++;
+                    }
+                    return newData;
+                });
             } else {
-                // TODO: slot is a present in not alloted so just highlight it
+                // TODO: slot is a present in extraLessons so just highlight it
             }
         } else if (method === "paste" && selectedLesson) {
-            // TODO: check for the slot availability & if available decrease lesson_per_week if 0 the remove
+            // TODO: check for the slot availability
+
+            // TODO: not available => show error
+
+            // TODO: available => assign lesson in classObj
+
+            // avaialble => decrease lesson_per_week if 0 then remove
+            setExtraLessons((pre) => {
+                let newData = [...pre];
+                let i = newData.findIndex(
+                    (lesson) => lesson.id === selectedLesson.id
+                );
+                if (i === -1) {
+                    console.log("error while pasting");
+                } else {
+                    newData[i].lesson_per_week--;
+                    if (newData[i].lesson_per_week === 0) {
+                        newData.splice(i, 1);
+                    }
+                }
+                return newData;
+            });
+            // Changes in UI
             let dayId = info.day.id;
             let timeId = info.time.id;
-            // already alloted type slot
             let tt = { ...generatedTimeTable };
             selectedLesson.semester_groups.forEach((grp) => {
                 let semId = grp.semester.id;
@@ -295,27 +339,41 @@ const Generate = () => {
             });
 
             setGeneratedTimeTable(tt);
+        } else {
+            // TODO: Please select a slot notification
         }
+
         // setSelectedLesson(undefined)
     };
 
+    useEffect(() => {
+        console.log(extraLessons);
+    }, [extraLessons]);
+
+    useEffect(() => {
+        console.log(classObj);
+    }, [classObj]);
     return (
         <Box sx={{ margin: "50px", overflow: "scroll" }}>
             <Button onClick={handleGenerate}>Generate</Button>
             <Grid container>
                 <Grid item xs={1}>
                     <Grid container gap={"10px"}>
-                        {extraLessons.map((lsn) => (
-                            <ContentWrapper
-                                key={lsn.id}
-                                bgColor={lsn.teachers[0].color}
-                                height="auto"
-                                widthIn={"px"}
-                                data={lsn}
-                                info={null}
-                                handleDaD={handleDaD}
-                            />
-                        ))}
+                        {extraLessons.map((lsn) => {
+                            lsn.colSpan = lsn.lesson_length;
+                            // TODO:  add badge for lessons per week
+                            return (
+                                <ContentWrapper
+                                    key={lsn.id}
+                                    bgColor={lsn.teachers[0].color}
+                                    height="auto"
+                                    widthIn={"px"}
+                                    data={lsn}
+                                    info={null}
+                                    handleDaD={handleDaD}
+                                />
+                            );
+                        })}
                     </Grid>
                 </Grid>
                 <Grid item xs={11}>

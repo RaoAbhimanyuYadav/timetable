@@ -225,6 +225,40 @@ class SlotNode {
             this.pushNewSlot(lsn, hideUI, semGrp);
         });
     }
+    removeLectureForTheSlot(lsn) {
+        // remove classroom
+        let clsInd = this.classroomAssigned.findIndex(
+            (id) => lsn.classroom.id === id
+        );
+        this.classroomAssigned.splice(clsInd, 1);
+        // remove teachers
+        lsn.teachers.forEach((teacher) => {
+            let tInd = this.teacherAssigned.findIndex(
+                (id) => id === teacher.id
+            );
+            this.teacherAssigned.splice(tInd, 1);
+        });
+        // remove semGrp
+        lsn.semester_groups.forEach((semGrp) => {
+            let grpInd = this.grpAssigned.findIndex(
+                (grp) =>
+                    grp[0] === semGrp.id &&
+                    (semGrp.id === semGrp.semester.w_id) === grp[1]
+            );
+            this.grpAssigned.splice(grpInd, 1);
+
+            if (semGrp.code.includes("G")) {
+                grpInd = this.grpAssigned.findIndex(
+                    (grp) => grp[0] === semGrp.semester.w_id && false === grp[1]
+                );
+                this.grpAssigned.splice(grpInd, 1);
+            }
+
+            // remove slot
+            let sInd = this.grpList.findIndex((slot) => slot.id === lsn.id);
+            this.grpList.splice(sInd, 1);
+        });
+    }
 }
 
 class DayNode {
@@ -310,6 +344,35 @@ class DayNode {
             hideUI = 1;
         }
     }
+    removeLectureForTheDay(time, lsn) {
+        let timeIndex = this.getTimeIndex(time);
+        lsn.semester_groups.forEach((semGrp) => {
+            // remove lsnId and semId
+            let i = this.lessonAssigned.findIndex(
+                ({ lsnId, grpId }) => lsnId === lsn.id && grpId === semGrp.id
+            );
+            this.lessonAssigned.splice(i, 1);
+        });
+
+        // remove data from slot
+        this.timings[timeIndex].removeLectureForTheSlot(lsn);
+    }
+    removeLabForTheDay(time, lsn, timeList) {
+        while (timeList.id !== time.id) timeList = timeList.next;
+
+        let lsn_length = lsn.lesson_length;
+
+        while (lsn_length > 0) {
+            if (timeList === null) {
+                console.log("timelist null bug");
+                return;
+            }
+
+            this.removeLectureForTheDay(timeList, lsn);
+            lsn_length--;
+            timeList = timeList.next;
+        }
+    }
 }
 
 export class AllotedLessons {
@@ -387,6 +450,15 @@ export class AllotedLessons {
             });
         });
         return finalData;
+    }
+
+    removeLesson(day, time, lsn) {
+        let dayIndex = this.getDayIndex(day);
+        if (lsn.lesson_length === 1)
+            this.days[dayIndex].removeLectureForTheDay(time, lsn, 0);
+        else if (lsn.lesson_length > 1)
+            this.days[dayIndex].removeLabForTheDay(time, lsn, this.timeList);
+        else console.log("Remove lecture for lesson length < 1");
     }
 }
 
@@ -503,5 +575,9 @@ export class GeneratorClass {
     generateTimeTable() {
         this.lessonsLoop(this.lessons.labs);
         this.lessonsLoop(this.lessons.lectures);
+    }
+
+    removeAllotedLesson(day, time, lsn) {
+        this.data.removeLesson(day, time, lsn);
     }
 }
