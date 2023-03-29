@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import axios from "../api/axios";
 import { setAccessTokenReducer } from "../redux/reducers/authReducer";
+import { showNotificationReducer } from "../redux/reducers/notificationReducer";
 
 const useRefreshToken = () => {
     const dispatch = useDispatch();
@@ -17,7 +18,12 @@ const useRefreshToken = () => {
                 dispatch(setAccessTokenReducer(token));
                 return token;
             } catch (err) {
-                console.log(err);
+                dispatch(
+                    showNotificationReducer({
+                        severity: "error",
+                        msg: err.message,
+                    })
+                );
             } finally {
                 setLoading && setLoading(false);
             }

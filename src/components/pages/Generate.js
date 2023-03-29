@@ -242,14 +242,12 @@ const Generate = () => {
                 setExtraLessons(classObj.lessonNotAssigned);
                 setClassObj(classObj);
                 setGeneratedTimeTable(classObj.data.generateFormattedData());
-                console.log(classObj);
             });
         }
         // else {
         //     classObj.generateTimeTable();
         //     setExtraLessons(classObj.lessonNotAssigned);
         //     setGeneratedTimeTable(classObj.data.generateFormattedData());
-        //     console.log(classObj);
         // }
     };
 
@@ -365,8 +363,12 @@ const Generate = () => {
             setGeneratedTimeTable(tt);
             setSelectedLesson(undefined);
         } else {
-            // TODO: Please select a slot notification
-            console.log("please select a lesson");
+            dispatch(
+                showNotificationReducer({
+                    msg: "Please select a lesson",
+                    severity: "warning",
+                })
+            );
         }
     };
 

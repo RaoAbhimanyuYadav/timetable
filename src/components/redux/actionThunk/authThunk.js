@@ -1,6 +1,7 @@
 import axios from "../../api/axios";
 import { resetAllState } from "../../utils/authFunctions";
 import { setAccessTokenReducer } from "../reducers/authReducer";
+import { showNotificationReducer } from "../reducers/notificationReducer";
 
 export const login = (email, password, redirectFunc) => async (dispatch) => {
     try {
@@ -14,7 +15,12 @@ export const login = (email, password, redirectFunc) => async (dispatch) => {
         dispatch(setAccessTokenReducer(accessToken));
         redirectFunc();
     } catch (err) {
-        console.log(err);
+        dispatch(
+            showNotificationReducer({
+                severity: "error",
+                msg: err.message,
+            })
+        );
     }
 };
 
@@ -33,7 +39,12 @@ export const signup = (email, password, redirectFun) => async (dispatch) => {
         });
         console.log(resp);
         redirectFun();
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        dispatch(
+            showNotificationReducer({
+                severity: "error",
+                msg: err.message,
+            })
+        );
     }
 };

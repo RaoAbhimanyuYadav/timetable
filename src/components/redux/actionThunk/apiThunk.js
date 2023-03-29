@@ -1,11 +1,17 @@
 import { unauthorized } from "../../utils/authFunctions";
+import { showNotificationReducer } from "../reducers/notificationReducer";
 
 export const getData = (axios, URL, reducer) => async (dispatch) => {
     try {
         const resp = await axios.get(URL);
         dispatch(reducer(resp.data.data));
     } catch (err) {
-        console.log(err);
+        dispatch(
+            showNotificationReducer({
+                severity: "error",
+                msg: err.message,
+            })
+        );
         unauthorized(err, dispatch);
     }
 };
@@ -15,7 +21,12 @@ export const getDataWithId = (axios, URL, reducer, id) => async (dispatch) => {
         const resp = await axios.get(URL, { params: { id } });
         dispatch(reducer(resp.data.data));
     } catch (err) {
-        console.log(err);
+        dispatch(
+            showNotificationReducer({
+                severity: "error",
+                msg: err.message,
+            })
+        );
         unauthorized(err, dispatch);
     }
 };
@@ -42,7 +53,12 @@ export const addData =
             const resp = await axios.post(URL, data);
             dispatch(reducer(resp.data.data));
         } catch (err) {
-            console.log(err);
+            dispatch(
+                showNotificationReducer({
+                    severity: "error",
+                    msg: err.message,
+                })
+            );
             unauthorized(err, dispatch);
         }
     };
@@ -53,13 +69,17 @@ export const updateData =
             if (keyList) {
                 data = keyListFunc(keyList, data, getState);
             }
-            console.log(data);
             const resp = await axios.put(URL, data);
             if (resp.data.old_data) {
                 dispatch(reducer(resp.data.data, resp.data.old_data));
             } else dispatch(reducer(resp.data.data));
         } catch (err) {
-            console.log(err);
+            dispatch(
+                showNotificationReducer({
+                    severity: "error",
+                    msg: err.message,
+                })
+            );
             unauthorized(err, dispatch);
         }
     };
@@ -71,7 +91,12 @@ export const deleteData = (axios, URL, reducer, id) => async (dispatch) => {
             dispatch(reducer({ id }));
         }
     } catch (err) {
-        console.log(err);
+        dispatch(
+            showNotificationReducer({
+                severity: "error",
+                msg: err.message,
+            })
+        );
         unauthorized(err, dispatch);
     }
 };

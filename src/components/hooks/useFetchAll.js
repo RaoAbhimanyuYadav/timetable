@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import useAxiosPrivate from "./useAxiosPrivate";
 
 import { KEY_REDUCER } from "../utils/authFunctions";
+import { showNotificationReducer } from "../redux/reducers/notificationReducer";
 
 const useFetchAll = () => {
     const dispatch = useDispatch();
@@ -16,7 +17,9 @@ const useFetchAll = () => {
                 dispatch(pair.reducer(data[pair.key]));
             });
         } catch (err) {
-            console.log(err);
+            dispatch(
+                showNotificationReducer({ severity: "error", msg: err.message })
+            );
         } finally {
             setLoading && setLoading(false);
         }

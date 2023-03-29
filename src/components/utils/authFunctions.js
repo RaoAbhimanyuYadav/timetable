@@ -11,6 +11,7 @@ import {
     resetLessonReducer,
     setLessonReducer,
 } from "../redux/reducers/lessonReducer";
+import { showNotificationReducer } from "../redux/reducers/notificationReducer";
 import {
     resetProfileReducer,
     setWorkingDaysReducer,
@@ -78,8 +79,9 @@ export const resetAllState = (dispatch) => {
 
 export const unauthorized = (err, dispatch) => {
     if (err.response.status === 401) {
-        console.log("Logged Out");
-        dispatch(setAccessTokenReducer(null));
+        dispatch(
+            showNotificationReducer({ msg: "Unauthorized", severity: "error" })
+        );
         resetAllState(dispatch);
     }
 };
