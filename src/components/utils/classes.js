@@ -170,7 +170,10 @@ class SlotNode {
                 ) !== -1;
             grpAlloted = grpAlloted || g || w;
         });
-        return !grpAlloted;
+        return {
+            val: !grpAlloted,
+            msg: `Group ${grpAlloted ? "not " : ""}available`,
+        };
     }
 
     isTeacherAvailable(teachers) {
@@ -181,21 +184,30 @@ class SlotNode {
                 this.teacherAssigned.findIndex((tId) => tId === teacher.id) !==
                     -1;
         });
-        return !tchrAlloted;
+        return {
+            val: !tchrAlloted,
+            msg: `Teacher ${tchrAlloted ? "not " : ""}available`,
+        };
     }
 
     isClassroomAvailable(room) {
-        return (
-            this.classroomAssigned.findIndex((cId) => cId === room.id) === -1
-        );
+        let roomAlloted =
+            this.classroomAssigned.findIndex((cId) => cId === room.id) !== -1;
+
+        return {
+            val: !roomAlloted,
+            msg: `Room ${roomAlloted ? "not " : ""}available`,
+        };
     }
 
     isSlotAvailable(lsn) {
-        return (
-            this.isGroupAvailable(lsn.semester_groups) &&
-            this.isTeacherAvailable(lsn.teachers) &&
-            this.isClassroomAvailable(lsn.classroom)
-        );
+        let grp = this.isGroupAvailable(lsn.semester_groups);
+        let tchr = this.isTeacherAvailable(lsn.teachers);
+        let room = this.isClassroomAvailable(lsn.classroom);
+        return {
+            val: grp.val && tchr.val && room.val,
+            msg: [grp.msg, tchr.msg, room.msg],
+        };
     }
 
     pushNewSlot(lsn, hideUI, semGrp) {
@@ -225,6 +237,7 @@ class SlotNode {
             this.pushNewSlot(lsn, hideUI, semGrp);
         });
     }
+
     removeLectureForTheSlot(lsn) {
         // remove classroom
         let clsInd = this.classroomAssigned.findIndex(
@@ -279,7 +292,10 @@ class DayNode {
                         lsnAssigned.grpId === semGrp.id
                 ) !== -1;
         });
-        return !lsnAlloted;
+        return {
+            val: !lsnAlloted,
+            msg: [`Lesson {lsn & semGrp} ${lsnAlloted ? "not" : ""} available`],
+        };
     }
 
     getTimeIndex(time) {
@@ -291,7 +307,7 @@ class DayNode {
         if (timeIndex === -1) {
             let newSlot = new SlotNode(time);
             this.timings.push(newSlot);
-            return true;
+            return { val: true, msg: ["Time slot created"] };
         }
         return this.timings[timeIndex].isSlotAvailable(lsn);
     }
@@ -302,13 +318,18 @@ class DayNode {
         let lsn_length = lsn.lesson_length;
 
         while (lsn_length > 0 && timeList !== null) {
-            if (this.isTimeAvailableForLecture(timeList, lsn)) {
+            let availability = this.isTimeAvailableForLecture(timeList, lsn);
+            if (availability.val) {
                 lsn_length--;
                 timeList = timeList.next;
-            } else return false;
+            } else return { ...availability, val: false };
         }
 
-        return lsn_length === 0;
+        let timeAvailable = lsn_length === 0;
+        return {
+            val: timeAvailable,
+            msg: [`${timeAvailable ? "" : "Not"} enough timing available`],
+        };
     }
 
     assignLectureForTheDay(time, lsn, hideUI) {
@@ -344,6 +365,7 @@ class DayNode {
             hideUI = 1;
         }
     }
+
     removeLectureForTheDay(time, lsn) {
         let timeIndex = this.getTimeIndex(time);
         lsn.semester_groups.forEach((semGrp) => {
@@ -357,6 +379,7 @@ class DayNode {
         // remove data from slot
         this.timings[timeIndex].removeLectureForTheSlot(lsn);
     }
+
     removeLabForTheDay(time, lsn, timeList) {
         while (timeList.id !== time.id) timeList = timeList.next;
 
@@ -395,12 +418,16 @@ export class AllotedLessons {
         if (dayIndex === -1) {
             let newDay = new DayNode(day);
             this.days.push(newDay);
-            return true;
+            return { val: true, msg: ["Day created"] };
         }
         return this.days[dayIndex].isLessonAvailable(lsn);
     }
 
     isTimeAvailableForSemster(day, lsn, time) {
+        if (lsn.time_off[day.id] && lsn.time_off[day.id][time.id]) {
+            return { val: false, msg: ["TIME OFF"] };
+        }
+
         let dayIndex = this.getDayIndex(day);
         if (dayIndex === -1) {
             let newDay = new DayNode(day);
@@ -475,7 +502,7 @@ export class GeneratorClass {
         // search for the day
         let dayIndex;
         for (dayIndex = start; dayIndex < this.days.length; dayIndex++) {
-            if (this.data.isDayAvailableForLesson(lsn, this.days[dayIndex]))
+            if (this.data.isDayAvailableForLesson(lsn, this.days[dayIndex]).val)
                 break;
         }
         return dayIndex;
@@ -488,7 +515,7 @@ export class GeneratorClass {
             let time = this.timings[timeIndex];
             // Check time off for this timing
             if (lsn.time_off[day.id] && lsn.time_off[day.id][time.id]) continue;
-            if (this.data.isTimeAvailableForSemster(day, lsn, time)) break;
+            if (this.data.isTimeAvailableForSemster(day, lsn, time).val) break;
         }
         return timeIndex;
     }
