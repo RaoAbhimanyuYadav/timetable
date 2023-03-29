@@ -135,6 +135,7 @@ const ContentWrapper = ({
         </Grid>
     );
 };
+
 const Lecture = ({ data, rows, info, handleDaD }) => {
     let newData = [];
     for (let i = 1; i <= rows && rows > 1; i++) {
@@ -302,28 +303,42 @@ const Generate = () => {
                 // TODO: slot is a present in extraLessons so just highlight it
             }
         } else if (method === "paste" && selectedLesson) {
-            // TODO: check for the slot availability
+            // check for the slot availability
+            let isSlotAvailable = classObj.data.isTimeAvailableForSemster(
+                info.day,
+                selectedLesson,
+                info.time
+            );
 
             // TODO: not available => show error
-
-            // TODO: available => assign lesson in classObj
+            if (!isSlotAvailable.val) {
+                console.log(isSlotAvailable.msg);
+                return;
+            }
+            // available => assign lesson in classObj
+            setClassObj((pre) => {
+                let newObj = Object.assign(
+                    Object.create(Object.getPrototypeOf(pre)),
+                    pre
+                );
+                newObj.data.assignLecture(info.day, info.time, selectedLesson);
+                return newObj;
+            });
 
             // avaialble => decrease lesson_per_week if 0 then remove
-            setExtraLessons((pre) => {
-                let newData = [...pre];
-                let i = newData.findIndex(
-                    (lesson) => lesson.id === selectedLesson.id
-                );
-                if (i === -1) {
-                    console.log("error while pasting");
-                } else {
-                    newData[i].lesson_per_week--;
-                    if (newData[i].lesson_per_week === 0) {
-                        newData.splice(i, 1);
-                    }
+            let newData = [...extraLessons];
+            let i = newData.findIndex(
+                (lesson) => lesson.id === selectedLesson.id
+            );
+            if (i === -1) {
+                console.log("error while pasting");
+            } else {
+                newData[i].lesson_per_week--;
+                if (newData[i].lesson_per_week === 0) {
+                    newData.splice(i, 1);
                 }
-                return newData;
-            });
+            }
+            setExtraLessons(newData);
             // Changes in UI
             let dayId = info.day.id;
             let timeId = info.time.id;
@@ -339,11 +354,11 @@ const Generate = () => {
             });
 
             setGeneratedTimeTable(tt);
+            setSelectedLesson(undefined);
         } else {
             // TODO: Please select a slot notification
+            console.log("please select a lesson");
         }
-
-        // setSelectedLesson(undefined)
     };
 
     useEffect(() => {
