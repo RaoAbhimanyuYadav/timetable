@@ -129,6 +129,7 @@ class TimeLinkedList {
 }
 
 export class AllotedSlotNode {
+    // TODO: Multiple color based on teacher
     constructor(lsn, hideUI, semGrp) {
         // Property
         this.hideUI = hideUI; //0 to show, 1 to hide
@@ -155,6 +156,17 @@ class SlotNode {
         this.teacherAssigned = []; // id
         this.classroomAssigned = []; // id
         this.grpList = []; // allotedSlotNode -> sem + grp + visiblity
+    }
+
+    assignSlot(classroomAssigned, grpAssigned, teacherAssigned, grpList) {
+        this.classroomAssigned = classroomAssigned;
+        this.grpAssigned = grpAssigned;
+        this.teacherAssigned = teacherAssigned;
+        this.grpList = grpList.map((grp) => {
+            let lsn = { ...grp };
+            lsn["lesson_length"] = lsn.colSpan;
+            return new AllotedSlotNode(lsn, grp.hideUI, grp.semGrp);
+        });
     }
 
     isGroupAvailable(grps) {
@@ -281,6 +293,20 @@ class DayNode {
         this.timings = []; // slotNode
     }
 
+    assignTimings(lessonAssigned, timings) {
+        this.lessonAssigned = lessonAssigned;
+        this.timings = timings.map((timing) => {
+            let currSlot = new SlotNode(timing.time);
+            currSlot.assignSlot(
+                timing.classroomAssigned,
+                timing.grpAssigned,
+                timing.teacherAssigned,
+                timing.grpList
+            );
+            return currSlot;
+        });
+    }
+
     isLessonAvailable(lsn) {
         let lsnAlloted = false;
         lsn.semester_groups.forEach((semGrp) => {
@@ -404,6 +430,14 @@ export class AllotedLessons {
         this.timeList = this.createTimeList(timings);
     }
 
+    assignSavedDays(days) {
+        this.days = days.map((day) => {
+            let currDay = new DayNode(day.day);
+            currDay.assignTimings(day.lessonAssigned, day.timings);
+            return currDay;
+        });
+    }
+
     createTimeList(timings) {
         let timeLinkedList = new TimeLinkedList(timings);
         return timeLinkedList.root;
@@ -496,6 +530,11 @@ export class GeneratorClass {
         this.lessons = new LessonClass(lessons);
         this.data = new AllotedLessons(timings);
         this.lessonNotAssigned = [];
+    }
+
+    assignSavedData(localData, localExtra) {
+        this.lessonNotAssigned = localExtra;
+        this.data.assignSavedDays(localData.days);
     }
 
     findDayIndex(start, lsn) {
