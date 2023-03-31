@@ -10,6 +10,8 @@
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.4",
     "firebase": "^9.15.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-color-palette": "^6.2.0",
     "react-dom": "^18.2.0",

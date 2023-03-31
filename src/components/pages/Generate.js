@@ -18,6 +18,7 @@ import { AllotedSlotNode, GeneratorClass, LessonNode } from "../utils/classes";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { showNotificationReducer } from "../redux/reducers/notificationReducer";
+import DownloadPDFButton from "../common/DownloadPdfButton";
 
 const Text = ({ children }) => {
     return (
@@ -394,6 +395,7 @@ const Generate = () => {
             <Grid item xs={12}>
                 <Button onClick={handleGenerate}>Generate</Button>
                 <Button onClick={handleSave}>Save</Button>
+                <DownloadPDFButton />
             </Grid>
             <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
                 <Table
@@ -401,6 +403,7 @@ const Generate = () => {
                         tableLayout: "fixed",
                         width: "2500px",
                     }}
+                    id={"pdf-content"}
                 >
                     <TableHead>
                         <TableRow>
