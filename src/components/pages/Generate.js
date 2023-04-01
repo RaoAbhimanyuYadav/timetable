@@ -18,6 +18,7 @@ import { AllotedSlotNode, GeneratorClass, LessonNode } from "../utils/classes";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { showNotificationReducer } from "../redux/reducers/notificationReducer";
+import DownloadPDFButton from "../common/DownloadPdfButton";
 
 const Text = ({ children }) => {
     return (
@@ -234,13 +235,7 @@ const Generate = () => {
 
     const handleGenerate = () => {
         // TODO: Randomize generation
-        if (!lessons) {
-        }
-        // else {
-        //     classObj.generateTimeTable();
-        //     setExtraLessons(classObj.lessonNotAssigned);
-        //     setGeneratedTimeTable(classObj.data.generateFormattedData());
-        // }
+        console.log(classObj, lessons);
     };
 
     const handleDaD = (info, data, method) => {
@@ -333,13 +328,18 @@ const Generate = () => {
             let timeId = info.time.id;
             setGeneratedTimeTable((pre) => {
                 selectedLesson.semester_groups.forEach((grp) => {
+                    let slot = new AllotedSlotNode(selectedLesson, 0, grp);
                     let semId = grp.semester.id;
+
                     if (!(semId in pre)) pre[semId] = {};
                     if (!(dayId in pre[semId])) pre[semId][dayId] = {};
                     if (!(timeId in pre[semId][dayId]))
                         pre[semId][dayId][timeId] = [];
-                    let slot = new AllotedSlotNode(selectedLesson, 0, grp);
-                    pre[semId][dayId][timeId].push(slot);
+
+                    pre[semId][dayId][timeId] = [
+                        ...pre[semId][dayId][timeId],
+                        slot,
+                    ];
                 });
                 return pre;
             });
@@ -394,6 +394,7 @@ const Generate = () => {
             <Grid item xs={12}>
                 <Button onClick={handleGenerate}>Generate</Button>
                 <Button onClick={handleSave}>Save</Button>
+                <DownloadPDFButton />
             </Grid>
             <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
                 <Table
@@ -401,6 +402,7 @@ const Generate = () => {
                         tableLayout: "fixed",
                         width: "2500px",
                     }}
+                    id={"pdf-content"}
                 >
                     <TableHead>
                         <TableRow>
