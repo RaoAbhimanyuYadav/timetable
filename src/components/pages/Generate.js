@@ -235,13 +235,7 @@ const Generate = () => {
 
     const handleGenerate = () => {
         // TODO: Randomize generation
-        if (!lessons) {
-        }
-        // else {
-        //     classObj.generateTimeTable();
-        //     setExtraLessons(classObj.lessonNotAssigned);
-        //     setGeneratedTimeTable(classObj.data.generateFormattedData());
-        // }
+        console.log(classObj, lessons);
     };
 
     const handleDaD = (info, data, method) => {
@@ -334,13 +328,18 @@ const Generate = () => {
             let timeId = info.time.id;
             setGeneratedTimeTable((pre) => {
                 selectedLesson.semester_groups.forEach((grp) => {
+                    let slot = new AllotedSlotNode(selectedLesson, 0, grp);
                     let semId = grp.semester.id;
+
                     if (!(semId in pre)) pre[semId] = {};
                     if (!(dayId in pre[semId])) pre[semId][dayId] = {};
                     if (!(timeId in pre[semId][dayId]))
                         pre[semId][dayId][timeId] = [];
-                    let slot = new AllotedSlotNode(selectedLesson, 0, grp);
-                    pre[semId][dayId][timeId].push(slot);
+
+                    pre[semId][dayId][timeId] = [
+                        ...pre[semId][dayId][timeId],
+                        slot,
+                    ];
                 });
                 return pre;
             });

@@ -7,13 +7,11 @@ function DownloadPDFButton() {
     const downloadPDF = () => {
         const input = document.getElementById("pdf-content");
         html2canvas(input, { scale: 2 }).then((canvas) => {
-            console.log(canvas);
             const imgData = canvas.toDataURL("image/png");
             const pdf = new jsPDF("p", "mm", "a4");
             const imgProps = pdf.getImageProperties(imgData);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            console.log(pdf, imgData);
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
             pdf.save("download.pdf");
         });
