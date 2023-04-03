@@ -639,8 +639,8 @@ export class GeneratorClass {
     }
 
     generateTimeTable() {
-        this.lessonsLoop(this.lessons.labs);
-        this.lessonsLoop(this.lessons.lectures);
+        this.lessonsLoop(this.lessons.labs.concat(this.lessons.lectures));
+        // this.lessonsLoop(this.lessons.lectures);
     }
 
     removeAllotedLesson(day, time, lsn) {

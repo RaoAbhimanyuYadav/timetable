@@ -217,7 +217,7 @@ const DataCell = ({ generatedTimeTable, sem, day, timeslot, handleDaD }) => {
     );
 };
 
-// TODO: print and different View
+// TODO: different View
 
 const Generate = () => {
     const axios = useAxiosPrivate();
@@ -235,7 +235,8 @@ const Generate = () => {
 
     const handleGenerate = () => {
         // TODO: Randomize generation
-        console.log(classObj, lessons);
+        // console.log(classObj, lessons);
+        console.log(extraLessons);
     };
 
     const handleDaD = (info, data, method) => {
