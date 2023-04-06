@@ -1,8 +1,4 @@
-export const CLASSROOM_TABLE_BODY_KEY = [
-    "name",
-    "code",
-    "classroom_time_off_set",
-];
+export const CLASSROOM_TABLE_BODY_KEY = ["name", "code", "time_off"];
 
 export const CLASSROOM_TABLE_HEADING = ["Name", "Code", "Timing OFF"];
 
@@ -22,39 +18,43 @@ export const CLASSROOM_FORM_FIELDS = [
     {
         label: "Timing OFF",
         type: "time_off",
-        key: "classroom_time_off_set",
+        key: "time_off",
         default: 1,
     },
 ];
 
 export const CLASSROOM_FORM_KEY_LIST = [
     {
-        key: "classroom_time_off_set",
+        key: "time_off",
         statePath: (getstate) => getstate().common.timeOffList,
     },
 ];
 
 export const CLASSROOM_DUMMY_DATA = [
     {
-        id: "049651ac-7d8b-4fac-85f1-ff17aae11127",
-        name: "Ground 1",
-        code: "G1",
-        classroom_time_off_set: [
+        id: "915655cb-3098-4bc9-8860-87c07bec60fc",
+        time_off: [
             {
-                id: "5213a338-e2bc-46ca-898c-9f8075503f18",
+                id: "e89e2ee5-d897-4b6f-b1b6-4270fe3521d7",
                 bell_timing: {
-                    id: "a7d137aa-cad9-44f6-84c9-f15980421820",
-                    name: "1",
-                    start_time: "10:00:00",
-                    end_time: "11:00:00",
+                    id: "8896248c-1dba-4677-aa87-942a1bd4b017",
+                    name: "2",
+                    start_time: "09:00:00",
+                    end_time: "10:00:00",
+                    c_id: "09:00-10:00",
                 },
                 working_day: {
-                    id: "c2998074-97be-4316-86d7-924c2917225d",
-                    name: "Wednesday",
-                    code: "W",
+                    id: "e42ed725-16da-4d71-943c-071b9e47bfc3",
+                    c_id: "Monday-M-",
+                    name: "Monday",
+                    code: "M",
                 },
+                c_id: "09:00-10:00-Monday-M-",
             },
         ],
+        name: "First Floor",
+        code: "F1",
+        c_id: "F1-First Floor",
     },
 ];
 

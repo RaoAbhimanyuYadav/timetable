@@ -17,12 +17,7 @@ import {
     getData,
     updateData,
 } from "../redux/actionThunk/apiThunk";
-import {
-    addClassroomReducer,
-    deleteClassroomReducer,
-    setClassroomReducer,
-    updateClassroomReducer,
-} from "../redux/reducers/classroomReducers";
+import { setClassroomReducer } from "../redux/reducers/classroomReducers";
 
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
@@ -58,7 +53,7 @@ const Classrooms = () => {
                 updateData(
                     axios,
                     CLASSROOM_URL,
-                    updateClassroomReducer,
+                    setClassroomReducer,
                     filteredData,
                     CLASSROOM_FORM_KEY_LIST
                 )
@@ -69,7 +64,7 @@ const Classrooms = () => {
                 addData(
                     axios,
                     CLASSROOM_URL,
-                    addClassroomReducer,
+                    setClassroomReducer,
                     filteredData,
                     CLASSROOM_FORM_KEY_LIST
                 )
@@ -81,7 +76,7 @@ const Classrooms = () => {
     const deleteHandler = (data) => {
         // delete doc
         dispatch(
-            deleteData(axios, CLASSROOM_URL, deleteClassroomReducer, data.id)
+            deleteData(axios, CLASSROOM_URL, setClassroomReducer, data.id)
         );
     };
 
