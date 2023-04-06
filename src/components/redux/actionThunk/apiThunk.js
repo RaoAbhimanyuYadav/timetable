@@ -2,6 +2,15 @@ import { unauthorized } from "../../utils/authFunctions";
 import { showNotificationReducer } from "../reducers/notificationReducer";
 import { SEVERITY } from "../../constants/notificationConstant";
 
+const errNotification = (dispatch, err) => {
+    dispatch(
+        showNotificationReducer({
+            severity: SEVERITY[err.response.status],
+            msg: err.response.data.message,
+        })
+    );
+};
+
 export const getData = (axios, URL, reducer) => async (dispatch) => {
     try {
         const resp = await axios.get(URL);
@@ -13,12 +22,7 @@ export const getData = (axios, URL, reducer) => async (dispatch) => {
             })
         );
     } catch (err) {
-        dispatch(
-            showNotificationReducer({
-                severity: "error",
-                msg: err.message,
-            })
-        );
+        errNotification(dispatch, err);
         unauthorized(err, dispatch);
     }
 };
@@ -28,12 +32,7 @@ export const getDataWithId = (axios, URL, reducer, id) => async (dispatch) => {
         const resp = await axios.get(URL, { params: { id } });
         dispatch(reducer(resp.data.data));
     } catch (err) {
-        dispatch(
-            showNotificationReducer({
-                severity: "error",
-                msg: err.message,
-            })
-        );
+        errNotification(dispatch, err);
         unauthorized(err, dispatch);
     }
 };
@@ -67,12 +66,7 @@ export const addData =
             );
             dispatch(reducer(newResp.data.data));
         } catch (err) {
-            dispatch(
-                showNotificationReducer({
-                    severity: "error",
-                    msg: err.message,
-                })
-            );
+            errNotification(dispatch, err);
             unauthorized(err, dispatch);
         }
     };
@@ -93,12 +87,8 @@ export const updateData =
             );
             dispatch(reducer(newResp.data.data));
         } catch (err) {
-            dispatch(
-                showNotificationReducer({
-                    severity: "error",
-                    msg: err.message,
-                })
-            );
+            console.log(err);
+            errNotification(dispatch, err);
             unauthorized(err, dispatch);
         }
     };
@@ -116,12 +106,7 @@ export const deleteData = (axios, URL, reducer, id) => async (dispatch) => {
         const newResp = await axios.get(URL);
         dispatch(reducer(newResp.data.data));
     } catch (err) {
-        dispatch(
-            showNotificationReducer({
-                severity: "error",
-                msg: err.message,
-            })
-        );
+        errNotification(dispatch, err);
         unauthorized(err, dispatch);
     }
 };

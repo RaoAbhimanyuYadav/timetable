@@ -10,25 +10,11 @@ const semesterSlice = createSlice({
     name: "semester",
     initialState,
     reducers: {
-        addSemesterReducer: (state, action) => {
-            state.semesterList.push(action.payload);
-        },
         setSemesterReducer: (state, action) => {
             state.semesterList = action.payload;
             state.isSemestersFetched = false;
         },
-        updateSemesterReducer: (state, action) => {
-            const index = state.semesterList.findIndex(
-                (sem) => sem.id === action.payload.id
-            );
-            state.semesterList.splice(index, 1, action.payload);
-        },
-        deleteSemesterReducer: (state, action) => {
-            const index = state.semesterList.findIndex(
-                (sem) => sem.id === action.payload.id
-            );
-            state.semesterList.splice(index, 1);
-        },
+
         resetSemesterReducer: (state) => {
             state.isSemestersFetched = true;
             state.semesterList = [];
@@ -51,10 +37,7 @@ const semesterSlice = createSlice({
 });
 
 export const {
-    addSemesterReducer,
     setSemesterReducer,
-    updateSemesterReducer,
-    deleteSemesterReducer,
     resetSemesterReducer,
     setSelectedSemesterReducer,
     resetSelectedSemesterReducer,

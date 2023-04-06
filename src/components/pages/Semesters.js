@@ -22,12 +22,7 @@ import {
     updateData,
 } from "../redux/actionThunk/apiThunk";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import {
-    addSemesterReducer,
-    deleteSemesterReducer,
-    setSemesterReducer,
-    updateSemesterReducer,
-} from "../redux/reducers/semesterReducer";
+import { setSemesterReducer } from "../redux/reducers/semesterReducer";
 
 const Semesters = () => {
     const dispatch = useDispatch();
@@ -61,7 +56,7 @@ const Semesters = () => {
                 updateData(
                     axios,
                     SEMESTER_URL,
-                    updateSemesterReducer,
+                    setSemesterReducer,
                     filteredData,
                     SEMESTER_FORM_KEY_LIST
                 )
@@ -72,7 +67,7 @@ const Semesters = () => {
                 addData(
                     axios,
                     SEMESTER_URL,
-                    addSemesterReducer,
+                    setSemesterReducer,
                     filteredData,
                     SEMESTER_FORM_KEY_LIST
                 )
@@ -84,9 +79,7 @@ const Semesters = () => {
 
     const deleteHandler = (data) => {
         // delete doc
-        dispatch(
-            deleteData(axios, SEMESTER_URL, deleteSemesterReducer, data.id)
-        );
+        dispatch(deleteData(axios, SEMESTER_URL, setSemesterReducer, data.id));
     };
 
     return (
