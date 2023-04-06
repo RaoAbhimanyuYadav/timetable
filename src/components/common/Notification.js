@@ -2,8 +2,6 @@ import { Alert, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { hideNotificationReducer } from "../redux/reducers/notificationReducer";
 
-// const SEVERITY = ["success", "error", "warning", "info"];
-
 const Notification = () => {
     const dispatch = useDispatch();
     const notification = useSelector((state) => state.notification);

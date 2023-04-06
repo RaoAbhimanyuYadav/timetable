@@ -27,7 +27,7 @@ const NameExtractor = ({ objKey, obj }) => {
     if (typeof obj[objKey] === "boolean") return obj[objKey] ? "Yes" : "No";
     if (typeof obj[objKey] === "object") {
         if (Array.isArray(obj[objKey])) {
-            if (objKey.includes("_time_off_set")) {
+            if (objKey.includes("time_off")) {
                 return <TimeOffRender data={obj[objKey]} />;
             }
             return obj[objKey].map((ele) => (

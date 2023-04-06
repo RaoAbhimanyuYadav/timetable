@@ -19,12 +19,7 @@ import {
     getData,
     updateData,
 } from "../redux/actionThunk/apiThunk";
-import {
-    addSubjectReducer,
-    deleteSubjectReducer,
-    setSubjectReducer,
-    updateSubjectReducer,
-} from "../redux/reducers/subjectReducer";
+import { setSubjectReducer } from "../redux/reducers/subjectReducer";
 
 const Subjects = () => {
     const dispatch = useDispatch();
@@ -50,7 +45,7 @@ const Subjects = () => {
                     updateData(
                         axios,
                         SUBJECT_URL,
-                        updateSubjectReducer,
+                        setSubjectReducer,
                         filteredData,
                         SUBJECT_FORM_KEY_LIST
                     )
@@ -61,7 +56,7 @@ const Subjects = () => {
                     addData(
                         axios,
                         SUBJECT_URL,
-                        addSubjectReducer,
+                        setSubjectReducer,
                         filteredData,
                         SUBJECT_FORM_KEY_LIST
                     )
@@ -76,7 +71,7 @@ const Subjects = () => {
         (data) => {
             // delete doc
             dispatch(
-                deleteData(axios, SUBJECT_URL, deleteSubjectReducer, data.id)
+                deleteData(axios, SUBJECT_URL, setSubjectReducer, data.id)
             );
         },
         [axios, dispatch]

@@ -1,4 +1,4 @@
-export const SUBJECT_TABLE_BODY_KEY = ["name", "code", "subject_time_off_set"];
+export const SUBJECT_TABLE_BODY_KEY = ["name", "code", "time_off"];
 
 export const SUBJECT_TABLE_HEADING = ["Name", "Subject Code", "Timing OFF"];
 
@@ -18,39 +18,43 @@ export const SUBJECT_FORM_FIELDS = [
     {
         label: "Timing OFF",
         type: "time_off",
-        key: "subject_time_off_set",
+        key: "time_off",
         default: 1,
     },
 ];
 
 export const SUBJECT_FORM_KEY_LIST = [
     {
-        key: "subject_time_off_set",
+        key: "time_off",
         statePath: (getstate) => getstate().common.timeOffList,
     },
 ];
 
 export const SUBJECT_DUMMY_DATA = [
     {
-        id: "7ff426de-c8a7-4bd6-aeb1-b7d58a38e3ce",
-        name: "Math",
-        code: "EC 101",
-        subject_time_off_set: [
+        id: "c4b7bc42-1a33-469a-b4b0-e4bf878e4117",
+        time_off: [
             {
-                id: "1ab3cb3a-33a0-45cd-a0d8-108258bf0538",
+                id: "e89e2ee5-d897-4b6f-b1b6-4270fe3521d7",
                 bell_timing: {
-                    id: "a7d137aa-cad9-44f6-84c9-f15980421820",
-                    name: "1",
-                    start_time: "10:00:00",
-                    end_time: "11:00:00",
+                    id: "8896248c-1dba-4677-aa87-942a1bd4b017",
+                    name: "2",
+                    start_time: "09:00:00",
+                    end_time: "10:00:00",
+                    c_id: "09:00-10:00",
                 },
                 working_day: {
-                    id: "c0fbc54f-c73f-484c-a992-df41230b5a00",
-                    name: "Tuesday",
-                    code: "T",
+                    id: "e42ed725-16da-4d71-943c-071b9e47bfc3",
+                    c_id: "Monday-M-",
+                    name: "Monday",
+                    code: "M",
                 },
+                c_id: "09:00-10:00-Monday-M-",
             },
         ],
+        name: "Anteena",
+        code: "EC-101",
+        c_id: "EC-101-Anteena",
     },
 ];
 
