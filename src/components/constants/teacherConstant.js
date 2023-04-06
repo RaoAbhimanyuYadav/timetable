@@ -2,7 +2,7 @@ export const TEACHER_TABLE_BODY_KEY = [
     "name",
     "code",
     "color",
-    "teacher_time_off_set",
+    "time_off",
     "assign_lesson_button",
 ];
 
@@ -36,7 +36,7 @@ export const TEACHER_FORM_FIELDS = [
     {
         label: "Timing OFF",
         type: "time_off",
-        key: "teacher_time_off_set",
+        key: "time_off",
         default: 1,
     },
 ];
@@ -47,33 +47,37 @@ export const TEACHER_FORM_KEY_LIST = [
         statePath: (getstate) => getstate().common.selectedColor,
     },
     {
-        key: "teacher_time_off_set",
+        key: "time_off",
         statePath: (getstate) => getstate().common.timeOffList,
     },
 ];
 
 export const TEACHER_DUMMY_DATA = [
     {
-        id: "7e3b2ae8-e606-40a9-8bf5-3f763105e157",
-        name: "Rahul",
-        code: "RL",
-        color: "#ff2312",
-        teacher_time_off_set: [
+        id: "cdb3de5f-fe9d-4184-8c78-2ca1c7ce81f0",
+        time_off: [
             {
-                id: "b12b7c32-4382-4a17-99d2-d601df11a416",
+                id: "c76b5661-79cb-46d2-b929-2e3d29586b0d",
                 bell_timing: {
-                    id: "a7d137aa-cad9-44f6-84c9-f15980421820",
-                    name: "1",
-                    start_time: "10:00:00",
-                    end_time: "11:00:00",
+                    id: "8896248c-1dba-4677-aa87-942a1bd4b017",
+                    name: "2",
+                    start_time: "09:00:00",
+                    end_time: "10:00:00",
+                    c_id: "09:00-10:00",
                 },
                 working_day: {
-                    id: "c0fbc54f-c73f-484c-a992-df41230b5a00",
+                    id: "a64ff210-9089-491f-a977-0a1284fe239d",
+                    c_id: "Tuesday-T-",
                     name: "Tuesday",
                     code: "T",
                 },
+                c_id: "09:00-10:00-Tuesday-T-",
             },
         ],
+        name: "Saurabh",
+        code: "SKU",
+        color: "#121212",
+        c_id: "SKU-Saurabh-#121212",
     },
 ];
 

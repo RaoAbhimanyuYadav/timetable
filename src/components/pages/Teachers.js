@@ -18,12 +18,7 @@ import {
 } from "../redux/actionThunk/apiThunk";
 
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
-import {
-    addTeacherReducer,
-    deleteTeacherReducer,
-    setTeacherReducer,
-    updateTeacherReducer,
-} from "../redux/reducers/teacherReducers";
+import { setTeacherReducer } from "../redux/reducers/teacherReducers";
 
 const Teachers = () => {
     const dispatch = useDispatch();
@@ -52,7 +47,7 @@ const Teachers = () => {
                 updateData(
                     axios,
                     TEACHER_URL,
-                    updateTeacherReducer,
+                    setTeacherReducer,
                     filteredData,
                     TEACHER_FORM_KEY_LIST
                 )
@@ -63,7 +58,7 @@ const Teachers = () => {
                 addData(
                     axios,
                     TEACHER_URL,
-                    addTeacherReducer,
+                    setTeacherReducer,
                     filteredData,
                     TEACHER_FORM_KEY_LIST
                 )
@@ -74,7 +69,7 @@ const Teachers = () => {
 
     const deleteHandler = (data) => {
         // delete doc
-        dispatch(deleteData(axios, TEACHER_URL, deleteTeacherReducer, data.id));
+        dispatch(deleteData(axios, TEACHER_URL, setTeacherReducer, data.id));
     };
 
     return (
