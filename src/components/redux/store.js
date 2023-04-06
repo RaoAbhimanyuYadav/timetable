@@ -13,6 +13,8 @@ import profileReducer from "./reducers/profileReducer";
 import semesterReducer from "./reducers/semesterReducer";
 import subjectReducer from "./reducers/subjectReducer";
 import teacherReducers from "./reducers/teacherReducers";
+import timeOffsReducer from "./reducers/timeOffsReducer";
+import groupReducer from "./reducers/groupReducer";
 
 export default configureStore({
     reducer: {
@@ -25,5 +27,7 @@ export default configureStore({
         auth: authReducer,
         lesson: lessonReducer,
         notification: notificationReducer,
+        timeOffs: timeOffsReducer,
+        groups: groupReducer,
     },
 });
