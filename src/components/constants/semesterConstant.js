@@ -1,3 +1,11 @@
+import {
+    deleteInSelectedGroupsReducer,
+    pushInSelectedGroupsReducer,
+    resetSelectedGroupsReducer,
+    setSelectedGroups,
+    updateInSelectedGroupsReducer,
+} from "../redux/reducers/groupReducer";
+
 export const SEMESTER_TABLE_BODY_KEY = [
     "name",
     "code",
@@ -36,9 +44,16 @@ export const SEMESTER_FORM_FIELDS = [
     },
     {
         label: "Total groups",
-        type: "groups",
+        type: "multipleSelector",
         key: "groups",
-        default: 1,
+        default: "",
+        selectorFunc: (state) => state.groups.groupList,
+        selectedDataFunc: (state) => state.groups.selectedGroups,
+        setReducer: setSelectedGroups,
+        pushReducer: pushInSelectedGroupsReducer,
+        deleteReducer: deleteInSelectedGroupsReducer,
+        resetReducer: resetSelectedGroupsReducer,
+        updateReducer: updateInSelectedGroupsReducer,
     },
     {
         label: "Timing OFF",
@@ -51,7 +66,7 @@ export const SEMESTER_FORM_FIELDS = [
 export const SEMESTER_FORM_KEY_LIST = [
     {
         key: "groups",
-        statePath: (getstate) => getstate().common.groupList,
+        statePath: (getstate) => getstate().groups.selectedGroups,
     },
     {
         key: "classroom",

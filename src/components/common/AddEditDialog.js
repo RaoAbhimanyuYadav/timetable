@@ -17,12 +17,15 @@ import AysncSelect from "../utils/AysncSelect";
 import AysncSelectMultiple from "./AysncSelectMultiple";
 import CheckBoxes from "./CheckBoxes";
 import TimeOff from "../specific/TimeOff";
+import MultipleSelector from "./MultipleSelector";
 
 const inputFieldSelector = (obj, index, formData) => {
     if (obj.type === "color") {
         return <ColorSelector formData={formData} obj={obj} />;
     } else if (obj.type === "groups") {
         return <GroupComponent formData={formData} obj={obj} />;
+    } else if (obj.type === "multipleSelector") {
+        return <MultipleSelector formData={formData} obj={obj} />;
     } else if (obj.type === "select") {
         return (
             <CustomTextField

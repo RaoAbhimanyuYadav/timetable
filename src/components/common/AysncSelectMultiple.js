@@ -18,7 +18,7 @@ import {
     CustomTextField,
 } from "../utils/customComponents";
 
-const AysncSelect = ({ formData, obj }) => {
+const AysncSelectMultiple = ({ formData, obj }) => {
     const dispatch = useDispatch();
 
     const data = useSelector(obj.selectorFunc) || [];
@@ -104,4 +104,4 @@ const AysncSelect = ({ formData, obj }) => {
     );
 };
 
-export default AysncSelect;
+export default AysncSelectMultiple;
