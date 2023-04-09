@@ -17,6 +17,11 @@ const MultipleSelector = ({ formData, obj }) => {
     useEffect(() => {
         if (formData) {
             dispatch(obj.setReducer(formData[obj.key]));
+        } else if (obj.key === "teachers") {
+            const getCurrentTeacher = () => async (dispatch, getState) => {
+                dispatch(obj.setReducer([getState().lesson.selectedTeacher]));
+            };
+            dispatch(getCurrentTeacher());
         }
         return () => {
             dispatch(obj.resetReducer());
@@ -28,7 +33,7 @@ const MultipleSelector = ({ formData, obj }) => {
     };
 
     const handleAdd = (e) => {
-        dispatch(obj.pushReducer({ id: "" }));
+        dispatch(obj.pushReducer());
     };
 
     const handleDelete = (e, i) => {

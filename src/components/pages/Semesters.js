@@ -9,10 +9,7 @@ import {
 } from "../constants/semesterConstant";
 
 import PageWrapper from "../HOC/PageWrapper";
-import {
-    clearGroupReducer,
-    clearTimeOffReducer,
-} from "../redux/reducers/commonReducers";
+import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
 import { useCallback, useEffect } from "react";
 import {
@@ -74,7 +71,6 @@ const Semesters = () => {
             );
         }
         dispatch(clearTimeOffReducer());
-        dispatch(clearGroupReducer());
     };
 
     const deleteHandler = (data) => {

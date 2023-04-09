@@ -21,14 +21,13 @@ const groupSlice = createSlice({
         setSelectedGroups: (state, action) => {
             state.selectedGroups = action.payload;
         },
-        pushInSelectedGroupsReducer: (state, action) => {
-            state.selectedGroups.push(action.payload);
+        pushInSelectedGroupsReducer: (state) => {
+            state.selectedGroups.push({ id: "" });
         },
         deleteInSelectedGroupsReducer: (state, action) => {
-            state.selectedGroups = state.selectedGroups.splice(
-                action.payload,
-                1
-            );
+            state.selectedGroups = state.selectedGroups
+                .map((grp, i) => (action.payload === i ? null : grp))
+                .filter((grp) => grp !== null);
         },
         resetSelectedGroupsReducer: (state) => {
             state.selectedGroups = [];
@@ -37,7 +36,9 @@ const groupSlice = createSlice({
             const val = state.groupList.find(
                 (grp) => grp.id === action.payload.id
             );
-            state.selectedGroups.splice(action.payload.index, 1, val);
+            state.selectedGroups = state.selectedGroups.map((grp, i) =>
+                i === action.payload.index ? val : grp
+            );
         },
     },
 });

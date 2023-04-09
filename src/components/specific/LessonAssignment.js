@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     LESSON_FORM_FIELDS,
     LESSON_FORM_KEY_LIST,
@@ -11,17 +11,14 @@ import {
 import PageWrapper from "../HOC/PageWrapper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { addData, deleteData, updateData } from "../redux/actionThunk/apiThunk";
-import {
-    addLessonReducer,
-    deleteLessonReducer,
-    updateLessonReducer,
-} from "../redux/reducers/lessonReducer";
+import { setLessonReducer } from "../redux/reducers/lessonReducer";
 
 const LessonAssignment = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
     const selectorFunc = useCallback((state) => state.lesson.lessonList, []);
+    const teacherId = useSelector((state) => state.lesson.selectedTeacher.id);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
@@ -35,9 +32,10 @@ const LessonAssignment = () => {
                 updateData(
                     axios,
                     LESSON_URL,
-                    updateLessonReducer,
+                    setLessonReducer,
                     filteredData,
-                    LESSON_FORM_KEY_LIST
+                    LESSON_FORM_KEY_LIST,
+                    `?id=${teacherId}`
                 )
             );
         } else {
@@ -46,16 +44,17 @@ const LessonAssignment = () => {
                 addData(
                     axios,
                     LESSON_URL,
-                    addLessonReducer,
+                    setLessonReducer,
                     filteredData,
-                    LESSON_FORM_KEY_LIST
+                    LESSON_FORM_KEY_LIST,
+                    `?id=${teacherId}`
                 )
             );
         }
     };
 
     const deleteHandler = (data) => {
-        dispatch(deleteData(axios, LESSON_URL, deleteLessonReducer, data.id));
+        dispatch(deleteData(axios, LESSON_URL, setLessonReducer, data.id));
     };
 
     return (

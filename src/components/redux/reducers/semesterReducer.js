@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     semesterList: [],
     isSemestersFetched: true,
-    selectedSemesters: [],
+    selectedSemGrps: [{ semester: { id: "" }, group: { id: "" } }],
 };
 
 const semesterSlice = createSlice({
@@ -19,19 +19,39 @@ const semesterSlice = createSlice({
             state.isSemestersFetched = true;
             state.semesterList = [];
         },
-        setSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters = action.payload;
+        setSelectedSemGrpsReducer: (state, action) => {
+            state.selectedSemGrps = action.payload;
         },
-        resetSelectedSemesterReducer: (state) => {
-            state.selectedSemesters = [];
+        resetSelectedSemGrpsReducer: (state) => {
+            state.selectedSemGrps = [
+                { semester: { id: "" }, group: { id: "" } },
+            ];
         },
-        addToSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters.push(action.payload);
+        pushInSelectedSemGrpsReducer: (state) => {
+            state.selectedSemGrps.push({
+                semester: { id: "" },
+                group: { id: "" },
+            });
         },
-        removeFromSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters = state.selectedSemesters.filter(
-                (sem) => sem.id !== action.payload
-            );
+        deleteInSelectedSemGrpssReducer: (state, action) => {
+            state.selectedSemGrps = state.selectedSemGrps
+                .map((semGrp, i) => (action.payload === i ? null : semGrp))
+                .filter((semGrp) => semGrp !== null);
+        },
+        updateInSelectedSemGrpsReducer: (state, action) => {
+            const { index, key, data } = action.payload;
+
+            state.selectedSemGrps = state.selectedSemGrps.map((semGrp, i) => {
+                if (i === index) {
+                    let sem = { ...semGrp.semester };
+                    let grp = { ...semGrp.group };
+                    if (key === "semester") {
+                        sem = { ...data };
+                    } else grp = { ...data };
+                    return { semester: sem, group: grp };
+                }
+                return semGrp;
+            });
         },
     },
 });
@@ -39,10 +59,11 @@ const semesterSlice = createSlice({
 export const {
     setSemesterReducer,
     resetSemesterReducer,
-    setSelectedSemesterReducer,
-    resetSelectedSemesterReducer,
-    addToSelectedSemesterReducer,
-    removeFromSelectedSemesterReducer,
+    setSelectedSemGrpsReducer,
+    resetSelectedSemGrpsReducer,
+    pushInSelectedSemGrpsReducer,
+    deleteInSelectedSemGrpssReducer,
+    updateInSelectedSemGrpsReducer,
 } = semesterSlice.actions;
 
 export default semesterSlice.reducer;

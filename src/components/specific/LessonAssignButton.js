@@ -6,8 +6,9 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { getDataWithId } from "../redux/actionThunk/apiThunk";
 import {
     resetLessonReducer,
-    setLessonAssignmentReducer,
+    resetSelectedTeacherReducer,
     setLessonReducer,
+    setSelectedTeacherReducer,
 } from "../redux/reducers/lessonReducer";
 import { CustomButton } from "../utils/customComponents";
 import LessonAssignment from "./LessonAssignment";
@@ -21,13 +22,11 @@ const LessonAssignButton = ({ teacher }) => {
     const handleClose = () => {
         setOpen(false);
         dispatch(resetLessonReducer());
-        dispatch(setLessonAssignmentReducer({ key: "teacherId", id: "" }));
+        dispatch(resetSelectedTeacherReducer());
     };
 
     const handleClick = () => {
-        dispatch(
-            setLessonAssignmentReducer({ key: "teacherId", id: teacher.id })
-        );
+        dispatch(setSelectedTeacherReducer(teacher));
         dispatch(
             getDataWithId(axios, LESSON_URL, setLessonReducer, teacher.id)
         );

@@ -51,13 +51,14 @@ const keyListFunc = (keyList, data, getState) => {
 };
 
 export const addData =
-    (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
+    (axios, URL, reducer, data, keyList, query = "") =>
+    async (dispatch, getState) => {
         try {
             if (keyList) {
                 data = keyListFunc(keyList, data, getState);
             }
             const resp = await axios.post(URL, data);
-            const newResp = await axios.get(URL);
+            const newResp = await axios.get(URL + query);
             dispatch(
                 showNotificationReducer({
                     severity: SEVERITY[resp.status],
@@ -72,13 +73,14 @@ export const addData =
     };
 
 export const updateData =
-    (axios, URL, reducer, data, keyList) => async (dispatch, getState) => {
+    (axios, URL, reducer, data, keyList, query = "") =>
+    async (dispatch, getState) => {
         try {
             if (keyList) {
                 data = keyListFunc(keyList, data, getState);
             }
             const resp = await axios.put(URL, data);
-            const newResp = await axios.get(URL);
+            const newResp = await axios.get(URL + query);
             dispatch(
                 showNotificationReducer({
                     severity: SEVERITY[resp.status],

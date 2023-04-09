@@ -1,3 +1,4 @@
+import { setSelectedClassroomReducer } from "../redux/reducers/classroomReducers";
 import {
     deleteInSelectedGroupsReducer,
     pushInSelectedGroupsReducer,
@@ -41,6 +42,8 @@ export const SEMESTER_FORM_FIELDS = [
         key: "classroom",
         default: "",
         selectorFunc: (state) => state.classroom.classroomList,
+        selectedDataFunc: (state) => state.classroom.selectedClassroom,
+        setReducer: setSelectedClassroomReducer,
     },
     {
         label: "Total groups",
@@ -70,8 +73,7 @@ export const SEMESTER_FORM_KEY_LIST = [
     },
     {
         key: "classroom",
-        createObjWithId: true,
-        statePath: (getstate) => getstate().lesson.classroom,
+        statePath: (getstate) => getstate().classroom.selectedClassroom,
     },
     {
         key: "time_off",
