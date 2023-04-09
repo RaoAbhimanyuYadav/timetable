@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     groupList: [],
     isGroupsFetched: true,
-    selectedGroups: [],
+    selectedGroups: [{ id: "" }],
 };
 
 const groupSlice = createSlice({
@@ -30,7 +30,7 @@ const groupSlice = createSlice({
                 .filter((grp) => grp !== null);
         },
         resetSelectedGroupsReducer: (state) => {
-            state.selectedGroups = [];
+            state.selectedGroups = [{ id: "" }];
         },
         updateInSelectedGroupsReducer: (state, action) => {
             const val = state.groupList.find(

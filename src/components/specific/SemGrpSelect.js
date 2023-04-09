@@ -21,7 +21,7 @@ import { setSelectedClassroomReducer } from "../redux/reducers/classroomReducers
 const SemGrpSelect = ({ formData, obj }) => {
     const dispatch = useDispatch();
     const semOptions = useSelector((state) => state.semester.semesterList);
-    const grpOptions = useSelector((state) => state.groups.groupList);
+    const grpOptions = useSelector((state) => state.semester.groupsAvailable);
 
     const selectedData = useSelector((state) => state.semester.selectedSemGrps);
 
@@ -43,7 +43,7 @@ const SemGrpSelect = ({ formData, obj }) => {
                 updateInSelectedSemGrpsReducer({
                     index: i,
                     key: "semester",
-                    data,
+                    id: e.target.value,
                 })
             );
             if (i === 0) {
@@ -53,19 +53,13 @@ const SemGrpSelect = ({ formData, obj }) => {
         dispatch(getSemester());
     };
     const handleGrpChange = (e, i) => {
-        const getGroup = () => async (dispatch, getState) => {
-            const data = getState().groups.groupList.find(
-                (grp) => grp.id === e.target.value
-            );
-            dispatch(
-                updateInSelectedSemGrpsReducer({
-                    index: i,
-                    key: "group",
-                    data,
-                })
-            );
-        };
-        dispatch(getGroup());
+        dispatch(
+            updateInSelectedSemGrpsReducer({
+                index: i,
+                key: "group",
+                id: e.target.value,
+            })
+        );
     };
 
     const handleAdd = (e) => {
@@ -87,57 +81,51 @@ const SemGrpSelect = ({ formData, obj }) => {
                         key={`${data.semester.id} ${data.group.id} ${i}`}
                     >
                         <Grid container>
-                            <Grid item xs={3}>
-                                <CustomTextField
-                                    select
-                                    id={data.semester.id}
-                                    defaultValue={data.semester.id}
-                                    onChange={(e) => {
-                                        handleSemChange(e, i);
-                                    }}
-                                >
-                                    {semOptions.map((option) => (
-                                        <CustomMenuItem
-                                            key={option.id}
-                                            value={option.id}
-                                        >
-                                            {option.name}({option.code})
-                                        </CustomMenuItem>
-                                    ))}
-                                </CustomTextField>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <CustomTextField
-                                    select
-                                    id={data.group.id}
-                                    defaultValue={data.group.id}
-                                    onChange={(e) => {
-                                        handleGrpChange(e, i);
-                                    }}
-                                >
-                                    {grpOptions.map((option) => (
-                                        <CustomMenuItem
-                                            key={option.id}
-                                            value={option.id}
-                                        >
-                                            {option.name}({option.code})
-                                        </CustomMenuItem>
-                                    ))}
-                                </CustomTextField>
-                            </Grid>
-                            <Grid item xs={6}>
-                                {i !== 0 && (
-                                    <IconButton
-                                        onClick={(e) => {
-                                            handleDelete(e, i);
-                                        }}
+                            <CustomTextField
+                                select
+                                id={data.semester.id}
+                                defaultValue={data.semester.id}
+                                onChange={(e) => {
+                                    handleSemChange(e, i);
+                                }}
+                            >
+                                {semOptions.map((option) => (
+                                    <CustomMenuItem
+                                        key={option.id}
+                                        value={option.id}
                                     >
-                                        <DeleteForeverIcon
-                                            sx={{ color: "red" }}
-                                        />
-                                    </IconButton>
-                                )}
-                            </Grid>
+                                        {option.name}({option.code})
+                                    </CustomMenuItem>
+                                ))}
+                            </CustomTextField>
+
+                            <CustomTextField
+                                select
+                                id={data.group.id}
+                                defaultValue={data.group.id}
+                                onChange={(e) => {
+                                    handleGrpChange(e, i);
+                                }}
+                            >
+                                {grpOptions[i].map((option) => (
+                                    <CustomMenuItem
+                                        key={option.id}
+                                        value={option.id}
+                                    >
+                                        {option.name}({option.code})
+                                    </CustomMenuItem>
+                                ))}
+                            </CustomTextField>
+
+                            {i !== 0 && (
+                                <IconButton
+                                    onClick={(e) => {
+                                        handleDelete(e, i);
+                                    }}
+                                >
+                                    <DeleteForeverIcon sx={{ color: "red" }} />
+                                </IconButton>
+                            )}
                         </Grid>
                     </Grid>
                 ))}

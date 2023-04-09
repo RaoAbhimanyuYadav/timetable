@@ -20,7 +20,6 @@ const teacherSlice = createSlice({
         },
 
         setSelectedTeachersListReducer: (state, action) => {
-            console.log(action.payload);
             state.selectedTeachersList = action.payload;
         },
         resetSelectedTeachersListReducer: (state) => {
