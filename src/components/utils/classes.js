@@ -255,13 +255,17 @@ class SlotNode {
         let clsInd = this.classroomAssigned.findIndex(
             (id) => lsn.classroom.id === id
         );
-        this.classroomAssigned.splice(clsInd, 1);
+        this.classroomAssigned = this.classroomAssigned
+            .map((id, i) => (i === clsInd ? null : id))
+            .filter((id) => id !== null);
         // remove teachers
         lsn.teachers.forEach((teacher) => {
             let tInd = this.teacherAssigned.findIndex(
                 (id) => id === teacher.id
             );
-            this.teacherAssigned.splice(tInd, 1);
+            this.teacherAssigned = this.teacherAssigned
+                .map((id, i) => (i === tInd ? null : id))
+                .filter((id) => id !== null);
         });
         // remove semGrp
         lsn.semester_groups.forEach((semGrp) => {
@@ -270,18 +274,24 @@ class SlotNode {
                     grp[0] === semGrp.id &&
                     (semGrp.id === semGrp.semester.w_id) === grp[1]
             );
-            this.grpAssigned.splice(grpInd, 1);
+            this.grpAssigned = this.grpAssigned
+                .map((id, i) => (grpInd === i ? null : id))
+                .filter((id) => id !== null);
 
             if (semGrp.code.includes("G")) {
                 grpInd = this.grpAssigned.findIndex(
                     (grp) => grp[0] === semGrp.semester.w_id && false === grp[1]
                 );
-                this.grpAssigned.splice(grpInd, 1);
+                this.grpAssigned = this.grpAssigned
+                    .map((id, i) => (grpInd === i ? null : id))
+                    .filter((id) => id !== null);
             }
 
             // remove slot
             let sInd = this.grpList.findIndex((slot) => slot.id === lsn.id);
-            this.grpList.splice(sInd, 1);
+            this.grpList = this.grpList
+                .map((grp, i) => (i === sInd ? null : grp))
+                .filter((grp) => grp !== null);
         });
     }
 }
@@ -396,10 +406,12 @@ class DayNode {
         let timeIndex = this.getTimeIndex(time);
         lsn.semester_groups.forEach((semGrp) => {
             // remove lsnId and semId
-            let i = this.lessonAssigned.findIndex(
+            let index = this.lessonAssigned.findIndex(
                 ({ lsnId, grpId }) => lsnId === lsn.id && grpId === semGrp.id
             );
-            this.lessonAssigned.splice(i, 1);
+            this.lessonAssigned = this.lessonAssigned
+                .map((lsn, i) => (i === index ? null : lsn))
+                .filter((lsn) => lsn !== null);
         });
 
         // remove data from slot
