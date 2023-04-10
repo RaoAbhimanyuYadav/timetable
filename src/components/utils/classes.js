@@ -660,12 +660,17 @@ export class GeneratorClass {
 
     lessonsLoop(lsns) {
         lsns.sort((a, b) => {
-            // if (a.teachers[0].id === b.teachers[0].id) {
-            return b.total_time_off - a.total_time_off === 0
-                ? b.lesson_per_week - a.lesson_per_week
-                : b.total_time_off - a.total_time_off;
-            // } else return a.teachers[0].id - b.teachers[0].id;
+            if (b.total_time_off === a.total_time_off) {
+                if (b.lesson_length === a.lesson_length) {
+                    return b.lesson_per_week - a.lesson_per_week;
+                } else {
+                    return b.lesson_length - a.lesson_length;
+                }
+            } else {
+                return b.total_time_off - a.total_time_off;
+            }
         });
+        console.log(lsns);
         for (let i = 0; i < lsns.length; i++) {
             let lsn = lsns[i];
             this.assignALesson(lsn);
@@ -673,7 +678,7 @@ export class GeneratorClass {
     }
 
     generateTimeTable() {
-        this.lessonsLoop(this.lessons.labs.concat());
+        this.lessonsLoop(this.lessons.labs.concat(this.lessons.lectures));
         // this.lessonsLoop(this.lessons.lectures);
     }
 

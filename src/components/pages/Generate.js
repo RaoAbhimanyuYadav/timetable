@@ -390,11 +390,17 @@ const Generate = () => {
         localStorage.setItem("extraLessons", JSON.stringify(extraLessons));
     };
 
+    const handleDelete = () => {
+        localStorage.removeItem("localData");
+        localStorage.removeItem("extraLessons");
+    };
+
     return (
         <Grid container padding={"10px"} gap={"10px"}>
             <Grid item xs={12}>
                 <Button onClick={handleGenerate}>Generate</Button>
                 <Button onClick={handleSave}>Save</Button>
+                <Button onClick={handleDelete}>Delete Saved</Button>
                 <DownloadPDFButton />
             </Grid>
             <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
