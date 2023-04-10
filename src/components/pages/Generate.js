@@ -256,11 +256,12 @@ const Generate = () => {
                 let dayId = info.day.id;
                 let timeId = info.time.id;
                 setGeneratedTimeTable((pre) => {
-                    lsn.semester_groups.forEach((semGrp) => {
+                    lsn.sem_grps.forEach((semGrp) => {
                         pre[semGrp.semester.id][dayId][timeId] = pre[
                             semGrp.semester.id
                         ][dayId][timeId].filter(
-                            (allotedNode) => allotedNode.semGrp.id !== semGrp.id
+                            (allotedNode) =>
+                                allotedNode.group.id !== semGrp.group.id
                         );
                     });
                     return pre;
@@ -327,9 +328,9 @@ const Generate = () => {
             let dayId = info.day.id;
             let timeId = info.time.id;
             setGeneratedTimeTable((pre) => {
-                selectedLesson.semester_groups.forEach((grp) => {
-                    let slot = new AllotedSlotNode(selectedLesson, 0, grp);
-                    let semId = grp.semester.id;
+                selectedLesson.sem_grps.forEach((semGrp) => {
+                    let slot = new AllotedSlotNode(selectedLesson, 0, semGrp);
+                    let semId = semGrp.semester.id;
 
                     if (!(semId in pre)) pre[semId] = {};
                     if (!(dayId in pre[semId])) pre[semId][dayId] = {};
