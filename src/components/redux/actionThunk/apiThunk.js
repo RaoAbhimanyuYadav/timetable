@@ -6,7 +6,16 @@ const errNotification = (dispatch, err) => {
     dispatch(
         showNotificationReducer({
             severity: SEVERITY[err.response.status],
-            msg: err.response.data.message,
+            msg: JSON.stringify(err.response.data.message),
+        })
+    );
+};
+
+const msgnotification = (dispatch, resp) => {
+    dispatch(
+        showNotificationReducer({
+            severity: SEVERITY[resp.status],
+            msg: JSON.stringify(resp.data.message),
         })
     );
 };
@@ -15,12 +24,7 @@ export const getData = (axios, URL, reducer) => async (dispatch) => {
     try {
         const resp = await axios.get(URL);
         dispatch(reducer(resp.data.data));
-        dispatch(
-            showNotificationReducer({
-                severity: SEVERITY[resp.status],
-                msg: resp.data.message,
-            })
-        );
+        msgnotification(dispatch, resp);
     } catch (err) {
         errNotification(dispatch, err);
         unauthorized(err, dispatch);
@@ -31,6 +35,7 @@ export const getDataWithId = (axios, URL, reducer, id) => async (dispatch) => {
     try {
         const resp = await axios.get(URL, { params: { id } });
         dispatch(reducer(resp.data.data));
+        msgnotification(dispatch, resp);
     } catch (err) {
         errNotification(dispatch, err);
         unauthorized(err, dispatch);
@@ -59,12 +64,7 @@ export const addData =
             }
             const resp = await axios.post(URL, data);
             const newResp = await axios.get(URL + query);
-            dispatch(
-                showNotificationReducer({
-                    severity: SEVERITY[resp.status],
-                    msg: resp.data.message,
-                })
-            );
+            msgnotification(dispatch, resp);
             dispatch(reducer(newResp.data.data));
         } catch (err) {
             errNotification(dispatch, err);
@@ -81,12 +81,7 @@ export const updateData =
             }
             const resp = await axios.put(URL, data);
             const newResp = await axios.get(URL + query);
-            dispatch(
-                showNotificationReducer({
-                    severity: SEVERITY[resp.status],
-                    msg: resp.data.message,
-                })
-            );
+            msgnotification(dispatch, resp);
             dispatch(reducer(newResp.data.data));
         } catch (err) {
             console.log(err);
@@ -98,12 +93,7 @@ export const updateData =
 export const deleteData = (axios, URL, reducer, id) => async (dispatch) => {
     try {
         const resp = await axios.delete(URL, { data: { id } });
-        dispatch(
-            showNotificationReducer({
-                severity: SEVERITY[resp.status],
-                msg: resp.data.message,
-            })
-        );
+        msgnotification(dispatch, resp);
 
         const newResp = await axios.get(URL);
         dispatch(reducer(newResp.data.data));

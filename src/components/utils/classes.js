@@ -169,7 +169,10 @@ class SlotNode {
         this.grpList = grpList.map((grp) => {
             let lsn = { ...grp };
             lsn["lesson_length"] = lsn.colSpan;
-            return new AllotedSlotNode(lsn, grp.hideUI, grp.semGrp);
+            return new AllotedSlotNode(lsn, grp.hideUI, {
+                group: grp.group,
+                semester: grp.semester,
+            });
         });
     }
 
@@ -180,11 +183,16 @@ class SlotNode {
             // whole class is also not assigned
             let g =
                 this.grpAssigned.findIndex(
-                    (gId) => gId[0] === semGrp.group.id
+                    (gId) =>
+                        gId[0] === semGrp.group.id &&
+                        gId[2] === semGrp.semester.id
                 ) !== -1;
             let w =
                 this.grpAssigned.findIndex(
-                    (gId) => gId[0] === semGrp.semester.w_id && gId[1]
+                    (gId) =>
+                        gId[0] === semGrp.semester.w_id &&
+                        gId[1] &&
+                        gId[2] === semGrp.semester.id
                 ) !== -1;
             grpAlloted = grpAlloted || g || w;
         });
@@ -246,10 +254,15 @@ class SlotNode {
             this.grpAssigned.push([
                 semGrp.group.id,
                 semGrp.group.id === semGrp.semester.w_id,
+                semGrp.semester.id,
             ]);
 
             if (semGrp.group.code.includes("G")) {
-                this.grpAssigned.push([semGrp.semester.w_id, false]);
+                this.grpAssigned.push([
+                    semGrp.semester.w_id,
+                    false,
+                    semGrp.semester.id,
+                ]);
             }
             // add data to slot
             this.pushNewSlot(lsn, hideUI, semGrp);
@@ -660,8 +673,8 @@ export class GeneratorClass {
     }
 
     generateTimeTable() {
-        this.lessonsLoop(this.lessons.labs);
-        this.lessonsLoop(this.lessons.lectures);
+        this.lessonsLoop(this.lessons.labs.concat());
+        // this.lessonsLoop(this.lessons.lectures);
     }
 
     removeAllotedLesson(day, time, lsn) {

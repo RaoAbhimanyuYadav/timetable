@@ -16,8 +16,9 @@ const subjectSlice = createSlice({
             state.timeOffList = [];
         },
         removeFromTimeOffReducer: (state, action) => {
+            console.log(action);
             const data = action.payload;
-            state.timeOffList
+            state.timeOffList = state.timeOffList
                 .map((timeOff) =>
                     timeOff.bell_timing.id === data.bell_timing.id &&
                     timeOff.working_day.id === data.working_day.id
