@@ -38,6 +38,8 @@ export const signup = (email, password, redirectFun) => async (dispatch) => {
             // withCredentials: true,
         });
         console.log(resp);
+        dispatch(setAccessTokenReducer(resp.data.access));
+        localStorage.setItem("refresh", JSON.stringify(resp.data.refresh));
         redirectFun();
     } catch (err) {
         dispatch(
