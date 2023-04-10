@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     subjectList: [],
-    isSubjectsFetched: true,
     selectedSubject: { id: "" },
 };
 
@@ -12,11 +11,9 @@ const subjectSlice = createSlice({
     reducers: {
         setSubjectReducer: (state, action) => {
             state.subjectList = action.payload;
-            state.isSubjectsFetched = false;
         },
 
         resetSubjectReducer: (state) => {
-            state.isSubjectsFetched = true;
             state.subjectList = [];
         },
 

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
     SEMESTER_URL,
@@ -30,15 +30,9 @@ const Semesters = () => {
         []
     );
 
-    const isSemestersFetched = useSelector(
-        (state) => state.semester.isSemestersFetched
-    );
-
     useEffect(() => {
-        if (isSemestersFetched) {
-            dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
-        } // eslint-disable-next-line
-    }, [isSemestersFetched]);
+        dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
+    }, [dispatch, axios]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {

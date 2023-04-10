@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     timeOffList: [],
-    isTimeOffFetched: true,
 };
 
 const timeOffsSlice = createSlice({
@@ -11,10 +10,8 @@ const timeOffsSlice = createSlice({
     reducers: {
         setTimeOffsReducer: (state, action) => {
             state.timeOffList = action.payload;
-            state.isTimeOffFetched = false;
         },
         resetTimeOffsReducer: (state) => {
-            state.isTimeOffFetched = true;
             state.timeOffList = [];
         },
     },

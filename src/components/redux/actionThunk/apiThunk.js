@@ -18,7 +18,7 @@ export const getData = (axios, URL, reducer) => async (dispatch) => {
         dispatch(
             showNotificationReducer({
                 severity: SEVERITY[resp.status],
-                message: resp.data.message,
+                msg: resp.data.message,
             })
         );
     } catch (err) {

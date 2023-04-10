@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     semesterList: [],
-    isSemestersFetched: true,
     selectedSemGrps: [{ semester: { id: "" }, group: { id: "" } }],
     groupsAvailable: [[]],
 };
@@ -13,11 +12,9 @@ const semesterSlice = createSlice({
     reducers: {
         setSemesterReducer: (state, action) => {
             state.semesterList = action.payload;
-            state.isSemestersFetched = false;
         },
 
         resetSemesterReducer: (state) => {
-            state.isSemestersFetched = true;
             state.semesterList = [];
         },
         setSelectedSemGrpsReducer: (state, action) => {

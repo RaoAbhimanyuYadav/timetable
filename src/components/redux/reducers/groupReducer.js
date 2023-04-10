@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     groupList: [],
-    isGroupsFetched: true,
     selectedGroups: [{ id: "" }],
 };
 
@@ -12,10 +11,8 @@ const groupSlice = createSlice({
     reducers: {
         setGroupsReducer: (state, action) => {
             state.groupList = action.payload;
-            state.isGroupsFetched = false;
         },
         resetGroupsReducer: (state) => {
-            state.isGroupsFetched = true;
             state.groupList = [];
         },
         setSelectedGroups: (state, action) => {

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useCallback, useEffect } from "react";
 
 import PageWrapper from "../HOC/PageWrapper";
@@ -37,16 +37,6 @@ const Profile = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const isBellTimingsFetched = useSelector(
-        (state) => state.profile.isBellTimingsFetched
-    );
-    const isWorkingDaysFetched = useSelector(
-        (state) => state.profile.isWorkingDaysFetched
-    );
-    const isGroupsFetched = useSelector(
-        (state) => state.groups.isGroupsFetched
-    );
-
     const bellTimingSelectorFunc = useCallback(
         (state) => state.profile.bellTimings,
         []
@@ -61,16 +51,12 @@ const Profile = () => {
     );
 
     useEffect(() => {
-        if (isBellTimingsFetched) {
-            dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
-        }
-        if (isGroupsFetched) {
-            dispatch(getData(axios, GROUP_URL, setGroupsReducer));
-        }
-        if (isWorkingDaysFetched) {
-            dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
-        } // eslint-disable-next-line
-    }, [isWorkingDaysFetched, isBellTimingsFetched]);
+        dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
+
+        dispatch(getData(axios, GROUP_URL, setGroupsReducer));
+
+        dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
+    }, [dispatch, axios]);
 
     const bellTimingFormSubmitHandler = (e, data) => {
         // Data checking

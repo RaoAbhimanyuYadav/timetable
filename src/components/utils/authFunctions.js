@@ -1,7 +1,4 @@
-import {
-    setAccessTokenReducer,
-    setDataFetchedReducer,
-} from "../redux/reducers/authReducer";
+import { setAccessTokenReducer } from "../redux/reducers/authReducer";
 
 import {
     resetClassroomReducer,
@@ -84,7 +81,6 @@ export const resetAllState = (dispatch) => {
     });
 
     dispatch(setAccessTokenReducer(null));
-    dispatch(setDataFetchedReducer(true));
 };
 
 export const unauthorized = (err, dispatch) => {

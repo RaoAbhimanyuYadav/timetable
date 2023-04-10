@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
     SUBJECT_URL,
@@ -25,10 +25,6 @@ const Subjects = () => {
     const dispatch = useDispatch();
 
     const axios = useAxiosPrivate();
-
-    const isSubjectsFetched = useSelector(
-        (state) => state.subject.isSubjectsFetched
-    );
 
     const selectorFunc = useCallback((state) => state.subject.subjectList, []);
 
@@ -78,10 +74,8 @@ const Subjects = () => {
     );
 
     useEffect(() => {
-        if (isSubjectsFetched) {
-            dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
-        } // eslint-disable-next-line
-    }, [isSubjectsFetched]);
+        dispatch(getData(axios, SUBJECT_URL, setSubjectReducer));
+    }, [axios, dispatch]);
 
     return (
         <PageWrapper

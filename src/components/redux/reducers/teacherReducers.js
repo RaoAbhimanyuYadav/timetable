@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     teacherList: [],
-    isTeachersFetched: true,
     selectedTeachersList: [{ id: "" }],
 };
 
@@ -12,10 +11,8 @@ const teacherSlice = createSlice({
     reducers: {
         setTeacherReducer: (state, action) => {
             state.teacherList = action.payload;
-            state.isTeachersFetched = false;
         },
         resetTeacherReducer: (state) => {
-            state.isTeachersFetched = true;
             state.teacherList = [];
         },
 

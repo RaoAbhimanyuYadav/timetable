@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
     TEACHER_URL,
@@ -24,16 +24,11 @@ const Teachers = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
 
-    const isTeachersFetched = useSelector(
-        (state) => state.teacher.isTeachersFetched
-    );
     const selectorFunc = useCallback((state) => state.teacher.teacherList, []);
 
     useEffect(() => {
-        if (isTeachersFetched) {
-            dispatch(getData(axios, TEACHER_URL, setTeacherReducer));
-        } // eslint-disable-next-line
-    }, [isTeachersFetched]);
+        dispatch(getData(axios, TEACHER_URL, setTeacherReducer));
+    }, [axios, dispatch]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {

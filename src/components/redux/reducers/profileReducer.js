@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    isBellTimingsFetched: true,
-    isWorkingDaysFetched: true,
     nameOfOrganisation: "NITH",
     academicYear: "2022-23",
     bellTimings: [],
@@ -33,18 +31,14 @@ const profileSlice = createSlice({
                 (a, b) => +a.name > +b.name
             );
             state.bellTimings = orderedTiming;
-            state.isBellTimingsFetched = false;
         },
         setWorkingDaysReducer: (state, action) => {
             const orderedWorkingDays = action.payload.sort(
                 (a, b) => days[a.name] > days[b.name]
             );
             state.workingDays = orderedWorkingDays;
-            state.isWorkingDaysFetched = false;
         },
         resetProfileReducer: (state) => {
-            state.isBellTimingsFetched = true;
-            state.isWorkingDaysFetched = true;
             state.bellTimings = [];
             state.workingDays = [];
         },
