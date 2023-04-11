@@ -84,7 +84,6 @@ export const updateData =
             msgnotification(dispatch, resp);
             dispatch(reducer(newResp.data.data));
         } catch (err) {
-            console.log(err);
             errNotification(dispatch, err);
             unauthorized(err, dispatch);
         }

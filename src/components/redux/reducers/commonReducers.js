@@ -16,7 +16,6 @@ const subjectSlice = createSlice({
             state.timeOffList = [];
         },
         removeFromTimeOffReducer: (state, action) => {
-            console.log(action);
             const data = action.payload;
             state.timeOffList = state.timeOffList
                 .map((timeOff) =>

@@ -46,25 +46,25 @@ export class LessonNode {
         });
 
         // remove timeoff
-        {
-            const { time_off, ...classroom } = this.classroom;
-            this.classroom = classroom;
-        }
-        {
-            const { time_off, ...subject } = this.subject;
-            this.subject = subject;
-        }
+        // {
+        //     const { time_off, ...classroom } = this.classroom;
+        //     this.classroom = classroom;
+        // }
+        // {
+        //     const { time_off, ...subject } = this.subject;
+        //     this.subject = subject;
+        // }
 
-        this.sem_grps = this.sem_grps.map((semGrp) => {
-            const grp = { ...semGrp.group };
-            const { time_off, ...sem } = semGrp.semester;
+        // this.sem_grps = this.sem_grps.map((semGrp) => {
+        //     const grp = { ...semGrp.group };
+        //     const { time_off, ...sem } = semGrp.semester;
 
-            return { group: grp, semester: sem };
-        });
-        this.teachers = this.teachers.map((tchr) => {
-            const { time_off, ...teacher } = tchr;
-            return teacher;
-        });
+        //     return { group: grp, semester: sem };
+        // });
+        // this.teachers = this.teachers.map((tchr) => {
+        //     const { time_off, ...teacher } = tchr;
+        //     return teacher;
+        // });
         this.formatTimeOff();
     }
     formatTimeOff() {
@@ -291,7 +291,8 @@ class SlotNode {
             let grpInd = this.grpAssigned.findIndex(
                 (grp) =>
                     grp[0] === semGrp.group.id &&
-                    (semGrp.group.id === semGrp.semester.w_id) === grp[1]
+                    grp[1] === (semGrp.group.id === semGrp.semester.w_id) &&
+                    grp[2] === semGrp.semester.id
             );
             this.grpAssigned = this.grpAssigned
                 .map((id, i) => (grpInd === i ? null : id))
@@ -299,7 +300,10 @@ class SlotNode {
 
             if (semGrp.group.code.includes("G")) {
                 grpInd = this.grpAssigned.findIndex(
-                    (grp) => grp[0] === semGrp.semester.w_id && false === grp[1]
+                    (grp) =>
+                        grp[0] === semGrp.semester.w_id &&
+                        grp[1] === false &&
+                        grp[2] === semGrp.semester.id
                 );
                 this.grpAssigned = this.grpAssigned
                     .map((id, i) => (grpInd === i ? null : id))
@@ -555,7 +559,7 @@ export class AllotedLessons {
     removeLesson(day, time, lsn) {
         let dayIndex = this.getDayIndex(day);
         if (lsn.lesson_length === 1)
-            this.days[dayIndex].removeLectureForTheDay(time, lsn, 0);
+            this.days[dayIndex].removeLectureForTheDay(time, lsn);
         else if (lsn.lesson_length > 1)
             this.days[dayIndex].removeLabForTheDay(time, lsn, this.timeList);
         else console.log("Remove lecture for lesson length < 1");
@@ -670,7 +674,6 @@ export class GeneratorClass {
                 return b.total_time_off - a.total_time_off;
             }
         });
-        console.log(lsns);
         for (let i = 0; i < lsns.length; i++) {
             let lsn = lsns[i];
             this.assignALesson(lsn);
