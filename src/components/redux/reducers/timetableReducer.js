@@ -7,6 +7,7 @@ const initialState = {
     selectedLesson: undefined,
     allLessons: [],
     objData: undefined,
+    noColor: false,
 };
 
 const timetableSlice = createSlice({
@@ -93,6 +94,9 @@ const timetableSlice = createSlice({
 
             state.selectedLesson = undefined;
         },
+        toggleNoColorReducer: (state) => {
+            state.noColor = !state.noColor;
+        },
     },
 });
 
@@ -104,6 +108,7 @@ export const {
     cutLessonReducer,
     pasteLessonReducer,
     setObjDataReducer,
+    toggleNoColorReducer,
 } = timetableSlice.actions;
 
 export default timetableSlice.reducer;

@@ -11,6 +11,7 @@ import {
     cutLessonReducer,
     pasteLessonReducer,
     setSelectedLessonReducer,
+    toggleNoColorReducer,
 } from "../redux/reducers/timetableReducer";
 import GenerateButton from "../wrappers/GenerateButton";
 import { CustomButton } from "../utils/customComponents";
@@ -106,6 +107,10 @@ const Generate = () => {
         localStorage.setItem("extraLessons", JSON.stringify(extraLessons));
     };
 
+    const handleToggleColor = () => {
+        dispatch(toggleNoColorReducer());
+    };
+
     return (
         <Grid container padding={"10px"} gap={"10px"}>
             <Grid item xs={12}>
@@ -126,6 +131,11 @@ const Generate = () => {
                     </Grid>
                     <Grid item xs={2}>
                         <DownloadPDFButton />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <CustomButton onClick={handleToggleColor}>
+                            Toggle Color
+                        </CustomButton>
                     </Grid>
                 </Grid>
             </Grid>

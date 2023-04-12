@@ -2,20 +2,23 @@ import { Grid } from "@mui/material";
 import { useState } from "react";
 import { LectureInfo } from "./LectureInfo";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
+import { useSelector } from "react-redux";
 
 const AllotedLecture = ({ data, info, width, bgColor, height, handleDaD }) => {
     const [open, setOpen] = useState(false);
+    const noColor = useSelector((state) => state.timetable.noColor);
 
     return (
         <Grid
             item
             xs={12}
             sx={{
-                backgroundColor: bgColor,
+                backgroundColor: noColor ? "white" : bgColor,
                 height,
                 maxWidth: `${width} !important`,
                 width: `${width} !important`,
                 position: "relative",
+                borderBottom: "1px solid black",
             }}
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
