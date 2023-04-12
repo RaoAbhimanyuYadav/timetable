@@ -1,7 +1,7 @@
 import React from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { Button } from "@mui/material";
+import { CustomButton } from "../utils/customComponents";
 
 function DownloadPDFButton() {
     const downloadPDF = () => {
@@ -17,7 +17,7 @@ function DownloadPDFButton() {
         });
     };
 
-    return <Button onClick={downloadPDF}>Download PDF</Button>;
+    return <CustomButton onClick={downloadPDF}>Download PDF</CustomButton>;
 }
 
 export default DownloadPDFButton;

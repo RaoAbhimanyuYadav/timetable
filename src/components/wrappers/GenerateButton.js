@@ -34,17 +34,8 @@ const GenerateButton = ({ setClassObj }) => {
 
             let classObj = new GeneratorClass(timeSlots, days, data);
 
-            let localData = localStorage.getItem("localData");
-            let localExtra = localStorage.getItem("extraLessons");
+            classObj.generateTimeTable();
 
-            if (localData === null || localExtra === null) {
-                classObj.generateTimeTable();
-            } else {
-                classObj.assignSavedData(
-                    JSON.parse(localData),
-                    JSON.parse(localExtra)
-                );
-            }
             dispatch(
                 setExtraLessonsReducer(serializer(classObj.lessonNotAssigned))
             );

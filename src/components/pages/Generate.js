@@ -1,4 +1,4 @@
-import { Button, Grid, Table } from "@mui/material";
+import { Grid, Table } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,12 +10,11 @@ import TimetableHeader from "../wrappers/TimetableHeader";
 import {
     cutLessonReducer,
     pasteLessonReducer,
-    setObjDataReducer,
     setSelectedLessonReducer,
 } from "../redux/reducers/timetableReducer";
-import SaveButton from "../wrappers/SaveButton";
 import GenerateButton from "../wrappers/GenerateButton";
-import ObjCreator from "../wrappers/ObjCreator";
+import { CustomButton } from "../utils/customComponents";
+import GetSavedData from "../wrappers/GetSavedData";
 
 // TODO: print and different View
 const serializer = (data) => {
@@ -33,6 +32,7 @@ const Generate = () => {
         (state) => state.timetable.selectedLesson
     );
     const lessons = useSelector((state) => state.timetable.allLessons);
+    const extraLessons = useSelector((state) => state.timetable.extraLessons);
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
@@ -101,14 +101,33 @@ const Generate = () => {
         localStorage.removeItem("extraLessons");
     };
 
+    const handleSave = () => {
+        localStorage.setItem("localData", JSON.stringify(classObj.data));
+        localStorage.setItem("extraLessons", JSON.stringify(extraLessons));
+    };
+
     return (
         <Grid container padding={"10px"} gap={"10px"}>
             <Grid item xs={12}>
-                <GenerateButton setClassObj={setClassObj} />
-                <SaveButton classObj={classObj} />
-                <Button onClick={handleDelete}>Delete Saved</Button>
-                <DownloadPDFButton />
-                <ObjCreator setClassObj={setClassObj} />
+                <Grid container>
+                    <Grid item xs={2}>
+                        <GenerateButton setClassObj={setClassObj} />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <GetSavedData setClassObj={setClassObj} />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <CustomButton onClick={handleSave}>Save</CustomButton>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <CustomButton onClick={handleDelete}>
+                            Delete Saved
+                        </CustomButton>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <DownloadPDFButton />
+                    </Grid>
+                </Grid>
             </Grid>
             <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
                 <Table
@@ -127,7 +146,10 @@ const Generate = () => {
             </Grid>
             <Grid item xs={12}>
                 <Grid container gap={"10px"}>
-                    <ExtraLessons handleDaD={handleDaD} />
+                    <ExtraLessons
+                        handleDaD={handleDaD}
+                        extraLessons={extraLessons}
+                    />
                 </Grid>
             </Grid>
         </Grid>

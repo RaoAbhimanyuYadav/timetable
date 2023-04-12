@@ -2,8 +2,7 @@ import { Badge } from "@mui/material";
 import { useSelector } from "react-redux";
 import AllotedLecture from "./AllotedLecture";
 
-const ExtraLessons = ({ handleDaD }) => {
-    const extraLessons = useSelector((state) => state.timetable.extraLessons);
+const ExtraLessons = ({ handleDaD, extraLessons }) => {
     const selectedLesson = useSelector(
         (state) => state.timetable.selectedLesson
     );
