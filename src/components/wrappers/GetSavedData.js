@@ -1,20 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import {
-    setAllLessonsReducer,
-    setExtraLessonsReducer,
-    setGenratedTimetableReducer,
-} from "../redux/reducers/timetableReducer";
 import { CustomButton } from "../utils/customComponents";
 import { LESSON_URL } from "../constants/lessonConstant";
 import { GeneratorClass, LessonNode } from "../utils/classes";
 
-const serializer = (data) => {
-    return JSON.parse(JSON.stringify(data));
-};
-
-const GetSavedData = ({ setClassObj }) => {
-    const dispatch = useDispatch();
+const GetSavedData = ({
+    setClassObj,
+    setExtraLessons,
+    setAllLessons,
+    setGeneratedTimetable,
+}) => {
     const axios = useAxiosPrivate();
 
     const timeSlots = useSelector((state) => state.profile.bellTimings);
@@ -32,7 +27,7 @@ const GetSavedData = ({ setClassObj }) => {
         getLessons().then((data) => {
             let classObj = new GeneratorClass(timeSlots, days, data);
             let lsns = data.map((lsn) => new LessonNode(lsn));
-            dispatch(setAllLessonsReducer(serializer(lsns)));
+            setAllLessons(lsns);
 
             if (localData === null || localExtra === null) {
                 classObj.generateTimeTable();
@@ -41,14 +36,10 @@ const GetSavedData = ({ setClassObj }) => {
                     JSON.parse(localData),
                     JSON.parse(localExtra)
                 );
-            dispatch(
-                setExtraLessonsReducer(serializer(classObj.lessonNotAssigned))
-            );
-            dispatch(
-                setGenratedTimetableReducer(
-                    serializer(classObj.data.generateFormattedData())
-                )
-            );
+            setExtraLessons(classObj.lessonNotAssigned);
+
+            setGeneratedTimetable(classObj.data.generateFormattedData());
+
             setClassObj(classObj);
         });
     };

@@ -40,6 +40,17 @@ const AllotedLecture = ({ data, info, width, bgColor, height, handleDaD }) => {
                 subject={data.subject.code}
                 teachers={data.teachers}
                 height={height}
+                semester={
+                    noColor
+                        ? ""
+                        : data.semester?.code ||
+                          data.sem_grps
+                              .map(
+                                  (semGrp) =>
+                                      `${semGrp.semester.code}(${semGrp.group.code})`
+                              )
+                              .join(", ")
+                }
             />
         </Grid>
     );

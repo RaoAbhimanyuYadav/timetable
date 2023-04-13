@@ -4,13 +4,10 @@ import CellWrapper from "./CellWrapper";
 import { useSelector } from "react-redux";
 import HeaderWrapper from "./HeaderWrapper";
 
-const TimetableBody = ({ viewSelectorFunc, handleDaD }) => {
+const TimetableBody = ({ viewSelectorFunc, handleDaD, generatedTimetable }) => {
     const timeSlots = useSelector((state) => state.profile.bellTimings);
     const days = useSelector((state) => state.profile.workingDays);
     const data = useSelector(viewSelectorFunc);
-    const generatedTimetable = useSelector(
-        (state) => state.timetable.generatedTimetable
-    );
 
     return (
         <TableBody>

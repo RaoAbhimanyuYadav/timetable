@@ -1,12 +1,7 @@
 import { Badge } from "@mui/material";
-import { useSelector } from "react-redux";
 import AllotedLecture from "./AllotedLecture";
 
-const ExtraLessons = ({ handleDaD, extraLessons }) => {
-    const selectedLesson = useSelector(
-        (state) => state.timetable.selectedLesson
-    );
-
+const ExtraLessons = ({ handleDaD, extraLessons, selectedLesson }) => {
     return extraLessons.map((lsn) => {
         return (
             <Badge

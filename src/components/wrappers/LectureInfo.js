@@ -7,11 +7,14 @@ const gridItemCSS = {
     justifyContent: "center",
 };
 
-export const LectureInfo = ({ subject, teachers, room, height }) => {
+export const LectureInfo = ({ subject, teachers, room, height, semester }) => {
     return (
         <Grid container sx={{ height }}>
             <Grid item xs={12} sx={gridItemCSS}>
                 <TextWrapper>{subject}</TextWrapper>
+            </Grid>
+            <Grid item xs={12} sx={gridItemCSS}>
+                <TextWrapper>{semester}</TextWrapper>
             </Grid>
             <Grid item xs={6} sx={gridItemCSS}>
                 <TextWrapper>{room}</TextWrapper>
