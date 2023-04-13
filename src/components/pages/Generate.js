@@ -62,14 +62,22 @@ const Generate = () => {
                 let timeId = info.time.id;
 
                 setGeneratedTimetable((pre) => {
-                    lsn.sem_grps.forEach((semGrp) => {
-                        pre[semGrp.semester.id][dayId][timeId] = pre[
-                            semGrp.semester.id
-                        ][dayId][timeId].filter(
-                            (allotedNode) =>
-                                allotedNode.group.id !== semGrp.group.id
-                        );
-                    });
+                    if (view === 0) {
+                        lsn.sem_grps.forEach((semGrp) => {
+                            pre[semGrp.semester.id][dayId][timeId] = pre[
+                                semGrp.semester.id
+                            ][dayId][timeId].filter(
+                                (allotedNode) =>
+                                    allotedNode.group.id !== semGrp.group.id
+                            );
+                        });
+                    } else if (view === 1) {
+                        lsn.teachers.forEach((tchr) => {
+                            pre[tchr.id][dayId][timeId] = [];
+                        });
+                    } else if (view === 2) {
+                        pre[lsn.classroom.id][dayId][timeId] = [];
+                    }
                     return pre;
                 });
 
@@ -134,20 +142,56 @@ const Generate = () => {
             let timeId = info.time.id;
 
             setGeneratedTimetable((pre) => {
-                selectedLesson.sem_grps.forEach((semGrp) => {
-                    let slot = new AllotedSlotNode(selectedLesson, 0, semGrp);
-                    let semId = semGrp.semester.id;
+                if (view === 0) {
+                    selectedLesson.sem_grps.forEach((semGrp) => {
+                        let slot = new AllotedSlotNode(
+                            selectedLesson,
+                            0,
+                            semGrp
+                        );
+                        let semId = semGrp.semester.id;
 
-                    if (!(semId in pre)) pre[semId] = {};
-                    if (!(dayId in pre[semId])) pre[semId][dayId] = {};
-                    if (!(timeId in pre[semId][dayId]))
-                        pre[semId][dayId][timeId] = [];
+                        if (!(semId in pre)) pre[semId] = {};
+                        if (!(dayId in pre[semId])) pre[semId][dayId] = {};
+                        if (!(timeId in pre[semId][dayId]))
+                            pre[semId][dayId][timeId] = [];
 
-                    pre[semId][dayId][timeId] = [
-                        ...pre[semId][dayId][timeId],
-                        slot,
-                    ];
-                });
+                        pre[semId][dayId][timeId] = [
+                            ...pre[semId][dayId][timeId],
+                            slot,
+                        ];
+                    });
+                } else if (view === 1) {
+                    selectedLesson.teachers.forEach((tchr) => {
+                        let slot = new AllotedSlotNode(
+                            selectedLesson,
+                            0,
+                            selectedLesson.sem_grps[0]
+                        );
+                        let tId = tchr.id;
+
+                        if (!(tId in pre)) pre[tId] = {};
+                        if (!(dayId in pre[tId])) pre[tId][dayId] = {};
+                        if (!(timeId in pre[tId][dayId]))
+                            pre[tId][dayId][timeId] = [];
+
+                        pre[tId][dayId][timeId] = [slot];
+                    });
+                } else if (view === 2) {
+                    let slot = new AllotedSlotNode(
+                        selectedLesson,
+                        0,
+                        selectedLesson.sem_grps[0]
+                    );
+                    let tId = selectedLesson.classroom.id;
+
+                    if (!(tId in pre)) pre[tId] = {};
+                    if (!(dayId in pre[tId])) pre[tId][dayId] = {};
+                    if (!(timeId in pre[tId][dayId]))
+                        pre[tId][dayId][timeId] = [];
+
+                    pre[tId][dayId][timeId] = [slot];
+                }
                 return pre;
             });
             setSelectedLesson(undefined);

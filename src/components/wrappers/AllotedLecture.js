@@ -4,7 +4,16 @@ import { LectureInfo } from "./LectureInfo";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import { useSelector } from "react-redux";
 
-const AllotedLecture = ({ data, info, width, bgColor, height, handleDaD }) => {
+const AllotedLecture = ({
+    top,
+    bottom,
+    data,
+    info,
+    width,
+    bgColor,
+    height,
+    handleDaD,
+}) => {
     const [open, setOpen] = useState(false);
     const noColor = useSelector((state) => state.timetable.noColor);
 
@@ -18,7 +27,8 @@ const AllotedLecture = ({ data, info, width, bgColor, height, handleDaD }) => {
                 maxWidth: `${width} !important`,
                 width: `${width} !important`,
                 position: "relative",
-                borderBottom: "1px solid black",
+                borderTop: top ? "1px solid black" : "none",
+                borderBottom: bottom ? "1px solid black" : "none",
             }}
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
