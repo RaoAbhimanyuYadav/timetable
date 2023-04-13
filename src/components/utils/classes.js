@@ -532,24 +532,73 @@ export class AllotedLessons {
         else console.log("Assign lecture for lesson length < 1");
     }
 
-    generateFormattedData() {
+    semesterFormattedData() {
         let finalData = {};
 
         this.days.forEach((d) => {
             let day = d.day;
             d.timings.forEach((t) => {
                 let time = t.time;
-                t.grpList.forEach((semGrp) => {
-                    let sem = semGrp.semester;
-                    if (semGrp.hideUI === 0) {
+                t.grpList.forEach((lsn) => {
+                    let sem = lsn.semester;
+                    if (lsn.hideUI === 0) {
                         if (!(sem.id in finalData)) finalData[sem.id] = {};
                         if (!(day.id in finalData[sem.id]))
                             finalData[sem.id][day.id] = {};
                         if (!(time.id in finalData[sem.id][day.id]))
                             finalData[sem.id][day.id][time.id] = [];
 
-                        finalData[sem.id][day.id][time.id].push(semGrp);
+                        finalData[sem.id][day.id][time.id].push(lsn);
                     }
+                });
+            });
+        });
+        return finalData;
+    }
+    classroomFormattedData() {
+        let finalData = {};
+
+        this.days.forEach((d) => {
+            let day = d.day;
+            d.timings.forEach((t) => {
+                let time = t.time;
+                t.grpList.forEach((lsn) => {
+                    let tId = lsn.classroom.id;
+                    let bId = time.id;
+                    let dId = day.id;
+                    if (lsn.hideUI === 0) {
+                        if (!(tId in finalData)) finalData[tId] = {};
+                        if (!(dId in finalData[tId])) finalData[tId][dId] = {};
+                        if (!(bId in finalData[tId][dId]))
+                            finalData[tId][dId][bId] = [];
+                        finalData[tId][dId][bId].push(lsn);
+                    }
+                });
+            });
+        });
+        return finalData;
+    }
+    teacherFormattedData() {
+        let finalData = {};
+
+        this.days.forEach((d) => {
+            let day = d.day;
+            d.timings.forEach((t) => {
+                let time = t.time;
+                t.grpList.forEach((lsn) => {
+                    lsn.teachers.forEach((tchr) => {
+                        let tId = tchr.id;
+                        let bId = time.id;
+                        let dId = day.id;
+                        if (lsn.hideUI === 0) {
+                            if (!(tId in finalData)) finalData[tId] = {};
+                            if (!(dId in finalData[tId]))
+                                finalData[tId][dId] = {};
+                            if (!(bId in finalData[tId][dId]))
+                                finalData[tId][dId][bId] = [];
+                            finalData[tId][dId][bId].push(lsn);
+                        }
+                    });
                 });
             });
         });

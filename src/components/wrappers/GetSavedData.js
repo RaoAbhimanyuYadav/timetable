@@ -9,6 +9,7 @@ const GetSavedData = ({
     setExtraLessons,
     setAllLessons,
     setGeneratedTimetable,
+    creatorFunc,
 }) => {
     const axios = useAxiosPrivate();
 
@@ -38,7 +39,7 @@ const GetSavedData = ({
                 );
             setExtraLessons(classObj.lessonNotAssigned);
 
-            setGeneratedTimetable(classObj.data.generateFormattedData());
+            setGeneratedTimetable(creatorFunc(classObj));
 
             setClassObj(classObj);
         });

@@ -10,6 +10,7 @@ const GenerateButton = ({
     setAllLessons,
     setExtraLessons,
     setGeneratedTimetable,
+    creatorFunc,
 }) => {
     const axios = useAxiosPrivate();
 
@@ -33,7 +34,7 @@ const GenerateButton = ({
 
             setExtraLessons(classObj.lessonNotAssigned);
 
-            setGeneratedTimetable(classObj.data.generateFormattedData());
+            setGeneratedTimetable(creatorFunc(classObj));
 
             setClassObj(classObj);
         });

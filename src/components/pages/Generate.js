@@ -1,4 +1,4 @@
-import { Grid, Table } from "@mui/material";
+import { FormControl, Grid, Table } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -9,13 +9,30 @@ import TimetableBody from "../wrappers/TimetableBody";
 import TimetableHeader from "../wrappers/TimetableHeader";
 import { toggleNoColorReducer } from "../redux/reducers/timetableReducer";
 import GenerateButton from "../wrappers/GenerateButton";
-import { CustomButton } from "../utils/customComponents";
+import {
+    CustomButton,
+    CustomMenuItem,
+    CustomTextField,
+} from "../utils/customComponents";
 import GetSavedData from "../wrappers/GetSavedData";
 import { AllotedSlotNode } from "../utils/classes";
 
 // TODO: print and different View
 
-const viewSelectorFunc = (state) => state.semester.semesterList;
+const FUNC = [
+    {
+        selectorFunc: (state) => state.semester.semesterList,
+        creator: (classObj) => classObj.data.semesterFormattedData(),
+    },
+    {
+        selectorFunc: (state) => state.teacher.teacherList,
+        creator: (classObj) => classObj.data.teacherFormattedData(),
+    },
+    {
+        selectorFunc: (state) => state.classroom.classroomList,
+        creator: (classObj) => classObj.data.classroomFormattedData(),
+    },
+];
 
 const Generate = () => {
     const dispatch = useDispatch();
@@ -25,6 +42,7 @@ const Generate = () => {
     const [extraLessons, setExtraLessons] = useState([]);
     const [allLessons, setAllLessons] = useState([]);
     const [selectedLesson, setSelectedLesson] = useState(undefined);
+    const [view, setView] = useState(0);
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
@@ -157,38 +175,68 @@ const Generate = () => {
         dispatch(toggleNoColorReducer());
     };
 
+    const handleViewChange = (e) => {
+        setView(e.target.value);
+        setGeneratedTimetable({});
+        setExtraLessons([]);
+    };
+
     return (
         <Grid container padding={"10px"} gap={"10px"}>
             <Grid item xs={12}>
-                <Grid container>
-                    <Grid item xs={2}>
+                <Grid container gap={"20px"}>
+                    <Grid item>
+                        <FormControl fullWidth>
+                            <CustomTextField
+                                select
+                                id="view-select"
+                                value={view}
+                                label="View"
+                                onChange={handleViewChange}
+                                size={"10px"}
+                            >
+                                <CustomMenuItem value={0}>
+                                    Semesters
+                                </CustomMenuItem>
+                                <CustomMenuItem value={1}>
+                                    Teachers
+                                </CustomMenuItem>
+                                <CustomMenuItem value={2}>
+                                    Classrooms
+                                </CustomMenuItem>
+                            </CustomTextField>
+                        </FormControl>
+                    </Grid>
+                    <Grid item>
                         <GenerateButton
                             setAllLessons={setAllLessons}
                             setExtraLessons={setExtraLessons}
                             setClassObj={setClassObj}
                             setGeneratedTimetable={setGeneratedTimetable}
+                            creatorFunc={FUNC[view].creator}
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <GetSavedData
                             setAllLessons={setAllLessons}
                             setExtraLessons={setExtraLessons}
                             setClassObj={setClassObj}
                             setGeneratedTimetable={setGeneratedTimetable}
+                            creatorFunc={FUNC[view].creator}
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <CustomButton onClick={handleSave}>Save</CustomButton>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <CustomButton onClick={handleDelete}>
                             Delete Saved
                         </CustomButton>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <DownloadPDFButton />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item>
                         <CustomButton onClick={handleToggleColor}>
                             Toggle Color
                         </CustomButton>
@@ -205,7 +253,7 @@ const Generate = () => {
                 >
                     <TimetableHeader />
                     <TimetableBody
-                        viewSelectorFunc={viewSelectorFunc}
+                        viewSelectorFunc={FUNC[view].selectorFunc}
                         handleDaD={handleDaD}
                         generatedTimetable={generatedTimetable}
                     />
