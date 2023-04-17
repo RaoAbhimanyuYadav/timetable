@@ -218,12 +218,8 @@ const Generate = () => {
     };
 
     useEffect(() => {
-        if (loading) setLoading(false);
-    }, [generatedTimetable, loading]);
-
-    useEffect(() => {
-        if (loading) setLoading(false);
-    }, [classObj, loading]);
+        if (loading) setLoading(false); // eslint-disable-next-line
+    }, [generatedTimetable]);
 
     useEffect(() => {
         if (classObj) setGeneratedTimetable(FUNC[view].creator(classObj));
