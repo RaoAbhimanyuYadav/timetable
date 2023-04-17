@@ -2,15 +2,9 @@ import { useSelector } from "react-redux";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { CustomButton } from "../utils/customComponents";
 import { LESSON_URL } from "../constants/lessonConstant";
-import { GeneratorClass, LessonNode } from "../utils/classes";
+import { GeneratorClass } from "../utils/classes";
 
-const GetSavedData = ({
-    setClassObj,
-    setExtraLessons,
-    setAllLessons,
-    setGeneratedTimetable,
-    creatorFunc,
-}) => {
+const GetSavedData = ({ setClassObj, setGeneratedTimetable, creatorFunc }) => {
     const axios = useAxiosPrivate();
 
     const timeSlots = useSelector((state) => state.profile.bellTimings);
@@ -27,8 +21,6 @@ const GetSavedData = ({
         let localExtra = localStorage.getItem("extraLessons");
         getLessons().then((data) => {
             let classObj = new GeneratorClass(timeSlots, days, data);
-            let lsns = data.map((lsn) => new LessonNode(lsn));
-            setAllLessons(lsns);
 
             if (localData === null || localExtra === null) {
                 classObj.generateTimeTable();
@@ -37,7 +29,6 @@ const GetSavedData = ({
                     JSON.parse(localData),
                     JSON.parse(localExtra)
                 );
-            setExtraLessons(classObj.lessonNotAssigned);
 
             setGeneratedTimetable(creatorFunc(classObj));
 

@@ -87,18 +87,12 @@ export class LessonNode {
 export class LessonClass {
     constructor(lessons) {
         this.lectures = [];
-        this.labs = [];
         this.insertLessons(lessons);
     }
 
     addLesson(lsn) {
-        if (lsn.lesson_length === 1) {
-            let lecture = new LessonNode(lsn);
-            this.lectures.push(lecture);
-        } else if (lsn.lesson_length > 1) {
-            let lab = new LessonNode(lsn);
-            this.labs.push(lab);
-        }
+        let lecture = new LessonNode(lsn);
+        this.lectures.push(lecture);
     }
     insertLessons(lessons) {
         lessons.forEach((lsn) => {
@@ -619,13 +613,13 @@ export class GeneratorClass {
     constructor(timings, days, lessons) {
         this.days = days;
         this.timings = timings;
-        this.lessons = new LessonClass(lessons);
+        this.lessons = new LessonClass(lessons).lectures;
         this.data = new AllotedLessons(timings);
-        this.lessonNotAssigned = [];
+        this.extraLessons = [];
     }
 
     assignSavedData(localData, localExtra) {
-        this.lessonNotAssigned = localExtra;
+        this.extraLessons = localExtra;
         this.data.assignSavedDays(localData.days);
     }
 
@@ -697,7 +691,7 @@ export class GeneratorClass {
                 dayIndex >= this.days.length ||
                 timeIndex >= this.timings.length
             ) {
-                this.lessonNotAssigned.push(lsn);
+                this.extraLessons.push(lsn);
                 break;
             }
             // Assign Lecture
@@ -730,11 +724,35 @@ export class GeneratorClass {
     }
 
     generateTimeTable() {
-        this.lessonsLoop(this.lessons.labs.concat(this.lessons.lectures));
-        // this.lessonsLoop(this.lessons.lectures);
+        this.lessonsLoop(this.lessons);
+    }
+
+    addToExtraLessons(lsn) {
+        let i = this.extraLessons.findIndex((lesson) => lesson.id === lsn.id);
+        if (i === -1) {
+            this.extraLessons.push(lsn);
+        } else {
+            this.extraLessons[i].lesson_per_week =
+                this.extraLessons[i].lesson_per_week + 1;
+        }
+    }
+
+    removeFromExtraLessons(lsn) {
+        this.extraLessons = this.extraLessons
+            .map((lesson) => {
+                if (lesson.id === lsn.id) {
+                    let newLsn = { ...lesson };
+                    newLsn.lesson_per_week = lesson.lesson_per_week - 1;
+                    if (newLsn.lesson_per_week === 0) return null;
+                    return newLsn;
+                }
+                return lesson;
+            })
+            .filter((lesson) => lesson !== null);
     }
 
     removeAllotedLesson(day, time, lsn) {
         this.data.removeLesson(day, time, lsn);
+        this.addToExtraLessons(lsn);
     }
 }

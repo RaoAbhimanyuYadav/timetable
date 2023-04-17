@@ -39,14 +39,12 @@ const Generate = () => {
 
     const [classObj, setClassObj] = useState(undefined);
     const [generatedTimetable, setGeneratedTimetable] = useState({});
-    const [extraLessons, setExtraLessons] = useState([]);
-    const [allLessons, setAllLessons] = useState([]);
     const [selectedLesson, setSelectedLesson] = useState(undefined);
     const [view, setView] = useState(0);
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
-            let lsn = { ...allLessons.find((lsn) => lsn.id === data.id) };
+            let lsn = { ...classObj.lessons.find((lsn) => lsn.id === data.id) };
             lsn["lesson_per_week"] = 1;
             setSelectedLesson(lsn);
 
@@ -80,23 +78,6 @@ const Generate = () => {
                     }
                     return pre;
                 });
-
-                setExtraLessons((pre) => {
-                    let lsnFound = 0;
-                    let newData = pre.map((lesson) => {
-                        if (lesson.id === lsn.id) {
-                            lsnFound = 1;
-                            let newLsn = { ...lesson };
-                            newLsn.lesson_per_week = lesson.lesson_per_week + 1;
-                            return newLsn;
-                        }
-                        return lesson;
-                    });
-                    if (!lsnFound) {
-                        newData.push(lsn);
-                    }
-                    return newData;
-                });
             }
         } else if (method === "paste" && selectedLesson) {
             // check for the slot availability
@@ -118,23 +99,8 @@ const Generate = () => {
             // available => assign lesson in classObj
             setClassObj((pre) => {
                 pre.data.assignLecture(info.day, info.time, selectedLesson);
+                pre.removeFromExtraLessons(selectedLesson);
                 return pre;
-            });
-
-            // avaialble => decrease lesson_per_week if 0 then remove
-            setExtraLessons((pre) => {
-                let newData = pre
-                    .map((lesson) => {
-                        if (lesson.id === selectedLesson.id) {
-                            let newLsn = { ...lesson };
-                            newLsn.lesson_per_week = lesson.lesson_per_week - 1;
-                            if (newLsn.lesson_per_week === 0) return null;
-                            return newLsn;
-                        }
-                        return lesson;
-                    })
-                    .filter((lesson) => lesson !== null);
-                return newData;
             });
 
             // Changes in UI
@@ -212,7 +178,10 @@ const Generate = () => {
 
     const handleSave = () => {
         localStorage.setItem("localData", JSON.stringify(classObj.data));
-        localStorage.setItem("extraLessons", JSON.stringify(extraLessons));
+        localStorage.setItem(
+            "extraLessons",
+            JSON.stringify(classObj.extraLessons)
+        );
     };
 
     const handleToggleColor = () => {
@@ -221,8 +190,7 @@ const Generate = () => {
 
     const handleViewChange = (e) => {
         setView(e.target.value);
-        setGeneratedTimetable({});
-        setExtraLessons([]);
+        setGeneratedTimetable(FUNC[e.target.value].creator(classObj));
     };
 
     return (
@@ -253,8 +221,6 @@ const Generate = () => {
                     </Grid>
                     <Grid item>
                         <GenerateButton
-                            setAllLessons={setAllLessons}
-                            setExtraLessons={setExtraLessons}
                             setClassObj={setClassObj}
                             setGeneratedTimetable={setGeneratedTimetable}
                             creatorFunc={FUNC[view].creator}
@@ -262,8 +228,6 @@ const Generate = () => {
                     </Grid>
                     <Grid item>
                         <GetSavedData
-                            setAllLessons={setAllLessons}
-                            setExtraLessons={setExtraLessons}
                             setClassObj={setClassObj}
                             setGeneratedTimetable={setGeneratedTimetable}
                             creatorFunc={FUNC[view].creator}
@@ -307,7 +271,7 @@ const Generate = () => {
                 <Grid container gap={"10px"}>
                     <ExtraLessons
                         handleDaD={handleDaD}
-                        extraLessons={extraLessons}
+                        extraLessons={classObj?.extraLessons || []}
                         selectedLesson={selectedLesson}
                     />
                 </Grid>
