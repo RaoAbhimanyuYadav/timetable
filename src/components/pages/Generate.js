@@ -19,7 +19,7 @@ import { AllotedSlotNode } from "../utils/classes";
 import ConfirmDelete from "../common/ConfirmDelete";
 import LoadingSpinner from "../specific/LoadingSpinner";
 
-// TODO: print and different View
+// TODO: print semester for sending purpose
 
 const FUNC = [
     {
@@ -227,7 +227,7 @@ const Generate = () => {
 
     useEffect(() => {
         if (classObj) setGeneratedTimetable(FUNC[view].creator(classObj));
-        else setLoading(false);
+        else setLoading(false); // eslint-disable-next-line
     }, [view]);
 
     return (

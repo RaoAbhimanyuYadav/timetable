@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 import useFetchAll from "../hooks/useFetchAll";
+import LoadingSpinner from "../specific/LoadingSpinner";
 
 const ProtectedRoute = ({ children }) => {
     const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    return loading ? <>Loading</> : children;
+    return loading ? <LoadingSpinner open={loading} /> : children;
 };
 
 export default ProtectedRoute;
