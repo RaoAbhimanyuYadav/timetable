@@ -316,12 +316,12 @@ class SlotNode {
 class DayNode {
     constructor(day) {
         this.day = day;
-        this.lessonAssigned = []; // {lsnId, grpId, semId}
+        this.lessonAssigned = []; // lsnId
         this.timings = []; // slotNode
     }
 
     assignTimings(lessonAssigned, timings) {
-        this.lessonAssigned = lessonAssigned.map((x) => ({ ...x }));
+        this.lessonAssigned = lessonAssigned.map((id) => id);
         this.timings = timings.map((timing) => {
             let currSlot = new SlotNode(timing.time);
             currSlot.assignSlot(
@@ -335,17 +335,9 @@ class DayNode {
     }
 
     isLessonAvailable(lsn) {
-        let lsnAlloted = false;
-        lsn.sem_grps.forEach((semGrp) => {
-            lsnAlloted =
-                lsnAlloted ||
-                this.lessonAssigned.findIndex(
-                    (lsnAssigned) =>
-                        lsnAssigned.lsnId === lsn.id &&
-                        lsnAssigned.grpId === semGrp.group.id &&
-                        lsnAssigned.semId === semGrp.semester.id
-                ) !== -1;
-        });
+        let lsnAlloted =
+            this.lessonAssigned.findIndex((id) => id === lsn.id) !== -1;
+
         return {
             val: !lsnAlloted,
             msg: [`Lesson {lsn & semGrp} ${lsnAlloted ? "not" : ""} available`],
@@ -389,16 +381,7 @@ class DayNode {
     assignLectureForTheDay(time, lsn, hideUI) {
         let timeIndex = this.getTimeIndex(time);
 
-        lsn.sem_grps.forEach((semGrp) => {
-            // mark lsnId and semId & grpId
-            // it ensure that this day grp is assigned this lecture
-            // so don't assign more class
-            this.lessonAssigned.push({
-                lsnId: lsn.id,
-                grpId: semGrp.group.id,
-                semId: semGrp.semester.id,
-            });
-        });
+        this.lessonAssigned.push(lsn.id);
 
         // add data to slot
         this.timings[timeIndex].assignLectureForTheSlot(lsn, hideUI);
@@ -426,18 +409,10 @@ class DayNode {
 
     removeLectureForTheDay(time, lsn) {
         let timeIndex = this.getTimeIndex(time);
-        lsn.sem_grps.forEach((semGrp) => {
-            // remove lsnId and semId
-            let index = this.lessonAssigned.findIndex(
-                ({ lsnId, grpId, semId }) =>
-                    lsnId === lsn.id &&
-                    grpId === semGrp.group.id &&
-                    semId === semGrp.semester.id
-            );
-            this.lessonAssigned = this.lessonAssigned
-                .map((lsn, i) => (i === index ? null : lsn))
-                .filter((lsn) => lsn !== null);
-        });
+
+        this.lessonAssigned = this.lessonAssigned
+            .map((lsnId) => (lsnId === lsn.id ? null : lsn))
+            .filter((lsn) => lsn !== null);
 
         // remove data from slot
         this.timings[timeIndex].removeLectureForTheSlot(lsn);
@@ -666,13 +641,16 @@ export class GeneratorClass {
         while (true) {
             if (dayIndex >= this.days.length) {
                 // no day time found
-                return this.bruteForceDayTime(lsn);
+                return {
+                    dayIndex: this.days.length,
+                    timeIndex: this.timings.length,
+                };
             }
             let day = this.days[dayIndex];
             let timeIndex = this.findTimeIndex(day, lsn);
             if (timeIndex >= this.timings.length) {
                 // timing not available on that day check for remaining days
-                dayIndex++;
+                dayIndex = this.findDayIndex(dayIndex + 1, lsn);
             } else {
                 // day and time both found
                 return {
