@@ -9,6 +9,7 @@ const GenerateButton = ({
     setClassObj,
     setGeneratedTimetable,
     creatorFunc,
+    setLoading,
 }) => {
     const axios = useAxiosPrivate();
 
@@ -17,6 +18,7 @@ const GenerateButton = ({
 
     const handleGenerate = () => {
         // TODO: Randomize generation
+        setLoading(true);
         const getLessons = async () => {
             const resp = await axios.get(LESSON_URL);
             const data = resp.data.data;

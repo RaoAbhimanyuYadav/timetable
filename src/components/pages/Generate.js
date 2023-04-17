@@ -1,5 +1,5 @@
 import { FormControl, Grid, Table } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { showNotificationReducer } from "../redux/reducers/notificationReducer";
@@ -16,6 +16,8 @@ import {
 } from "../utils/customComponents";
 import GetSavedData from "../wrappers/GetSavedData";
 import { AllotedSlotNode } from "../utils/classes";
+import ConfirmDelete from "../common/ConfirmDelete";
+import LoadingSpinner from "../specific/LoadingSpinner";
 
 // TODO: print and different View
 
@@ -41,6 +43,7 @@ const Generate = () => {
     const [generatedTimetable, setGeneratedTimetable] = useState({});
     const [selectedLesson, setSelectedLesson] = useState(undefined);
     const [view, setView] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleDaD = (info, data, method) => {
         if (method === "cut") {
@@ -174,14 +177,35 @@ const Generate = () => {
     const handleDelete = () => {
         localStorage.removeItem("localData");
         localStorage.removeItem("extraLessons");
+        dispatch(
+            showNotificationReducer({
+                msg: "Successfully deleted.",
+                severity: "success",
+            })
+        );
     };
 
     const handleSave = () => {
-        localStorage.setItem("localData", JSON.stringify(classObj.data));
-        localStorage.setItem(
-            "extraLessons",
-            JSON.stringify(classObj.extraLessons)
-        );
+        if (classObj) {
+            localStorage.setItem("localData", JSON.stringify(classObj.data));
+            localStorage.setItem(
+                "extraLessons",
+                JSON.stringify(classObj.extraLessons)
+            );
+            dispatch(
+                showNotificationReducer({
+                    msg: "Saved Successfully",
+                    severity: "success",
+                })
+            );
+        } else {
+            dispatch(
+                showNotificationReducer({
+                    msg: "Please Generate timetable first.",
+                    severity: "error",
+                })
+            );
+        }
     };
 
     const handleToggleColor = () => {
@@ -189,94 +213,116 @@ const Generate = () => {
     };
 
     const handleViewChange = (e) => {
+        setLoading(true);
         setView(e.target.value);
-        setGeneratedTimetable(FUNC[e.target.value].creator(classObj));
     };
 
+    useEffect(() => {
+        if (loading) setLoading(false);
+    }, [generatedTimetable, loading]);
+
+    useEffect(() => {
+        if (loading) setLoading(false);
+    }, [classObj, loading]);
+
+    useEffect(() => {
+        if (classObj) setGeneratedTimetable(FUNC[view].creator(classObj));
+        else setLoading(false);
+    }, [view]);
+
     return (
-        <Grid container padding={"10px"} gap={"10px"}>
-            <Grid item xs={12}>
-                <Grid container gap={"20px"}>
-                    <Grid item>
-                        <FormControl fullWidth>
-                            <CustomTextField
-                                select
-                                id="view-select"
-                                value={view}
-                                label="View"
-                                onChange={handleViewChange}
-                                size={"10px"}
-                            >
-                                <CustomMenuItem value={0}>
-                                    Semesters
-                                </CustomMenuItem>
-                                <CustomMenuItem value={1}>
-                                    Teachers
-                                </CustomMenuItem>
-                                <CustomMenuItem value={2}>
-                                    Classrooms
-                                </CustomMenuItem>
-                            </CustomTextField>
-                        </FormControl>
+        <>
+            <LoadingSpinner open={loading} />
+            <Grid container padding={"10px"} gap={"10px"}>
+                <Grid item xs={12}>
+                    <Grid container gap={"20px"}>
+                        <Grid item>
+                            <FormControl fullWidth>
+                                <CustomTextField
+                                    select
+                                    id="view-select"
+                                    value={view}
+                                    label="View"
+                                    onChange={handleViewChange}
+                                    size={"10px"}
+                                >
+                                    <CustomMenuItem value={0}>
+                                        Semesters
+                                    </CustomMenuItem>
+                                    <CustomMenuItem value={1}>
+                                        Teachers
+                                    </CustomMenuItem>
+                                    <CustomMenuItem value={2}>
+                                        Classrooms
+                                    </CustomMenuItem>
+                                </CustomTextField>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <GenerateButton
+                                setClassObj={setClassObj}
+                                setGeneratedTimetable={setGeneratedTimetable}
+                                creatorFunc={FUNC[view].creator}
+                                setLoading={setLoading}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <GetSavedData
+                                setClassObj={setClassObj}
+                                setGeneratedTimetable={setGeneratedTimetable}
+                                creatorFunc={FUNC[view].creator}
+                                setLoading={setLoading}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <CustomButton onClick={handleSave}>
+                                Save
+                            </CustomButton>
+                        </Grid>
+                        <Grid item>
+                            <ConfirmDelete
+                                tableBodykey={[]}
+                                data={{}}
+                                deleteHandler={handleDelete}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <DownloadPDFButton />
+                        </Grid>
+                        <Grid item>
+                            <CustomButton onClick={handleToggleColor}>
+                                Toggle Color
+                            </CustomButton>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <GenerateButton
-                            setClassObj={setClassObj}
-                            setGeneratedTimetable={setGeneratedTimetable}
-                            creatorFunc={FUNC[view].creator}
+                </Grid>
+                <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
+                    <Table
+                        sx={{
+                            tableLayout: "fixed",
+                            width: "2500px",
+                        }}
+                        id={"pdf-content"}
+                    >
+                        <TimetableHeader />
+                        <TimetableBody
+                            viewSelectorFunc={FUNC[view].selectorFunc}
+                            handleDaD={handleDaD}
+                            generatedTimetable={generatedTimetable}
                         />
-                    </Grid>
-                    <Grid item>
-                        <GetSavedData
-                            setClassObj={setClassObj}
-                            setGeneratedTimetable={setGeneratedTimetable}
-                            creatorFunc={FUNC[view].creator}
+                    </Table>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container gap={"10px"}>
+                        <ExtraLessons
+                            handleDaD={handleDaD}
+                            extraLessons={classObj?.extraLessons || []}
+                            selectedLesson={selectedLesson}
                         />
-                    </Grid>
-                    <Grid item>
-                        <CustomButton onClick={handleSave}>Save</CustomButton>
-                    </Grid>
-                    <Grid item>
-                        <CustomButton onClick={handleDelete}>
-                            Delete Saved
-                        </CustomButton>
-                    </Grid>
-                    <Grid item>
-                        <DownloadPDFButton />
-                    </Grid>
-                    <Grid item>
-                        <CustomButton onClick={handleToggleColor}>
-                            Toggle Color
-                        </CustomButton>
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
-                <Table
-                    sx={{
-                        tableLayout: "fixed",
-                        width: "2500px",
-                    }}
-                    id={"pdf-content"}
-                >
-                    <TimetableHeader />
-                    <TimetableBody
-                        viewSelectorFunc={FUNC[view].selectorFunc}
-                        handleDaD={handleDaD}
-                        generatedTimetable={generatedTimetable}
-                    />
-                </Table>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container gap={"10px"}>
-                    <ExtraLessons
-                        handleDaD={handleDaD}
-                        extraLessons={classObj?.extraLessons || []}
-                        selectedLesson={selectedLesson}
-                    />
-                </Grid>
-            </Grid>
-        </Grid>
+        </>
     );
 };
 

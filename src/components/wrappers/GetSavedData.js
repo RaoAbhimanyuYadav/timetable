@@ -4,7 +4,12 @@ import { CustomButton } from "../utils/customComponents";
 import { LESSON_URL } from "../constants/lessonConstant";
 import { GeneratorClass } from "../utils/classes";
 
-const GetSavedData = ({ setClassObj, setGeneratedTimetable, creatorFunc }) => {
+const GetSavedData = ({
+    setClassObj,
+    setGeneratedTimetable,
+    creatorFunc,
+    setLoading,
+}) => {
     const axios = useAxiosPrivate();
 
     const timeSlots = useSelector((state) => state.profile.bellTimings);
@@ -17,6 +22,7 @@ const GetSavedData = ({ setClassObj, setGeneratedTimetable, creatorFunc }) => {
     };
 
     const handleGetSaved = () => {
+        setLoading(true);
         let localData = localStorage.getItem("localData");
         let localExtra = localStorage.getItem("extraLessons");
         getLessons().then((data) => {
