@@ -36,7 +36,7 @@ const AllotedLecture = ({
             {open && (
                 <ContentCutIcon
                     sx={{
-                        fontSize: "12px",
+                        fontSize: "22px",
                         position: "absolute",
                         top: 0,
                         left: "0",

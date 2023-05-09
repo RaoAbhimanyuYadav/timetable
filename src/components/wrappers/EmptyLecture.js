@@ -20,7 +20,7 @@ export const EmptyLecture = ({ info, handleDaD }) => {
             {open && (
                 <ContentPasteIcon
                     sx={{
-                        fontSize: "12px",
+                        fontSize: "22px",
                         position: "absolute",
                         top: 0,
                         left: "0",
