@@ -4,10 +4,6 @@ import store from "./components/redux/store";
 import { Provider } from "react-redux";
 import "./App.css";
 import RouteSelector from "./RouteSelector";
-import { amber, deepOrange, grey } from "@mui/material/colors";
-
-// 817e6a -- normal text
-// 0c1237 -- background
 
 const darkTheme = createTheme({
     palette: {
@@ -18,7 +14,7 @@ const darkTheme = createTheme({
         secondary: {
             main: "#9c27b0",
         },
-        divider: deepOrange[700],
+        divider: "#1f1f1f",
         background: {
             default: "#0c1237",
             paper: "#22135e",

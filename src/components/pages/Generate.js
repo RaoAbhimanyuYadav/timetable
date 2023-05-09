@@ -229,7 +229,7 @@ const Generate = () => {
     return (
         <>
             <LoadingSpinner open={loading} />
-            <Grid container padding={"10px"} gap={"10px"}>
+            <Grid container gap={"10px"}>
                 <Grid item xs={12}>
                     <Grid container gap={"20px"}>
                         <Grid item>
@@ -297,6 +297,7 @@ const Generate = () => {
                         sx={{
                             tableLayout: "fixed",
                             width: "2500px",
+                            backgroundColor: "#fff",
                         }}
                         id={"pdf-content"}
                     >
@@ -308,7 +309,7 @@ const Generate = () => {
                         />
                     </Table>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{ backgroundColor: "#fff" }}>
                     <Grid container gap={"10px"}>
                         <ExtraLessons
                             handleDaD={handleDaD}

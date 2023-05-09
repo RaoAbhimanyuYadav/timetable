@@ -20,12 +20,12 @@ const ExtraLessons = ({ handleDaD, extraLessons, selectedLesson }) => {
                             border:
                                 selectedLesson && selectedLesson.id === lsn.id
                                     ? "5px solid darkblue"
-                                    : "none",
+                                    : "5px solid white",
                         }}
                     >
                         <AllotedLecture
                             bgColor={lsn.teachers[0].color}
-                            height="auto"
+                            height="100%"
                             width={`${lsn.lesson_length * 50}px`}
                             data={lsn}
                             info={null}
