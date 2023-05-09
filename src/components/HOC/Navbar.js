@@ -53,8 +53,10 @@ function Navbar() {
         <>
             <Notification />
             <AppBar
-                position="static"
-                sx={{ backgroundColor: theme.palette.background.default }}
+                position="sticky"
+                sx={{
+                    backgroundColor: theme.palette.background.default,
+                }}
             >
                 <Toolbar disableGutters sx={{ padding: "0 2rem" }}>
                     <Box
@@ -183,7 +185,7 @@ function Navbar() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <main style={{ height: "100%", padding: "2rem" }}>
+            <main style={{ padding: "2rem 2rem 0 2rem " }}>
                 <Outlet />
             </main>
         </>
