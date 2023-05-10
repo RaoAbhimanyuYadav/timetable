@@ -1,4 +1,10 @@
-import { FormControl, Grid, Table } from "@mui/material";
+import {
+    FormControl,
+    FormControlLabel,
+    Grid,
+    Switch,
+    Table,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -18,6 +24,7 @@ import GetSavedData from "../wrappers/GetSavedData";
 import { AllotedSlotNode } from "../utils/classes";
 import ConfirmDelete from "../common/ConfirmDelete";
 import LoadingSpinner from "../specific/LoadingSpinner";
+import DownloadAll from "../download/DownloadAll";
 
 // TODO: print semester for sending purpose
 
@@ -41,6 +48,7 @@ const Generate = () => {
 
     const [classObj, setClassObj] = useState(undefined);
     const [generatedTimetable, setGeneratedTimetable] = useState({});
+    const [singleCombinedView, setSingleCombinedView] = useState(false);
     const [selectedLesson, setSelectedLesson] = useState(undefined);
     const [view, setView] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -290,24 +298,48 @@ const Generate = () => {
                                 Toggle Color
                             </CustomButton>
                         </Grid>
+                        <Grid item>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={singleCombinedView}
+                                        onChange={() =>
+                                            setSingleCombinedView((pre) => !pre)
+                                        }
+                                        name="singleCombinedView"
+                                        color="primary"
+                                        size="small"
+                                        placeholder="hlo"
+                                    />
+                                }
+                                label="Single View"
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
-                    <Table
-                        sx={{
-                            tableLayout: "fixed",
-                            width: "2500px",
-                            backgroundColor: "#fff",
-                        }}
-                        id={"pdf-content"}
-                    >
-                        <TimetableHeader />
-                        <TimetableBody
-                            viewSelectorFunc={FUNC[view].selectorFunc}
-                            handleDaD={handleDaD}
+                    {singleCombinedView ? (
+                        <DownloadAll
                             generatedTimetable={generatedTimetable}
+                            viewSelectorFunc={FUNC[view].selectorFunc}
                         />
-                    </Table>
+                    ) : (
+                        <Table
+                            sx={{
+                                tableLayout: "fixed",
+                                width: "2500px",
+                                backgroundColor: "#fff",
+                            }}
+                            id={"pdf-content"}
+                        >
+                            <TimetableHeader />
+                            <TimetableBody
+                                viewSelectorFunc={FUNC[view].selectorFunc}
+                                handleDaD={handleDaD}
+                                generatedTimetable={generatedTimetable}
+                            />
+                        </Table>
+                    )}
                 </Grid>
                 <Grid item xs={12} sx={{ backgroundColor: "#fff" }}>
                     <Grid container gap={"10px"}>
