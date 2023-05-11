@@ -1,10 +1,4 @@
-import {
-    FormControl,
-    FormControlLabel,
-    Grid,
-    Switch,
-    Table,
-} from "@mui/material";
+import { FormControlLabel, Grid, Switch, Table } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -25,6 +19,7 @@ import { AllotedSlotNode } from "../utils/classes";
 import ConfirmDelete from "../common/ConfirmDelete";
 import LoadingSpinner from "../specific/LoadingSpinner";
 import DownloadAll from "../download/DownloadAll";
+import AllSavedTimetable from "../savedTimetable/AllSavedTimetable";
 
 // TODO: print semester for sending purpose
 
@@ -239,28 +234,31 @@ const Generate = () => {
             <LoadingSpinner open={loading} />
             <Grid container gap={"10px"}>
                 <Grid item xs={12}>
-                    <Grid container gap={"20px"}>
+                    <Grid
+                        container
+                        gap={"20px"}
+                        sx={{ alignItems: "center", justifyContent: "center" }}
+                    >
                         <Grid item>
-                            <FormControl fullWidth>
-                                <CustomTextField
-                                    select
-                                    id="view-select"
-                                    value={view}
-                                    label="View"
-                                    onChange={handleViewChange}
-                                    size={"10px"}
-                                >
-                                    <CustomMenuItem value={0}>
-                                        Semesters
-                                    </CustomMenuItem>
-                                    <CustomMenuItem value={1}>
-                                        Teachers
-                                    </CustomMenuItem>
-                                    <CustomMenuItem value={2}>
-                                        Classrooms
-                                    </CustomMenuItem>
-                                </CustomTextField>
-                            </FormControl>
+                            <CustomTextField
+                                select
+                                id="view-select"
+                                value={view}
+                                label="View"
+                                onChange={handleViewChange}
+                                size={"10px"}
+                                sx={{ margin: "0" }}
+                            >
+                                <CustomMenuItem value={0}>
+                                    Semesters
+                                </CustomMenuItem>
+                                <CustomMenuItem value={1}>
+                                    Teachers
+                                </CustomMenuItem>
+                                <CustomMenuItem value={2}>
+                                    Classrooms
+                                </CustomMenuItem>
+                            </CustomTextField>
                         </Grid>
                         <Grid item>
                             <GenerateButton
@@ -314,6 +312,9 @@ const Generate = () => {
                                 }
                                 label="Single View"
                             />
+                        </Grid>
+                        <Grid item>
+                            <AllSavedTimetable />
                         </Grid>
                     </Grid>
                 </Grid>

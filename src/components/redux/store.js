@@ -16,6 +16,7 @@ import teacherReducers from "./reducers/teacherReducers";
 import timeOffsReducer from "./reducers/timeOffsReducer";
 import groupReducer from "./reducers/groupReducer";
 import timetableReducer from "./reducers/timetableReducer";
+import savedTimetableReducer from "./reducers/savedTimetableReducer";
 
 export default configureStore({
     reducer: {
@@ -31,5 +32,6 @@ export default configureStore({
         timeOffs: timeOffsReducer,
         groups: groupReducer,
         timetable: timetableReducer,
+        savedTimetable: savedTimetableReducer,
     },
 });

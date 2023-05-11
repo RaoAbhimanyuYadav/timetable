@@ -20,16 +20,19 @@ const msgnotification = (dispatch, resp) => {
     );
 };
 
-export const getData = (axios, URL, reducer) => async (dispatch) => {
-    try {
-        const resp = await axios.get(URL);
-        dispatch(reducer(resp.data.data));
-        msgnotification(dispatch, resp);
-    } catch (err) {
-        errNotification(dispatch, err);
-        unauthorized(err, dispatch);
-    }
-};
+export const getData =
+    (axios, URL, reducer, setLoading) => async (dispatch) => {
+        try {
+            const resp = await axios.get(URL);
+            dispatch(reducer(resp.data.data));
+            msgnotification(dispatch, resp);
+        } catch (err) {
+            errNotification(dispatch, err);
+            unauthorized(err, dispatch);
+        } finally {
+            setLoading && setLoading(false);
+        }
+    };
 
 export const getDataWithId = (axios, URL, reducer, id) => async (dispatch) => {
     try {

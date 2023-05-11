@@ -15,6 +15,7 @@ import {
     setWorkingDaysReducer,
     setTimingReducer,
 } from "../redux/reducers/profileReducer";
+import { resetSavedTimetableReducer } from "../redux/reducers/savedTimetableReducer";
 import {
     resetSemesterReducer,
     setSemesterReducer,
@@ -76,6 +77,7 @@ export const resetAllState = (dispatch) => {
         resetTeacherReducer,
         resetGroupsReducer,
         resetTimeOffsReducer,
+        resetSavedTimetableReducer,
     ].forEach((reducer) => {
         dispatch(reducer());
     });
