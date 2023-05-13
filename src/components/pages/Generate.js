@@ -16,10 +16,10 @@ import {
 } from "../utils/customComponents";
 import GetSavedData from "../wrappers/GetSavedData";
 import { AllotedSlotNode } from "../utils/classes";
-import ConfirmDelete from "../common/ConfirmDelete";
 import LoadingSpinner from "../specific/LoadingSpinner";
 import DownloadAll from "../download/DownloadAll";
 import AllSavedTimetable from "../savedTimetable/AllSavedTimetable";
+import SaveTimetable from "../savedTimetable/SaveTimetable";
 
 // TODO: print semester for sending purpose
 
@@ -177,40 +177,6 @@ const Generate = () => {
         }
     };
 
-    const handleDelete = () => {
-        localStorage.removeItem("localData");
-        localStorage.removeItem("extraLessons");
-        dispatch(
-            showNotificationReducer({
-                msg: "Successfully deleted.",
-                severity: "success",
-            })
-        );
-    };
-
-    const handleSave = () => {
-        if (classObj) {
-            localStorage.setItem("localData", JSON.stringify(classObj.data));
-            localStorage.setItem(
-                "extraLessons",
-                JSON.stringify(classObj.extraLessons)
-            );
-            dispatch(
-                showNotificationReducer({
-                    msg: "Saved Successfully",
-                    severity: "success",
-                })
-            );
-        } else {
-            dispatch(
-                showNotificationReducer({
-                    msg: "Please Generate timetable first.",
-                    severity: "error",
-                })
-            );
-        }
-    };
-
     const handleToggleColor = () => {
         dispatch(toggleNoColorReducer());
     };
@@ -276,18 +242,12 @@ const Generate = () => {
                                 setLoading={setLoading}
                             />
                         </Grid>
+
+                        <SaveTimetable classObj={classObj} />
                         <Grid item>
-                            <CustomButton onClick={handleSave}>
-                                Save
-                            </CustomButton>
+                            <AllSavedTimetable />
                         </Grid>
-                        <Grid item>
-                            <ConfirmDelete
-                                tableBodykey={[]}
-                                data={{}}
-                                deleteHandler={handleDelete}
-                            />
-                        </Grid>
+
                         <Grid item>
                             <DownloadPDFButton />
                         </Grid>
@@ -312,9 +272,6 @@ const Generate = () => {
                                 }
                                 label="Single View"
                             />
-                        </Grid>
-                        <Grid item>
-                            <AllSavedTimetable />
                         </Grid>
                     </Grid>
                 </Grid>

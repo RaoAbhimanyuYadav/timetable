@@ -73,7 +73,7 @@ const GetSavedData = ({
     }, [selectedSavedTimetableId]);
 
     return (
-        <CustomButton onClick={handleGetSaved}>Get Saved State</CustomButton>
+        <CustomButton onClick={handleGetSaved}>Get Local Saved</CustomButton>
     );
 };
 
