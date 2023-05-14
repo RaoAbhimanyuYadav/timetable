@@ -4,6 +4,7 @@ import { LESSON_URL } from "../constants/lessonConstant";
 import { useSelector } from "react-redux";
 
 import { GeneratorClass } from "../utils/classes";
+import { Grid } from "@mui/material";
 
 const GenerateButton = ({
     setClassObj,
@@ -16,8 +17,7 @@ const GenerateButton = ({
     const timeSlots = useSelector((state) => state.profile.bellTimings);
     const days = useSelector((state) => state.profile.workingDays);
 
-    const handleGenerate = () => {
-        // TODO: Randomize generation
+    const handleGenerate = (random) => {
         setLoading(true);
         const getLessons = async () => {
             const resp = await axios.get(LESSON_URL);
@@ -26,8 +26,8 @@ const GenerateButton = ({
         };
         getLessons().then((data) => {
             let classObj = new GeneratorClass(timeSlots, days, data);
-
-            classObj.generateTimeTable();
+            if (random) classObj.generateRandomTimetable();
+            else classObj.generateTimeTable();
 
             setGeneratedTimetable(creatorFunc(classObj));
 
@@ -35,7 +35,20 @@ const GenerateButton = ({
         });
     };
 
-    return <CustomButton onClick={handleGenerate}>Generate</CustomButton>;
+    return (
+        <>
+            <Grid item>
+                <CustomButton onClick={() => handleGenerate(0)}>
+                    Generate
+                </CustomButton>
+            </Grid>
+            <Grid item>
+                <CustomButton onClick={() => handleGenerate(1)}>
+                    Generate Randomly
+                </CustomButton>
+            </Grid>
+        </>
+    );
 };
 
 export default GenerateButton;

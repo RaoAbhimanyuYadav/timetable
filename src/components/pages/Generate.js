@@ -21,8 +21,6 @@ import DownloadAll from "../download/DownloadAll";
 import AllSavedTimetable from "../savedTimetable/AllSavedTimetable";
 import SaveTimetable from "../savedTimetable/SaveTimetable";
 
-// TODO: print semester for sending purpose
-
 const FUNC = [
     {
         selectorFunc: (state) => state.semester.semesterList,
@@ -226,14 +224,14 @@ const Generate = () => {
                                 </CustomMenuItem>
                             </CustomTextField>
                         </Grid>
-                        <Grid item>
-                            <GenerateButton
-                                setClassObj={setClassObj}
-                                setGeneratedTimetable={setGeneratedTimetable}
-                                creatorFunc={FUNC[view].creator}
-                                setLoading={setLoading}
-                            />
-                        </Grid>
+
+                        <GenerateButton
+                            setClassObj={setClassObj}
+                            setGeneratedTimetable={setGeneratedTimetable}
+                            creatorFunc={FUNC[view].creator}
+                            setLoading={setLoading}
+                        />
+
                         <Grid item>
                             <GetSavedData
                                 setClassObj={setClassObj}

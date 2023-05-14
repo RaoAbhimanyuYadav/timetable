@@ -705,6 +705,36 @@ export class GeneratorClass {
         this.lessonsLoop(this.lessons);
     }
 
+    generateRandomTimetable() {
+        this.lessons.sort((a, b) => {
+            if (b.total_time_off === a.total_time_off) {
+                if (b.lesson_length === a.lesson_length) {
+                    return b.lesson_per_week - a.lesson_per_week;
+                } else {
+                    return b.lesson_length - a.lesson_length;
+                }
+            } else {
+                return b.total_time_off - a.total_time_off;
+            }
+        });
+        let visited = new Array(this.lessons.length).fill(0);
+        for (let i = 0; i < this.lessons.length; i++) {
+            if (this.lessons[i].total_time_off > 10) {
+                visited[i] = 1;
+                this.assignALesson(this.lessons[i]);
+            } else {
+                while (true) {
+                    let index = Math.floor(Math.random() * this.lessons.length);
+                    if (visited[index] === 0) {
+                        visited[index] = 1;
+                        this.assignALesson(this.lessons[index]);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     addToExtraLessons(lsn) {
         let i = this.extraLessons.findIndex((lesson) => lesson.id === lsn.id);
         if (i === -1) {

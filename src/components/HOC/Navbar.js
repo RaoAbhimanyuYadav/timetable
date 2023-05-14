@@ -179,6 +179,7 @@ function Navbar() {
                                         minHeight: "auto",
                                         display: { xs: "auto", md: "none" },
                                     }}
+                                    key={page.name}
                                 >
                                     <NavLink
                                         to={page.href}
