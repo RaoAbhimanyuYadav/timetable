@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     nameOfOrganisation: "NITH",
     academicYear: "2022-23",
+    theme: "dark",
     bellTimings: [],
     workingDays: [],
 };
@@ -42,6 +43,9 @@ const profileSlice = createSlice({
             state.bellTimings = [];
             state.workingDays = [];
         },
+        toggleThemeReducer: (state) => {
+            state.theme = state.theme === "dark" ? "light" : "dark";
+        },
     },
 });
 
@@ -50,6 +54,7 @@ export const {
     setTimingReducer,
     setWorkingDaysReducer,
     resetProfileReducer,
+    toggleThemeReducer,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

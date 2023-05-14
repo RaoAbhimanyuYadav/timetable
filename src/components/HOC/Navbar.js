@@ -20,7 +20,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actionThunk/authThunk";
 import Notification from "../common/Notification";
-import { useTheme } from "@mui/material";
+import { FormControlLabel, Switch, useTheme } from "@mui/material";
+import { toggleThemeReducer } from "../redux/reducers/profileReducer";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -37,6 +38,7 @@ function Navbar() {
     };
 
     const accessToken = useSelector((state) => state.auth.accessToken);
+    const mode = useSelector((state) => state.profile.theme);
 
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -124,6 +126,27 @@ function Navbar() {
                             alignItems: "center",
                         }}
                     >
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={mode === "dark"}
+                                    onChange={() =>
+                                        dispatch(toggleThemeReducer())
+                                    }
+                                    name="Theme"
+                                    color="primary"
+                                    size="small"
+                                />
+                            }
+                            label={mode.toUpperCase()}
+                            labelPlacement="bottom"
+                            sx={{
+                                "& .MuiFormControlLabel-label": {
+                                    ...NAVLINK_STYLE,
+                                    fontSize: "1.2rem",
+                                },
+                            }}
+                        />
                         <Tooltip title="Open settings">
                             <IconButton
                                 onClick={handleOpenUserMenu}
