@@ -173,6 +173,32 @@ function Navbar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+                            {verifiedPages.map((page) => (
+                                <MenuItem
+                                    sx={{
+                                        minHeight: "auto",
+                                        display: { xs: "auto", md: "none" },
+                                    }}
+                                >
+                                    <NavLink
+                                        to={page.href}
+                                        key={page.href}
+                                        style={{
+                                            textAlign: "center",
+                                            textDecoration: "none",
+                                            fontFamily: "monospace",
+                                            fontSize: {
+                                                xs: "1.2rem",
+                                                md: "1.6rem",
+                                            },
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    >
+                                        {page.name}
+                                    </NavLink>
+                                </MenuItem>
+                            ))}
+
                             {(accessToken
                                 ? verifiedSettings
                                 : unverifiedSettings
