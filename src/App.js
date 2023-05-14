@@ -12,7 +12,7 @@ const darkTheme = createTheme({
             main: "#2196f3",
         },
         secondary: {
-            main: "#9c27b0",
+            main: "#ffa03a",
         },
         divider: "#1f1f1f",
         background: {
