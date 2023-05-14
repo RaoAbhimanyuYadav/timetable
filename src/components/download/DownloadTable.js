@@ -21,7 +21,12 @@ const DownloadTable = ({ generatedTimetable, data }) => {
         });
     };
     return (
-        <div style={{ position: "relative", marginBottom: "2rem" }}>
+        <div
+            style={{
+                position: "relative",
+                marginBottom: "2rem",
+            }}
+        >
             <CustomButton
                 variant="outlined"
                 color="primary"
@@ -30,7 +35,10 @@ const DownloadTable = ({ generatedTimetable, data }) => {
             >
                 Download
             </CustomButton>
-            <div style={{ backgroundColor: "#fff" }} ref={ref} id={"123"}>
+            <div
+                style={{ backgroundColor: "#fff", width: "fit-content" }}
+                ref={ref}
+            >
                 <Typography
                     sx={{
                         fontSize: "4rem",
