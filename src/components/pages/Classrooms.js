@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
     CLASSROOM_URL,
@@ -17,12 +17,7 @@ import {
     getData,
     updateData,
 } from "../redux/actionThunk/apiThunk";
-import {
-    addClassroomReducer,
-    deleteClassroomReducer,
-    setClassroomReducer,
-    updateClassroomReducer,
-} from "../redux/reducers/classroomReducers";
+import { setClassroomReducer } from "../redux/reducers/classroomReducers";
 
 import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
@@ -36,15 +31,9 @@ const Classrooms = () => {
         []
     );
 
-    const isClassroomsFetched = useSelector(
-        (state) => state.classroom.isClassroomsFetched
-    );
-
     useEffect(() => {
-        if (isClassroomsFetched) {
-            dispatch(getData(axios, CLASSROOM_URL, setClassroomReducer));
-        } // eslint-disable-next-line
-    }, [isClassroomsFetched]);
+        dispatch(getData(axios, CLASSROOM_URL, setClassroomReducer));
+    }, [dispatch, axios]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
@@ -58,7 +47,7 @@ const Classrooms = () => {
                 updateData(
                     axios,
                     CLASSROOM_URL,
-                    updateClassroomReducer,
+                    setClassroomReducer,
                     filteredData,
                     CLASSROOM_FORM_KEY_LIST
                 )
@@ -69,7 +58,7 @@ const Classrooms = () => {
                 addData(
                     axios,
                     CLASSROOM_URL,
-                    addClassroomReducer,
+                    setClassroomReducer,
                     filteredData,
                     CLASSROOM_FORM_KEY_LIST
                 )
@@ -81,7 +70,7 @@ const Classrooms = () => {
     const deleteHandler = (data) => {
         // delete doc
         dispatch(
-            deleteData(axios, CLASSROOM_URL, deleteClassroomReducer, data.id)
+            deleteData(axios, CLASSROOM_URL, setClassroomReducer, data.id)
         );
     };
 

@@ -1,9 +1,18 @@
+import { setSelectedClassroomReducer } from "../redux/reducers/classroomReducers";
+import {
+    deleteInSelectedGroupsReducer,
+    pushInSelectedGroupsReducer,
+    resetSelectedGroupsReducer,
+    setSelectedGroups,
+    updateInSelectedGroupsReducer,
+} from "../redux/reducers/groupReducer";
+
 export const SEMESTER_TABLE_BODY_KEY = [
     "name",
     "code",
     "classroom",
-    "semester_group_set",
-    "semester_time_off_set",
+    "groups",
+    "time_off",
 ];
 
 export const SEMESTER_TABLE_HEADING = [
@@ -33,50 +42,91 @@ export const SEMESTER_FORM_FIELDS = [
         key: "classroom",
         default: "",
         selectorFunc: (state) => state.classroom.classroomList,
+        selectedDataFunc: (state) => state.classroom.selectedClassroom,
+        setReducer: setSelectedClassroomReducer,
     },
     {
         label: "Total groups",
-        type: "groups",
-        key: "semester_group_set",
-        default: 1,
+        type: "multipleSelector",
+        key: "groups",
+        default: "",
+        selectorFunc: (state) => state.groups.groupList,
+        selectedDataFunc: (state) => state.groups.selectedGroups,
+        setReducer: setSelectedGroups,
+        pushReducer: pushInSelectedGroupsReducer,
+        deleteReducer: deleteInSelectedGroupsReducer,
+        resetReducer: resetSelectedGroupsReducer,
+        updateReducer: updateInSelectedGroupsReducer,
     },
     {
         label: "Timing OFF",
         type: "time_off",
-        key: "semester_time_off_set",
+        key: "time_off",
         default: 1,
     },
 ];
 
 export const SEMESTER_FORM_KEY_LIST = [
     {
-        key: "semester_group_set",
-        statePath: (getstate) => getstate().common.groupList,
+        key: "groups",
+        statePath: (getstate) => getstate().groups.selectedGroups,
     },
     {
         key: "classroom",
-        createObjWithId: true,
-        statePath: (getstate) => getstate().lesson.classroom,
+        statePath: (getstate) => getstate().classroom.selectedClassroom,
     },
     {
-        key: "semester_time_off_set",
+        key: "time_off",
         statePath: (getstate) => getstate().common.timeOffList,
     },
 ];
 
 export const SEMESTER_DUMMY_DATA = [
     {
-        id: "1f57483d-5d5f-48fd-b7fe-3ff52b092573",
-        name: "2",
-        code: "2",
-        semester_time_off_set: [],
-        semester_group_set: [
+        id: "8334eb84-e295-4d55-a8f1-a25f47cad09e",
+        time_off: [
             {
-                id: "8181edb3-1a05-4a26-92c0-f3e87be44d98",
-                name: "Whole",
-                code: "W",
+                id: "2ee4b56d-c1b7-4fb0-bfb3-a6bc53b7c47d",
+                bell_timing: {
+                    id: "3dd21780-9d6c-499b-bb58-60659aa48806",
+                    name: "1",
+                    start_time: "08:00:00",
+                    end_time: "09:00:00",
+                    c_id: "08:00-09:00",
+                },
+                working_day: {
+                    id: "a64ff210-9089-491f-a977-0a1284fe239d",
+                    c_id: "Tuesday-T-",
+                    name: "Tuesday",
+                    code: "T",
+                },
+                c_id: "08:00-09:00-Tuesday-T-",
             },
         ],
+        groups: [
+            {
+                id: "54690ee8-461d-43af-98e2-5bb3bea42dfc",
+                name: "Group 1",
+                code: "G1",
+                c_id: "G1-Group 1",
+            },
+            {
+                id: "fac60b34-b69e-4554-932a-b64edccd6b32",
+                name: "Whole",
+                code: "W",
+                c_id: "W-Whole",
+            },
+        ],
+        classroom: {
+            id: "915655cb-3098-4bc9-8860-87c07bec60fc",
+            time_off: [],
+            name: "First Floor",
+            code: "F1",
+            c_id: "F1-First Floor",
+        },
+        name: "Second",
+        code: "2(A)",
+        c_id: "2(A)-Second",
     },
 ];
 

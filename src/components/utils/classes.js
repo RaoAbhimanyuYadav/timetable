@@ -6,8 +6,8 @@ export class LessonNode {
         this.lesson_per_week = lsn.lesson_per_week;
         this.classroom = lsn.classroom;
         this.subject = lsn.subject;
-        this.semester_groups = lsn.semester_group;
-        this.teachers = lsn.teacher;
+        this.sem_grps = lsn.sem_grps;
+        this.teachers = lsn.teachers;
         this.time_off = [];
 
         this.generateTimeOff(lsn);
@@ -36,31 +36,35 @@ export class LessonNode {
     }
 
     generateTimeOff(lsn) {
-        this.addTimeOffToLesson(lsn.classroom["classroom_time_off_set"]);
-        this.addTimeOffToLesson(lsn.subject["subject_time_off_set"]);
-        lsn.semester_group.forEach((semGrp) => {
-            this.addTimeOffToLesson(semGrp.semester["semester_time_off_set"]);
+        this.addTimeOffToLesson(lsn.classroom["time_off"]);
+        this.addTimeOffToLesson(lsn.subject["time_off"]);
+        lsn.sem_grps.forEach((semGrp) => {
+            this.addTimeOffToLesson(semGrp.semester["time_off"]);
         });
-        lsn.teacher.forEach((tchr) => {
-            this.addTimeOffToLesson(tchr["teacher_time_off_set"]);
+        lsn.teachers.forEach((tchr) => {
+            this.addTimeOffToLesson(tchr["time_off"]);
         });
 
         // remove timeoff
-        const { classroom_time_off_set, ...classroom } = this.classroom;
-        this.classroom = classroom;
-        const { subject_time_off_set, ...subject } = this.subject;
-        this.subject = subject;
+        // {
+        //     const { time_off, ...classroom } = this.classroom;
+        //     this.classroom = classroom;
+        // }
+        // {
+        //     const { time_off, ...subject } = this.subject;
+        //     this.subject = subject;
+        // }
 
-        this.semester_groups = this.semester_groups.map((semGrp) => {
-            const grp = { ...semGrp };
-            const { semester_time_off_set, ...sem } = semGrp.semester;
-            grp.semester = sem;
-            return grp;
-        });
-        this.teachers = this.teachers.map((tchr) => {
-            const { teacher_time_off_set, ...teacher } = tchr;
-            return teacher;
-        });
+        // this.sem_grps = this.sem_grps.map((semGrp) => {
+        //     const grp = { ...semGrp.group };
+        //     const { time_off, ...sem } = semGrp.semester;
+
+        //     return { group: grp, semester: sem };
+        // });
+        // this.teachers = this.teachers.map((tchr) => {
+        //     const { time_off, ...teacher } = tchr;
+        //     return teacher;
+        // });
         this.formatTimeOff();
     }
     formatTimeOff() {
@@ -83,18 +87,12 @@ export class LessonNode {
 export class LessonClass {
     constructor(lessons) {
         this.lectures = [];
-        this.labs = [];
         this.insertLessons(lessons);
     }
 
     addLesson(lsn) {
-        if (lsn.lesson_length === 1) {
-            let lecture = new LessonNode(lsn);
-            this.lectures.push(lecture);
-        } else if (lsn.lesson_length > 1) {
-            let lab = new LessonNode(lsn);
-            this.labs.push(lab);
-        }
+        let lecture = new LessonNode(lsn);
+        this.lectures.push(lecture);
     }
     insertLessons(lessons) {
         lessons.forEach((lsn) => {
@@ -133,18 +131,18 @@ export class AllotedSlotNode {
     constructor(lsn, hideUI, semGrp) {
         // Property
         this.hideUI = hideUI; //0 to show, 1 to hide
-        this.isGrouped = semGrp.code.includes("G");
+        this.isGrouped = semGrp.group.code.includes("G");
         this.colSpan = lsn.lesson_length;
-        this.totalGroups = semGrp.semester.total_groups;
+        this.totalGroups = semGrp.semester.groups.length - 1;
         this.color = lsn.teachers[0].color;
-        this.grpNum = +semGrp.code.substring(1);
+        this.grpNum = +semGrp.group.code.substring(1);
 
         // Values
         this.id = lsn.id;
         this.subject = lsn.subject;
         this.classroom = lsn.classroom;
         this.teachers = lsn.teachers;
-        this.semGrp = semGrp;
+        this.group = semGrp.group;
         this.semester = semGrp.semester;
     }
 }
@@ -165,20 +163,30 @@ class SlotNode {
         this.grpList = grpList.map((grp) => {
             let lsn = { ...grp };
             lsn["lesson_length"] = lsn.colSpan;
-            return new AllotedSlotNode(lsn, grp.hideUI, grp.semGrp);
+            return new AllotedSlotNode(lsn, grp.hideUI, {
+                group: grp.group,
+                semester: grp.semester,
+            });
         });
     }
 
-    isGroupAvailable(grps) {
+    isGroupAvailable(sem_grps) {
         let grpAlloted = false;
-        grps.forEach((grp) => {
+        sem_grps.forEach((semGrp) => {
             // grp is not assigned
             // whole class is also not assigned
             let g =
-                this.grpAssigned.findIndex((gId) => gId[0] === grp.id) !== -1;
+                this.grpAssigned.findIndex(
+                    (gId) =>
+                        gId[0] === semGrp.group.id &&
+                        gId[2] === semGrp.semester.id
+                ) !== -1;
             let w =
                 this.grpAssigned.findIndex(
-                    (gId) => gId[0] === grp.semester.w_id && gId[1]
+                    (gId) =>
+                        gId[0] === semGrp.semester.w_id &&
+                        gId[1] &&
+                        gId[2] === semGrp.semester.id
                 ) !== -1;
             grpAlloted = grpAlloted || g || w;
         });
@@ -213,12 +221,12 @@ class SlotNode {
     }
 
     isSlotAvailable(lsn) {
-        let grp = this.isGroupAvailable(lsn.semester_groups);
+        let semGrp = this.isGroupAvailable(lsn.sem_grps);
         let tchr = this.isTeacherAvailable(lsn.teachers);
         let room = this.isClassroomAvailable(lsn.classroom);
         return {
-            val: grp.val && tchr.val && room.val,
-            msg: [grp.msg, tchr.msg, room.msg],
+            val: semGrp.val && tchr.val && room.val,
+            msg: [semGrp.msg, tchr.msg, room.msg],
         };
     }
 
@@ -235,15 +243,20 @@ class SlotNode {
             this.teacherAssigned.push(teacher.id);
         });
 
-        lsn.semester_groups.forEach((semGrp) => {
+        lsn.sem_grps.forEach((semGrp) => {
             // mark semester_groups
             this.grpAssigned.push([
-                semGrp.id,
-                semGrp.id === semGrp.semester.w_id,
+                semGrp.group.id,
+                semGrp.group.id === semGrp.semester.w_id,
+                semGrp.semester.id,
             ]);
 
-            if (semGrp.code.includes("G")) {
-                this.grpAssigned.push([semGrp.semester.w_id, false]);
+            if (semGrp.group.code.includes("G")) {
+                this.grpAssigned.push([
+                    semGrp.semester.w_id,
+                    false,
+                    semGrp.semester.id,
+                ]);
             }
             // add data to slot
             this.pushNewSlot(lsn, hideUI, semGrp);
@@ -255,33 +268,47 @@ class SlotNode {
         let clsInd = this.classroomAssigned.findIndex(
             (id) => lsn.classroom.id === id
         );
-        this.classroomAssigned.splice(clsInd, 1);
+        this.classroomAssigned = this.classroomAssigned
+            .map((id, i) => (i === clsInd ? null : id))
+            .filter((id) => id !== null);
         // remove teachers
         lsn.teachers.forEach((teacher) => {
             let tInd = this.teacherAssigned.findIndex(
                 (id) => id === teacher.id
             );
-            this.teacherAssigned.splice(tInd, 1);
+            this.teacherAssigned = this.teacherAssigned
+                .map((id, i) => (i === tInd ? null : id))
+                .filter((id) => id !== null);
         });
         // remove semGrp
-        lsn.semester_groups.forEach((semGrp) => {
+        lsn.sem_grps.forEach((semGrp) => {
             let grpInd = this.grpAssigned.findIndex(
                 (grp) =>
-                    grp[0] === semGrp.id &&
-                    (semGrp.id === semGrp.semester.w_id) === grp[1]
+                    grp[0] === semGrp.group.id &&
+                    grp[1] === (semGrp.group.id === semGrp.semester.w_id) &&
+                    grp[2] === semGrp.semester.id
             );
-            this.grpAssigned.splice(grpInd, 1);
+            this.grpAssigned = this.grpAssigned
+                .map((id, i) => (grpInd === i ? null : id))
+                .filter((id) => id !== null);
 
-            if (semGrp.code.includes("G")) {
+            if (semGrp.group.code.includes("G")) {
                 grpInd = this.grpAssigned.findIndex(
-                    (grp) => grp[0] === semGrp.semester.w_id && false === grp[1]
+                    (grp) =>
+                        grp[0] === semGrp.semester.w_id &&
+                        grp[1] === false &&
+                        grp[2] === semGrp.semester.id
                 );
-                this.grpAssigned.splice(grpInd, 1);
+                this.grpAssigned = this.grpAssigned
+                    .map((id, i) => (grpInd === i ? null : id))
+                    .filter((id) => id !== null);
             }
 
             // remove slot
             let sInd = this.grpList.findIndex((slot) => slot.id === lsn.id);
-            this.grpList.splice(sInd, 1);
+            this.grpList = this.grpList
+                .map((grp, i) => (i === sInd ? null : grp))
+                .filter((grp) => grp !== null);
         });
     }
 }
@@ -289,12 +316,12 @@ class SlotNode {
 class DayNode {
     constructor(day) {
         this.day = day;
-        this.lessonAssigned = []; // {lsnId, grpId}
+        this.lessonAssigned = []; // lsnId
         this.timings = []; // slotNode
     }
 
     assignTimings(lessonAssigned, timings) {
-        this.lessonAssigned = lessonAssigned;
+        this.lessonAssigned = lessonAssigned.map((id) => id);
         this.timings = timings.map((timing) => {
             let currSlot = new SlotNode(timing.time);
             currSlot.assignSlot(
@@ -308,16 +335,9 @@ class DayNode {
     }
 
     isLessonAvailable(lsn) {
-        let lsnAlloted = false;
-        lsn.semester_groups.forEach((semGrp) => {
-            lsnAlloted =
-                lsnAlloted ||
-                this.lessonAssigned.findIndex(
-                    (lsnAssigned) =>
-                        lsnAssigned.lsnId === lsn.id &&
-                        lsnAssigned.grpId === semGrp.id
-                ) !== -1;
-        });
+        let lsnAlloted =
+            this.lessonAssigned.findIndex((id) => id === lsn.id) !== -1;
+
         return {
             val: !lsnAlloted,
             msg: [`Lesson {lsn & semGrp} ${lsnAlloted ? "not" : ""} available`],
@@ -361,12 +381,7 @@ class DayNode {
     assignLectureForTheDay(time, lsn, hideUI) {
         let timeIndex = this.getTimeIndex(time);
 
-        lsn.semester_groups.forEach((semGrp) => {
-            // mark lsnId and semId
-            // it ensure that this day grp is assigned this lecture
-            // so don't assign more class
-            this.lessonAssigned.push({ lsnId: lsn.id, grpId: semGrp.id });
-        });
+        this.lessonAssigned.push(lsn.id);
 
         // add data to slot
         this.timings[timeIndex].assignLectureForTheSlot(lsn, hideUI);
@@ -394,13 +409,10 @@ class DayNode {
 
     removeLectureForTheDay(time, lsn) {
         let timeIndex = this.getTimeIndex(time);
-        lsn.semester_groups.forEach((semGrp) => {
-            // remove lsnId and semId
-            let i = this.lessonAssigned.findIndex(
-                ({ lsnId, grpId }) => lsnId === lsn.id && grpId === semGrp.id
-            );
-            this.lessonAssigned.splice(i, 1);
-        });
+
+        this.lessonAssigned = this.lessonAssigned
+            .map((lsnId) => (lsnId === lsn.id ? null : lsn))
+            .filter((lsn) => lsn !== null);
 
         // remove data from slot
         this.timings[timeIndex].removeLectureForTheSlot(lsn);
@@ -489,24 +501,73 @@ export class AllotedLessons {
         else console.log("Assign lecture for lesson length < 1");
     }
 
-    generateFormattedData() {
+    semesterFormattedData() {
         let finalData = {};
 
         this.days.forEach((d) => {
             let day = d.day;
             d.timings.forEach((t) => {
                 let time = t.time;
-                t.grpList.forEach((semGrp) => {
-                    let sem = semGrp.semester;
-                    if (semGrp.hideUI === 0) {
+                t.grpList.forEach((lsn) => {
+                    let sem = lsn.semester;
+                    if (lsn.hideUI === 0) {
                         if (!(sem.id in finalData)) finalData[sem.id] = {};
                         if (!(day.id in finalData[sem.id]))
                             finalData[sem.id][day.id] = {};
                         if (!(time.id in finalData[sem.id][day.id]))
                             finalData[sem.id][day.id][time.id] = [];
 
-                        finalData[sem.id][day.id][time.id].push(semGrp);
+                        finalData[sem.id][day.id][time.id].push(lsn);
                     }
+                });
+            });
+        });
+        return finalData;
+    }
+    classroomFormattedData() {
+        let finalData = {};
+
+        this.days.forEach((d) => {
+            let day = d.day;
+            d.timings.forEach((t) => {
+                let time = t.time;
+                t.grpList.forEach((lsn) => {
+                    let tId = lsn.classroom.id;
+                    let bId = time.id;
+                    let dId = day.id;
+                    if (lsn.hideUI === 0) {
+                        if (!(tId in finalData)) finalData[tId] = {};
+                        if (!(dId in finalData[tId])) finalData[tId][dId] = {};
+                        if (!(bId in finalData[tId][dId]))
+                            finalData[tId][dId][bId] = [];
+                        finalData[tId][dId][bId].push(lsn);
+                    }
+                });
+            });
+        });
+        return finalData;
+    }
+    teacherFormattedData() {
+        let finalData = {};
+
+        this.days.forEach((d) => {
+            let day = d.day;
+            d.timings.forEach((t) => {
+                let time = t.time;
+                t.grpList.forEach((lsn) => {
+                    lsn.teachers.forEach((tchr) => {
+                        let tId = tchr.id;
+                        let bId = time.id;
+                        let dId = day.id;
+                        if (lsn.hideUI === 0) {
+                            if (!(tId in finalData)) finalData[tId] = {};
+                            if (!(dId in finalData[tId]))
+                                finalData[tId][dId] = {};
+                            if (!(bId in finalData[tId][dId]))
+                                finalData[tId][dId][bId] = [];
+                            finalData[tId][dId][bId].push(lsn);
+                        }
+                    });
                 });
             });
         });
@@ -516,7 +577,7 @@ export class AllotedLessons {
     removeLesson(day, time, lsn) {
         let dayIndex = this.getDayIndex(day);
         if (lsn.lesson_length === 1)
-            this.days[dayIndex].removeLectureForTheDay(time, lsn, 0);
+            this.days[dayIndex].removeLectureForTheDay(time, lsn);
         else if (lsn.lesson_length > 1)
             this.days[dayIndex].removeLabForTheDay(time, lsn, this.timeList);
         else console.log("Remove lecture for lesson length < 1");
@@ -527,13 +588,13 @@ export class GeneratorClass {
     constructor(timings, days, lessons) {
         this.days = days;
         this.timings = timings;
-        this.lessons = new LessonClass(lessons);
+        this.lessons = new LessonClass(lessons).lectures;
         this.data = new AllotedLessons(timings);
-        this.lessonNotAssigned = [];
+        this.extraLessons = [];
     }
 
     assignSavedData(localData, localExtra) {
-        this.lessonNotAssigned = localExtra;
+        this.extraLessons = localExtra;
         this.data.assignSavedDays(localData.days);
     }
 
@@ -577,27 +638,25 @@ export class GeneratorClass {
     findDayTimeIndex(lsn) {
         let dayIndex = this.findDayIndex(0, lsn);
 
-        if (dayIndex >= this.days.length) {
-            // no day available
-            return this.bruteForceDayTime(lsn);
-        } else {
-            while (true) {
-                if (dayIndex >= this.days.length) {
-                    // no day time found
-                    return this.bruteForceDayTime(lsn);
-                }
-                let day = this.days[dayIndex];
-                let timeIndex = this.findTimeIndex(day, lsn);
-                if (timeIndex >= this.timings.length) {
-                    // timing not available on that day check for remaining days
-                    dayIndex++;
-                } else {
-                    // day and time both found
-                    return {
-                        dayIndex,
-                        timeIndex,
-                    };
-                }
+        while (true) {
+            if (dayIndex >= this.days.length) {
+                // no day time found
+                return {
+                    dayIndex: this.days.length,
+                    timeIndex: this.timings.length,
+                };
+            }
+            let day = this.days[dayIndex];
+            let timeIndex = this.findTimeIndex(day, lsn);
+            if (timeIndex >= this.timings.length) {
+                // timing not available on that day check for remaining days
+                dayIndex = this.findDayIndex(dayIndex + 1, lsn);
+            } else {
+                // day and time both found
+                return {
+                    dayIndex,
+                    timeIndex,
+                };
             }
         }
     }
@@ -610,7 +669,7 @@ export class GeneratorClass {
                 dayIndex >= this.days.length ||
                 timeIndex >= this.timings.length
             ) {
-                this.lessonNotAssigned.push(lsn);
+                this.extraLessons.push(lsn);
                 break;
             }
             // Assign Lecture
@@ -626,11 +685,15 @@ export class GeneratorClass {
 
     lessonsLoop(lsns) {
         lsns.sort((a, b) => {
-            // if (a.teachers[0].id === b.teachers[0].id) {
-            return b.total_time_off - a.total_time_off === 0
-                ? b.lesson_per_week - a.lesson_per_week
-                : b.total_time_off - a.total_time_off;
-            // } else return a.teachers[0].id - b.teachers[0].id;
+            if (b.total_time_off === a.total_time_off) {
+                if (b.lesson_length === a.lesson_length) {
+                    return b.lesson_per_week - a.lesson_per_week;
+                } else {
+                    return b.lesson_length - a.lesson_length;
+                }
+            } else {
+                return b.total_time_off - a.total_time_off;
+            }
         });
         for (let i = 0; i < lsns.length; i++) {
             let lsn = lsns[i];
@@ -639,11 +702,35 @@ export class GeneratorClass {
     }
 
     generateTimeTable() {
-        this.lessonsLoop(this.lessons.labs.concat(this.lessons.lectures));
-        // this.lessonsLoop(this.lessons.lectures);
+        this.lessonsLoop(this.lessons);
+    }
+
+    addToExtraLessons(lsn) {
+        let i = this.extraLessons.findIndex((lesson) => lesson.id === lsn.id);
+        if (i === -1) {
+            this.extraLessons.push(lsn);
+        } else {
+            this.extraLessons[i].lesson_per_week =
+                this.extraLessons[i].lesson_per_week + 1;
+        }
+    }
+
+    removeFromExtraLessons(lsn) {
+        this.extraLessons = this.extraLessons
+            .map((lesson) => {
+                if (lesson.id === lsn.id) {
+                    let newLsn = { ...lesson };
+                    newLsn.lesson_per_week = lesson.lesson_per_week - 1;
+                    if (newLsn.lesson_per_week === 0) return null;
+                    return newLsn;
+                }
+                return lesson;
+            })
+            .filter((lesson) => lesson !== null);
     }
 
     removeAllotedLesson(day, time, lsn) {
         this.data.removeLesson(day, time, lsn);
+        this.addToExtraLessons(lsn);
     }
 }

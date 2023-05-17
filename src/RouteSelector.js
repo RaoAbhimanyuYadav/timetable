@@ -19,6 +19,7 @@ import SignUp from "./components/pages/SignUp";
 import ProtectedRoute from "./components/HOC/ProtectedRoute";
 import RestrictedRoute from "./components/HOC/RestrictedRoute";
 import useRefreshToken from "./components/hooks/useRefreshToken";
+import LoadingSpinner from "./components/specific/LoadingSpinner";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -100,7 +101,11 @@ const RouteSelector = () => {
         if (loading) refresh(setLoading);
     }, [refresh, loading]);
 
-    return loading ? <>Loading</> : <RouterProvider router={router} />;
+    return loading ? (
+        <LoadingSpinner open={loading} />
+    ) : (
+        <RouterProvider router={router} />
+    );
 };
 
 export default RouteSelector;

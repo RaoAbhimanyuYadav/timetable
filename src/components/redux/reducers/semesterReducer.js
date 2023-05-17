@@ -2,64 +2,81 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     semesterList: [],
-    isSemestersFetched: true,
-    selectedSemesters: [],
+    selectedSemGrps: [{ semester: { id: "" }, group: { id: "" } }],
+    groupsAvailable: [[]],
 };
 
 const semesterSlice = createSlice({
     name: "semester",
     initialState,
     reducers: {
-        addSemesterReducer: (state, action) => {
-            state.semesterList.push(action.payload);
-        },
         setSemesterReducer: (state, action) => {
             state.semesterList = action.payload;
-            state.isSemestersFetched = false;
         },
-        updateSemesterReducer: (state, action) => {
-            const index = state.semesterList.findIndex(
-                (sem) => sem.id === action.payload.id
-            );
-            state.semesterList.splice(index, 1, action.payload);
-        },
-        deleteSemesterReducer: (state, action) => {
-            const index = state.semesterList.findIndex(
-                (sem) => sem.id === action.payload.id
-            );
-            state.semesterList.splice(index, 1);
-        },
+
         resetSemesterReducer: (state) => {
-            state.isSemestersFetched = true;
             state.semesterList = [];
         },
-        setSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters = action.payload;
-        },
-        resetSelectedSemesterReducer: (state) => {
-            state.selectedSemesters = [];
-        },
-        addToSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters.push(action.payload);
-        },
-        removeFromSelectedSemesterReducer: (state, action) => {
-            state.selectedSemesters = state.selectedSemesters.filter(
-                (sem) => sem.id !== action.payload
+        setSelectedSemGrpsReducer: (state, action) => {
+            state.selectedSemGrps = action.payload;
+            state.groupsAvailable = action.payload.map(
+                (semGrp) => semGrp.semester.groups
             );
+        },
+        resetSelectedSemGrpsReducer: (state) => {
+            state.selectedSemGrps = [
+                { semester: { id: "" }, group: { id: "" } },
+            ];
+            state.groupsAvailable = [[]];
+        },
+        pushInSelectedSemGrpsReducer: (state) => {
+            state.selectedSemGrps.push({
+                semester: { id: "" },
+                group: { id: "" },
+            });
+            state.groupsAvailable.push([]);
+        },
+        deleteInSelectedSemGrpssReducer: (state, action) => {
+            state.selectedSemGrps = state.selectedSemGrps
+                .map((semGrp, i) => (action.payload === i ? null : semGrp))
+                .filter((semGrp) => semGrp !== null);
+            state.groupsAvailable = state.groupsAvailable
+                .map((grps, i) => (i === action.payload ? null : grps))
+                .filter((grps) => grps !== null);
+        },
+        updateInSelectedSemGrpsReducer: (state, action) => {
+            const { index, key, id } = action.payload;
+
+            state.selectedSemGrps = state.selectedSemGrps.map((semGrp, i) => {
+                if (i === index) {
+                    let sem = { ...semGrp.semester };
+                    let grp = { ...semGrp.group };
+                    if (key === "semester") {
+                        sem = state.semesterList.find((sem) => sem.id === id);
+                        grp = { id: "" };
+                        state.groupsAvailable = state.groupsAvailable.map(
+                            (grps, i) => (i === index ? sem.groups : grps)
+                        );
+                    } else
+                        grp = state.groupsAvailable[index].find(
+                            (grp) => grp.id === id
+                        );
+                    return { semester: sem, group: grp };
+                }
+                return semGrp;
+            });
         },
     },
 });
 
 export const {
-    addSemesterReducer,
     setSemesterReducer,
-    updateSemesterReducer,
-    deleteSemesterReducer,
     resetSemesterReducer,
-    setSelectedSemesterReducer,
-    resetSelectedSemesterReducer,
-    addToSelectedSemesterReducer,
-    removeFromSelectedSemesterReducer,
+    setSelectedSemGrpsReducer,
+    resetSelectedSemGrpsReducer,
+    pushInSelectedSemGrpsReducer,
+    deleteInSelectedSemGrpssReducer,
+    updateInSelectedSemGrpsReducer,
 } = semesterSlice.actions;
 
 export default semesterSlice.reducer;

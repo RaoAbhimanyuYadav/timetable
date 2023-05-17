@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useCallback, useEffect } from "react";
 
 import PageWrapper from "../HOC/PageWrapper";
@@ -12,6 +12,10 @@ import {
     TIMING_FORM_FIELDS,
     WORKING_DAY_URL,
     BELL_TIMING_URL,
+    GROUP_URL,
+    GROUP_FORM_FIELDS,
+    GROUP_TABLE_HEADING,
+    GROUP_TABLE_BODY_KEY,
 } from "../constants/profileConstants";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -24,26 +28,14 @@ import {
 } from "../redux/actionThunk/apiThunk";
 
 import {
-    addTimingReducer,
-    addWorkingDayReducer,
-    deleteTimingReducer,
-    deleteWorkingDayReducer,
     setTimingReducer,
     setWorkingDaysReducer,
-    updateTimingReducer,
-    updateWorkingDayReducer,
 } from "../redux/reducers/profileReducer";
+import { setGroupsReducer } from "../redux/reducers/groupReducer";
 
 const Profile = () => {
     const dispatch = useDispatch();
     const axios = useAxiosPrivate();
-
-    const isBellTimingsFetched = useSelector(
-        (state) => state.profile.isBellTimingsFetched
-    );
-    const isWorkingDaysFetched = useSelector(
-        (state) => state.profile.isWorkingDaysFetched
-    );
 
     const bellTimingSelectorFunc = useCallback(
         (state) => state.profile.bellTimings,
@@ -53,15 +45,18 @@ const Profile = () => {
         (state) => state.profile.workingDays,
         []
     );
+    const groupSelectorFunc = useCallback(
+        (state) => state.groups.groupList,
+        []
+    );
 
     useEffect(() => {
-        if (isBellTimingsFetched) {
-            dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
-        }
-        if (isWorkingDaysFetched) {
-            dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
-        } // eslint-disable-next-line
-    }, [isWorkingDaysFetched, isBellTimingsFetched]);
+        dispatch(getData(axios, BELL_TIMING_URL, setTimingReducer));
+
+        dispatch(getData(axios, GROUP_URL, setGroupsReducer));
+
+        dispatch(getData(axios, WORKING_DAY_URL, setWorkingDaysReducer));
+    }, [dispatch, axios]);
 
     const bellTimingFormSubmitHandler = (e, data) => {
         // Data checking
@@ -77,23 +72,43 @@ const Profile = () => {
                 updateData(
                     axios,
                     BELL_TIMING_URL,
-                    updateTimingReducer,
+                    setTimingReducer,
                     filteredData
                 )
             );
         } else {
             // create doc
             dispatch(
-                addData(axios, BELL_TIMING_URL, addTimingReducer, filteredData)
+                addData(axios, BELL_TIMING_URL, setTimingReducer, filteredData)
             );
         }
     };
 
     const bellTimingDeleteHandler = (data) => {
         // delete doc
-        dispatch(
-            deleteData(axios, BELL_TIMING_URL, deleteTimingReducer, data.id)
-        );
+        dispatch(deleteData(axios, BELL_TIMING_URL, setTimingReducer, data.id));
+    };
+    const groupFormSubmitHandler = (e, data) => {
+        // Data checking
+        const filteredData = {
+            name: e.target.name.value,
+            code: e.target.code.value,
+        };
+        if (data) {
+            filteredData["id"] = data.id;
+            // update doc
+            dispatch(
+                updateData(axios, GROUP_URL, setGroupsReducer, filteredData)
+            );
+        } else {
+            // create doc
+            dispatch(addData(axios, GROUP_URL, setGroupsReducer, filteredData));
+        }
+    };
+
+    const groupDeleteHandler = (data) => {
+        // delete doc
+        dispatch(deleteData(axios, GROUP_URL, setGroupsReducer, data.id));
     };
 
     const workingDaysFormSubmitHandler = (e, data) => {
@@ -108,7 +123,7 @@ const Profile = () => {
                 updateData(
                     axios,
                     WORKING_DAY_URL,
-                    updateWorkingDayReducer,
+                    setWorkingDaysReducer,
                     filteredData
                 )
             );
@@ -118,7 +133,7 @@ const Profile = () => {
                 addData(
                     axios,
                     WORKING_DAY_URL,
-                    addWorkingDayReducer,
+                    setWorkingDaysReducer,
                     filteredData
                 )
             );
@@ -128,7 +143,7 @@ const Profile = () => {
     const workingDaysDeleteHandler = (data) => {
         // delete doc
         dispatch(
-            deleteData(axios, WORKING_DAY_URL, deleteWorkingDayReducer, data.id)
+            deleteData(axios, WORKING_DAY_URL, setWorkingDaysReducer, data.id)
         );
     };
 
@@ -151,6 +166,15 @@ const Profile = () => {
                 selectorFunc={workingDaySelectorFunc}
                 formSubmitHandler={workingDaysFormSubmitHandler}
                 deleteHandler={workingDaysDeleteHandler}
+            />
+            <PageWrapper
+                title={"Groups"}
+                formFields={GROUP_FORM_FIELDS}
+                tableHeadings={GROUP_TABLE_HEADING}
+                tableBodykey={GROUP_TABLE_BODY_KEY}
+                selectorFunc={groupSelectorFunc}
+                formSubmitHandler={groupFormSubmitHandler}
+                deleteHandler={groupDeleteHandler}
             />
         </>
     );

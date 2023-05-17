@@ -12,17 +12,18 @@ import {
     CustomTextField,
 } from "../utils/customComponents";
 import ColorSelector from "./ColorSelector";
-import GroupComponent from "../utils/GroupComponent";
-import AysncSelect from "../utils/AysncSelect";
-import AysncSelectMultiple from "./AysncSelectMultiple";
-import CheckBoxes from "./CheckBoxes";
 import TimeOff from "../specific/TimeOff";
+import MultipleSelector from "./MultipleSelector";
+import Select from "./Select";
+import SemGrpSelect from "../specific/SemGrpSelect";
 
 const inputFieldSelector = (obj, index, formData) => {
     if (obj.type === "color") {
         return <ColorSelector formData={formData} obj={obj} />;
-    } else if (obj.type === "groups") {
-        return <GroupComponent formData={formData} obj={obj} />;
+    } else if (obj.type === "multipleSelector") {
+        return <MultipleSelector formData={formData} obj={obj} />;
+    } else if (obj.type === "semGrpSelector") {
+        return <SemGrpSelect formData={formData} obj={obj} />;
     } else if (obj.type === "select") {
         return (
             <CustomTextField
@@ -41,12 +42,8 @@ const inputFieldSelector = (obj, index, formData) => {
         );
     } else if (obj.type === "time_off") {
         return <TimeOff formData={formData} obj={obj} />;
-    } else if (obj.type === "checkboxes") {
-        return <CheckBoxes formData={formData} obj={obj} />;
     } else if (obj.type === "asyncSelect") {
-        return <AysncSelect formData={formData} obj={obj} />;
-    } else if (obj.type === "asyncSelectMultiple") {
-        return <AysncSelectMultiple formData={formData} obj={obj} />;
+        return <Select formData={formData} obj={obj} />;
     } else if (obj.type === "checkbox") {
         return (
             <input

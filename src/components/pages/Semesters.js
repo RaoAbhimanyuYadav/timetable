@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
     SEMESTER_URL,
@@ -9,10 +9,7 @@ import {
 } from "../constants/semesterConstant";
 
 import PageWrapper from "../HOC/PageWrapper";
-import {
-    clearGroupReducer,
-    clearTimeOffReducer,
-} from "../redux/reducers/commonReducers";
+import { clearTimeOffReducer } from "../redux/reducers/commonReducers";
 
 import { useCallback, useEffect } from "react";
 import {
@@ -22,12 +19,7 @@ import {
     updateData,
 } from "../redux/actionThunk/apiThunk";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import {
-    addSemesterReducer,
-    deleteSemesterReducer,
-    setSemesterReducer,
-    updateSemesterReducer,
-} from "../redux/reducers/semesterReducer";
+import { setSemesterReducer } from "../redux/reducers/semesterReducer";
 
 const Semesters = () => {
     const dispatch = useDispatch();
@@ -38,15 +30,9 @@ const Semesters = () => {
         []
     );
 
-    const isSemestersFetched = useSelector(
-        (state) => state.semester.isSemestersFetched
-    );
-
     useEffect(() => {
-        if (isSemestersFetched) {
-            dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
-        } // eslint-disable-next-line
-    }, [isSemestersFetched]);
+        dispatch(getData(axios, SEMESTER_URL, setSemesterReducer));
+    }, [dispatch, axios]);
 
     const formSubmitHandler = (e, data) => {
         const filteredData = {
@@ -61,7 +47,7 @@ const Semesters = () => {
                 updateData(
                     axios,
                     SEMESTER_URL,
-                    updateSemesterReducer,
+                    setSemesterReducer,
                     filteredData,
                     SEMESTER_FORM_KEY_LIST
                 )
@@ -72,21 +58,18 @@ const Semesters = () => {
                 addData(
                     axios,
                     SEMESTER_URL,
-                    addSemesterReducer,
+                    setSemesterReducer,
                     filteredData,
                     SEMESTER_FORM_KEY_LIST
                 )
             );
         }
         dispatch(clearTimeOffReducer());
-        dispatch(clearGroupReducer());
     };
 
     const deleteHandler = (data) => {
         // delete doc
-        dispatch(
-            deleteData(axios, SEMESTER_URL, deleteSemesterReducer, data.id)
-        );
+        dispatch(deleteData(axios, SEMESTER_URL, setSemesterReducer, data.id));
     };
 
     return (

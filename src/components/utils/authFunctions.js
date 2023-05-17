@@ -1,16 +1,14 @@
-import {
-    setAccessTokenReducer,
-    setDataFetchedReducer,
-} from "../redux/reducers/authReducer";
+import { setAccessTokenReducer } from "../redux/reducers/authReducer";
 
 import {
     resetClassroomReducer,
     setClassroomReducer,
 } from "../redux/reducers/classroomReducers";
 import {
-    resetLessonReducer,
-    setLessonReducer,
-} from "../redux/reducers/lessonReducer";
+    resetGroupsReducer,
+    setGroupsReducer,
+} from "../redux/reducers/groupReducer";
+
 import { showNotificationReducer } from "../redux/reducers/notificationReducer";
 import {
     resetProfileReducer,
@@ -29,6 +27,10 @@ import {
     resetTeacherReducer,
     setTeacherReducer,
 } from "../redux/reducers/teacherReducers";
+import {
+    resetTimeOffsReducer,
+    setTimeOffsReducer,
+} from "../redux/reducers/timeOffsReducer";
 
 export const KEY_REDUCER = [
     {
@@ -56,25 +58,29 @@ export const KEY_REDUCER = [
         reducer: setClassroomReducer,
     },
     {
-        key: "lesson",
-        reducer: setLessonReducer,
+        key: "groups",
+        reducer: setGroupsReducer,
+    },
+    {
+        key: "timeOffs",
+        reducer: setTimeOffsReducer,
     },
 ];
 
 export const resetAllState = (dispatch) => {
     [
         resetClassroomReducer,
-        resetLessonReducer,
         resetProfileReducer,
         resetSemesterReducer,
         resetSubjectReducer,
         resetTeacherReducer,
+        resetGroupsReducer,
+        resetTimeOffsReducer,
     ].forEach((reducer) => {
         dispatch(reducer());
     });
 
     dispatch(setAccessTokenReducer(null));
-    dispatch(setDataFetchedReducer(true));
 };
 
 export const unauthorized = (err, dispatch) => {
