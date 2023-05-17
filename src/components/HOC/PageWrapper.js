@@ -13,22 +13,21 @@ const PageWrapper = ({
     deleteHandler,
 }) => {
     return (
-        <Box sx={{ padding: "clamp(12px, 4vw, 48px)", overflowX: "scroll" }}>
+        <Box>
             <Box
                 sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "20px 10px",
+                    padding: "0px 1rem 2rem 1rem",
                 }}
             >
                 <Typography
                     sx={{
-                        fontSize: "clamp(10px,2vw,24px)",
+                        fontSize: "clamp(1rem,2vw,2.4rem)",
                         fontWeight: "800",
                         fontFamily: "monospace",
                         letterSpacing: "0.1rem",
-                        color: "#000",
                     }}
                 >
                     {title}

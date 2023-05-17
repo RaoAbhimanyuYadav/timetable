@@ -4,7 +4,7 @@ import React from "react";
 const Item = ({ grp, gridSize }) => {
     return (
         <Grid item xs={gridSize} sx={{ padding: "2px" }}>
-            <Box sx={{ backgroundColor: "lightblue", width: "100%" }}>
+            <Box sx={{ backgroundColor: "#006e91", width: "100%" }}>
                 {grp.code}
             </Box>
         </Grid>

@@ -1,4 +1,4 @@
-import { FormControl, Grid, Table } from "@mui/material";
+import { FormControlLabel, Grid, Switch, Table } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -16,10 +16,10 @@ import {
 } from "../utils/customComponents";
 import GetSavedData from "../wrappers/GetSavedData";
 import { AllotedSlotNode } from "../utils/classes";
-import ConfirmDelete from "../common/ConfirmDelete";
 import LoadingSpinner from "../specific/LoadingSpinner";
-
-// TODO: print semester for sending purpose
+import DownloadAll from "../download/DownloadAll";
+import AllSavedTimetable from "../savedTimetable/AllSavedTimetable";
+import SaveTimetable from "../savedTimetable/SaveTimetable";
 
 const FUNC = [
     {
@@ -41,6 +41,7 @@ const Generate = () => {
 
     const [classObj, setClassObj] = useState(undefined);
     const [generatedTimetable, setGeneratedTimetable] = useState({});
+    const [singleCombinedView, setSingleCombinedView] = useState(false);
     const [selectedLesson, setSelectedLesson] = useState(undefined);
     const [view, setView] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -174,40 +175,6 @@ const Generate = () => {
         }
     };
 
-    const handleDelete = () => {
-        localStorage.removeItem("localData");
-        localStorage.removeItem("extraLessons");
-        dispatch(
-            showNotificationReducer({
-                msg: "Successfully deleted.",
-                severity: "success",
-            })
-        );
-    };
-
-    const handleSave = () => {
-        if (classObj) {
-            localStorage.setItem("localData", JSON.stringify(classObj.data));
-            localStorage.setItem(
-                "extraLessons",
-                JSON.stringify(classObj.extraLessons)
-            );
-            dispatch(
-                showNotificationReducer({
-                    msg: "Saved Successfully",
-                    severity: "success",
-                })
-            );
-        } else {
-            dispatch(
-                showNotificationReducer({
-                    msg: "Please Generate timetable first.",
-                    severity: "error",
-                })
-            );
-        }
-    };
-
     const handleToggleColor = () => {
         dispatch(toggleNoColorReducer());
     };
@@ -229,39 +196,42 @@ const Generate = () => {
     return (
         <>
             <LoadingSpinner open={loading} />
-            <Grid container padding={"10px"} gap={"10px"}>
+            <Grid container gap={"10px"}>
                 <Grid item xs={12}>
-                    <Grid container gap={"20px"}>
+                    <Grid
+                        container
+                        gap={"20px"}
+                        sx={{ alignItems: "center", justifyContent: "center" }}
+                    >
                         <Grid item>
-                            <FormControl fullWidth>
-                                <CustomTextField
-                                    select
-                                    id="view-select"
-                                    value={view}
-                                    label="View"
-                                    onChange={handleViewChange}
-                                    size={"10px"}
-                                >
-                                    <CustomMenuItem value={0}>
-                                        Semesters
-                                    </CustomMenuItem>
-                                    <CustomMenuItem value={1}>
-                                        Teachers
-                                    </CustomMenuItem>
-                                    <CustomMenuItem value={2}>
-                                        Classrooms
-                                    </CustomMenuItem>
-                                </CustomTextField>
-                            </FormControl>
+                            <CustomTextField
+                                select
+                                id="view-select"
+                                value={view}
+                                label="View"
+                                onChange={handleViewChange}
+                                size={"10px"}
+                                sx={{ margin: "0" }}
+                            >
+                                <CustomMenuItem value={0}>
+                                    Semesters
+                                </CustomMenuItem>
+                                <CustomMenuItem value={1}>
+                                    Teachers
+                                </CustomMenuItem>
+                                <CustomMenuItem value={2}>
+                                    Classrooms
+                                </CustomMenuItem>
+                            </CustomTextField>
                         </Grid>
-                        <Grid item>
-                            <GenerateButton
-                                setClassObj={setClassObj}
-                                setGeneratedTimetable={setGeneratedTimetable}
-                                creatorFunc={FUNC[view].creator}
-                                setLoading={setLoading}
-                            />
-                        </Grid>
+
+                        <GenerateButton
+                            setClassObj={setClassObj}
+                            setGeneratedTimetable={setGeneratedTimetable}
+                            creatorFunc={FUNC[view].creator}
+                            setLoading={setLoading}
+                        />
+
                         <Grid item>
                             <GetSavedData
                                 setClassObj={setClassObj}
@@ -270,18 +240,12 @@ const Generate = () => {
                                 setLoading={setLoading}
                             />
                         </Grid>
+
+                        <SaveTimetable classObj={classObj} />
                         <Grid item>
-                            <CustomButton onClick={handleSave}>
-                                Save
-                            </CustomButton>
+                            <AllSavedTimetable />
                         </Grid>
-                        <Grid item>
-                            <ConfirmDelete
-                                tableBodykey={[]}
-                                data={{}}
-                                deleteHandler={handleDelete}
-                            />
-                        </Grid>
+
                         <Grid item>
                             <DownloadPDFButton />
                         </Grid>
@@ -290,25 +254,50 @@ const Generate = () => {
                                 Toggle Color
                             </CustomButton>
                         </Grid>
+                        <Grid item>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={singleCombinedView}
+                                        onChange={() =>
+                                            setSingleCombinedView((pre) => !pre)
+                                        }
+                                        name="singleCombinedView"
+                                        color="primary"
+                                        size="small"
+                                        placeholder="hlo"
+                                    />
+                                }
+                                label="Single View"
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ overflow: "scroll", height: "75vh" }}>
-                    <Table
-                        sx={{
-                            tableLayout: "fixed",
-                            width: "2500px",
-                        }}
-                        id={"pdf-content"}
-                    >
-                        <TimetableHeader />
-                        <TimetableBody
-                            viewSelectorFunc={FUNC[view].selectorFunc}
-                            handleDaD={handleDaD}
+                    {singleCombinedView ? (
+                        <DownloadAll
                             generatedTimetable={generatedTimetable}
+                            viewSelectorFunc={FUNC[view].selectorFunc}
                         />
-                    </Table>
+                    ) : (
+                        <Table
+                            sx={{
+                                tableLayout: "fixed",
+                                width: "2500px",
+                                backgroundColor: "#fff",
+                            }}
+                            id={"pdf-content"}
+                        >
+                            <TimetableHeader />
+                            <TimetableBody
+                                viewSelectorFunc={FUNC[view].selectorFunc}
+                                handleDaD={handleDaD}
+                                generatedTimetable={generatedTimetable}
+                            />
+                        </Table>
+                    )}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{ backgroundColor: "#fff" }}>
                     <Grid container gap={"10px"}>
                         <ExtraLessons
                             handleDaD={handleDaD}

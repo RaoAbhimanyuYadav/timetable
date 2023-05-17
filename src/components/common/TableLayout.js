@@ -13,6 +13,7 @@ const TableLayout = ({
     deleteHandler,
     formFields,
     formSubmitHandler,
+    enableEdit = true,
 }) => {
     const data = useSelector(selectorFunc) || [];
 
@@ -34,7 +35,7 @@ const TableLayout = ({
                             </CustomCell>
                         );
                     })}
-                    <CustomCell></CustomCell>
+                    {enableEdit && <CustomCell></CustomCell>}
                     <CustomCell></CustomCell>
                 </TableRow>
             </TableHead>
@@ -62,18 +63,20 @@ const TableLayout = ({
                                         </CustomCell>
                                     );
                                 })}
-                                <CustomCell>
-                                    <CellInsideWrapper>
-                                        <AddEditDialog
-                                            formFields={formFields}
-                                            formSubmitHandler={
-                                                formSubmitHandler
-                                            }
-                                            formData={obj}
-                                            maxWidth={"md"}
-                                        />
-                                    </CellInsideWrapper>
-                                </CustomCell>
+                                {enableEdit && (
+                                    <CustomCell>
+                                        <CellInsideWrapper>
+                                            <AddEditDialog
+                                                formFields={formFields}
+                                                formSubmitHandler={
+                                                    formSubmitHandler
+                                                }
+                                                formData={obj}
+                                                maxWidth={"md"}
+                                            />
+                                        </CellInsideWrapper>
+                                    </CustomCell>
+                                )}
                                 <CustomCell>
                                     <CellInsideWrapper>
                                         <ConfirmDelete

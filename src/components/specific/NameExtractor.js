@@ -2,8 +2,11 @@ import { Box } from "@mui/material";
 import LessonAssignButton from "./LessonAssignButton";
 import TimeOffRender from "./TimeOffRender";
 import GroupsUI from "./GroupsUI";
+import UseSavedTimetableButton from "../savedTimetable/UseSavedTimetableButton";
 
 const NameExtractor = ({ objKey, obj }) => {
+    if (objKey.includes("useSavedTimetableButton"))
+        return <UseSavedTimetableButton data={obj} />;
     if (objKey.includes("_button")) {
         return <LessonAssignButton teacher={obj} />;
     }
